@@ -1,10 +1,10 @@
 class Sprite {
-  constructor({ position, imgSrc, scale = 1, framesMax = 1 }) {
+  constructor({ position, imageSrc, scale = 1, framesMax = 1 }) {
     this.position = position;
     this.height = 150;
     this.width = 50;
     this.image = new Image();
-    this.image.src = imgSrc;
+    this.image.src = imageSrc;
     this.scale = scale;
     this.framesMax = framesMax;
     this.framesCurrent = 0;
@@ -26,13 +26,19 @@ class Sprite {
     );
   }
 
-  update() {
-    this.draw();
+  animateFrames() {
+    this.framesElapsed++;
+
     if (this.framesElapsed % this.framesHold === 0) {
       if (this.framesCurrent < this.framesMax - 1) {
         this.framesCurrent++;
       } else this.framesCurrent = 0;
     }
+  }
+
+  update() {
+    this.draw();
+    this.animateFrames();
   }
 }
 
@@ -42,18 +48,16 @@ class Fighter extends Sprite {
     velocity,
     color,
     offset,
-    imgSrc,
+    imageSrc,
     scale = 1,
     framesMax = 1,
+    sprites,
   }) {
     super({
       position,
-      image,
+      imageSrc,
       scale,
       framesMax,
-      framesCurrent,
-      framesElapsed,
-      framesHold,
     });
     this.velocity = velocity;
     this.height = 150;
@@ -71,21 +75,14 @@ class Fighter extends Sprite {
     this.color = color;
     this.isAttacking = false;
     this.health = 100;
-  }
+    this.framesCurrent = 0;
+    this.framesElapsed = 0;
+    this.framesHold = 25;
+    this.sprites = sprites;
 
-  draw() {
-    c.fillStyle = this.color;
-    c.fillRect(this.position.x, this.position.y - 30, this.width, this.height);
-
-    //attackbox
-    c.fillStyle = "green";
-    if (this.isAttacking) {
-      c.fillRect(
-        this.attackBox.position.x,
-        this.attackBox.position.y - 30,
-        this.attackBox.width,
-        this.attackBox.height
-      );
+    for (const sprite in this.sprites) {
+      sprites[sprite].image = new Image();
+      sprites[sprite].image.src = sprites[sprite].imageSrc;
     }
   }
 
@@ -96,22 +93,44 @@ class Fighter extends Sprite {
     }, 200);
   }
 
-  update(enemy) {
+  switchSprite(sprite) {
+    switch (sprite) {
+      case "idle":
+        if (this.image !== this.sprites.idle.image) {
+          this.image = this.sprites.idle.image;
+          this.framesMax = this.sprites.idle.framesMax;
+        }
+        break;
+      case "run":
+        if (this.image !== this.sprites.run.image) {
+          this.image = this.sprites.run.image;
+          this.framesMax = this.sprites.run.framesMax;
+        }
+        break;
+      case "jump":
+        if (this.image !== this.sprites.jump.image) {
+          this.image = this.sprites.jump.image;
+          this.framesMax = this.sprites.jump.framesMax;
+        }
+        break;
+    }
+  }
+
+  update() {
     this.draw();
+    this.animateFrames();
+    this.attackBox.position.x = this.position.x + this.attackBox.offset;
 
     // if (this.position.x > enemy.position.x)
-    //   this.attackBox.position.x = this.position.x + this.attackBox.offset.x;
-    // else this.attackBox.position.x = this.position.x - this.attackBox.offset.x;
-    if (this.position.x > enemy.position.x)
-      this.attackBox.position.x = this.position.x - 50;
-    else this.attackBox.position.x = this.position.x + 50 - this.width;
+    //   this.attackBox.position.x = this.position.x - 50;
+    // else this.attackBox.position.x = this.position.x + 50 - this.width;
 
     this.attackBox.position.y = this.position.y + this.attackBox.offset.y;
 
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
 
-    if (this.position.y + this.height + this.velocity.y >= canvas.height)
+    if (this.position.y + this.height + this.velocity.y >= canvas.height - 20)
       this.velocity.y = 0;
     else this.velocity.y += gravity;
   }
