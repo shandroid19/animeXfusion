@@ -11,21 +11,21 @@ let timer = 60;
 
 const background = new Sprite({
   position: { x: 0, y: 0 },
-  imgSrc: "./bg.jpg",
+  imgSrc: "./bg.webp",
 });
 
 const player = new Fighter({
-  position: { x: 0, y: 0 },
+  position: { x: 200, y: 0 },
   velocity: { x: 0, y: 0 },
   color: "blue",
   offset: { x: 0, y: 0 },
 });
 
 const enemy = new Fighter({
-  position: { x: 400, y: 100 },
+  position: { x: 800, y: 100 },
   velocity: { x: 0, y: 0 },
-  color: "red",
-  offset: { x: -50, y: 0 },
+  color: "green",
+  offset: { x: 0, y: 0 },
 });
 
 const keys = {
@@ -83,8 +83,8 @@ function animate() {
 
   background.update();
 
-  player.update();
-  enemy.update();
+  player.update(enemy);
+  enemy.update(player);
 
   player.velocity.x = 0;
   enemy.velocity.x = 0;
