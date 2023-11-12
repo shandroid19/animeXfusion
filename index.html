@@ -1,2 +1,96 @@
-<canvas></canvas>
-<script src="index.js"></script>
+<head>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+  <!-- healthbar -->
+  <div style="position: relative; display: inline-block">
+    <div
+      style="
+        position: absolute;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: 20px;
+      "
+    >
+      <!-- Player Health -->
+
+      <div
+        style="
+          position: relative;
+          height: 30px;
+          width: 100%;
+          display: flex;
+          justify-content: flex-end;
+        "
+      >
+        <div style="background-color: yellow; height: 30px; width: 100%"></div>
+        <div
+          id="playerHealth"
+          style="
+            position: absolute;
+            background: blue;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+          "
+        ></div>
+      </div>
+
+      <!-- Timer -->
+      <div
+        id="timer"
+        style="
+          background-color: red;
+          height: 100px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 50px;
+          font-weight: bold;
+          width: 100px;
+          flex-shrink: 0;
+        "
+      >
+        10
+      </div>
+
+      <!-- Enemy Health -->
+      <div style="position: relative; height: 30px; width: 100%">
+        <div style="background-color: yellow; height: 30px"></div>
+        <div
+          id="enemyHealth"
+          style="
+            position: absolute;
+            background: blue;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+          "
+        ></div>
+      </div>
+    </div>
+    <div
+      id="result"
+      style="
+        position: absolute;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+        font-size: 50px;
+      "
+    ></div>
+    <canvas></canvas>
+  </div>
+  <script src="js/classes.js"></script>
+  <script src="index.js"></script>
+</body>
