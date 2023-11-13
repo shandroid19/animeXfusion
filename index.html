@@ -28,12 +28,13 @@
           justify-content: flex-end;
         "
       >
-        <div style="background-color: yellow; height: 30px; width: 100%"></div>
+        <div style="background-color: red; height: 30px; width: 100%"></div>
         <div
           id="playerHealth"
           style="
+            border: solid 0.1rem white;
             position: absolute;
-            background: blue;
+            background: rgb(0, 255, 98);
             top: 0;
             bottom: 0;
             right: 0;
@@ -55,6 +56,10 @@
           font-weight: bold;
           width: 100px;
           flex-shrink: 0;
+          border-radius: 50%;
+          border-style: solid;
+          border-color: white;
+          border-width: 1rem;
         "
       >
         10
@@ -66,8 +71,9 @@
         <div
           id="enemyHealth"
           style="
+            border: solid 0.1rem white;
             position: absolute;
-            background: blue;
+            background: rgb(0, 255, 98);
             top: 0;
             bottom: 0;
             left: 0;
