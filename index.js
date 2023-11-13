@@ -11,21 +11,65 @@ let timer = 60;
 
 const background = new Sprite({
   position: { x: 0, y: 0 },
-  imgSrc: "./bg.jpg",
+  imageSrc: "./bg.webp",
 });
 
 const player = new Fighter({
-  position: { x: 0, y: 0 },
+  position: { x: 200, y: 0 },
   velocity: { x: 0, y: 0 },
   color: "blue",
   offset: { x: 0, y: 0 },
+  imageSrc: "./sprites/luffy/idle.png",
+  framesMax: 7,
+  scale: 2.4,
+  sprites: {
+    idle: {
+      imageSrc: "./sprites/zoro/idle.png",
+      framesMax: 2,
+    },
+    run: {
+      imageSrc: "./sprites/zoro/run.png",
+      framesMax: 6,
+    },
+    jump: {
+      imageSrc: "./sprites/zoro/jump.png",
+      framesMax: 3,
+    },
+    attack1: {
+      imageSrc: "./sprites/zoro/attack1.png",
+      framesMax: 4,
+    },
+  },
 });
 
 const enemy = new Fighter({
-  position: { x: 400, y: 100 },
+  position: { x: 800, y: 100 },
   velocity: { x: 0, y: 0 },
-  color: "red",
-  offset: { x: -50, y: 0 },
+  color: "green",
+  offset: { x: 0, y: 0 },
+  imageSrc: "./sprites/zoro/idle.png",
+  framesMax: 7,
+  scale: 3,
+  framesMax: 7,
+  scale: 3,
+  sprites: {
+    idle: {
+      imageSrc: "./sprites/luffy/idle.png",
+      framesMax: 7,
+    },
+    run: {
+      imageSrc: "./sprites/luffy/run.png",
+      framesMax: 5.8,
+    },
+    jump: {
+      imageSrc: "./sprites/luffy/jump.png",
+      framesMax: 6,
+    },
+    attack1: {
+      imageSrc: "./sprites/luffy/attack1.png",
+      framesMax: 3.3,
+    },
+  },
 });
 
 const keys = {
@@ -83,22 +127,37 @@ function animate() {
 
   background.update();
 
-  player.update();
-  enemy.update();
+  player.update(enemy);
+  enemy.update(player);
 
   player.velocity.x = 0;
   enemy.velocity.x = 0;
 
   if (keys.playerLeft.pressed && player.lastKey == "playerLeft") {
     player.velocity.x = -2;
+    player.switchSprite("run");
   } else if (keys.playerRight.pressed && player.lastKey == "playerRight") {
     player.velocity.x = 2;
+    player.switchSprite("run");
+  } else {
+    player.switchSprite("idle");
+  }
+
+  if (player.velocity.y < 0) {
+    player.switchSprite("jump");
   }
 
   if (keys.enemyLeft.pressed && enemy.lastKey == "enemyLeft") {
     enemy.velocity.x = -2;
+    enemy.switchSprite("run");
   } else if (keys.enemyRight.pressed && enemy.lastKey == "enemyRight") {
     enemy.velocity.x = 2;
+    enemy.switchSprite("run");
+  } else {
+    enemy.switchSprite("idle");
+  }
+  if (enemy.velocity.y < 0) {
+    enemy.switchSprite("jump");
   }
 
   //detect for collision
@@ -140,7 +199,7 @@ window.addEventListener("keydown", (e) => {
 
     case "w":
       keys.playerUp.pressed = true;
-      player.velocity.y = -8;
+      if (player.velocity.y == 0) player.velocity.y = -8;
       break;
 
     case "ArrowRight":
@@ -155,7 +214,7 @@ window.addEventListener("keydown", (e) => {
 
     case "ArrowUp":
       keys.enemyUp.pressed = true;
-      enemy.velocity.y = -8;
+      if (enemy.velocity.y == 0) enemy.velocity.y = -8;
       break;
 
     case " ":
