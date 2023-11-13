@@ -21,6 +21,36 @@ const player = new Fighter({
   offset: { x: 0, y: 0 },
   imageSrc: "./sprites/luffy/idle.png",
   framesMax: 7,
+  scale: 2.4,
+  sprites: {
+    idle: {
+      imageSrc: "./sprites/zoro/idle.png",
+      framesMax: 2,
+    },
+    run: {
+      imageSrc: "./sprites/zoro/run.png",
+      framesMax: 6,
+    },
+    jump: {
+      imageSrc: "./sprites/zoro/jump.png",
+      framesMax: 3,
+    },
+    attack1: {
+      imageSrc: "./sprites/zoro/attack1.png",
+      framesMax: 4,
+    },
+  },
+});
+
+const enemy = new Fighter({
+  position: { x: 800, y: 100 },
+  velocity: { x: 0, y: 0 },
+  color: "green",
+  offset: { x: 0, y: 0 },
+  imageSrc: "./sprites/zoro/idle.png",
+  framesMax: 7,
+  scale: 3,
+  framesMax: 7,
   scale: 3,
   sprites: {
     idle: {
@@ -38,37 +68,6 @@ const player = new Fighter({
     attack1: {
       imageSrc: "./sprites/luffy/attack1.png",
       framesMax: 3.3,
-    },
-  },
-});
-
-const enemy = new Fighter({
-  position: { x: 800, y: 100 },
-  velocity: { x: 0, y: 0 },
-  color: "green",
-  offset: { x: 0, y: 0 },
-  imageSrc: "./sprites/luffy/idle.png",
-  framesMax: 7,
-  scale: 3,
-  imageSrc: "./sprites/luffy/idle.png",
-  framesMax: 7,
-  scale: 3,
-  sprites: {
-    idle: {
-      imageSrc: "./sprites/luffy/idle.png",
-      framesMax: 7,
-    },
-    run: {
-      imageSrc: "./sprites/luffy/run.png",
-      framesMax: 5.8,
-    },
-    jump: {
-      imageSrc: "./sprites/luffy/jump.png",
-      framesMax: 6,
-    },
-    attack1: {
-      imageSrc: "./sprites/luffy/attack1.png",
-      framesMax: 3,
     },
   },
 });
@@ -128,8 +127,8 @@ function animate() {
 
   background.update();
 
-  player.update();
-  enemy.update();
+  player.update(enemy);
+  enemy.update(player);
 
   player.velocity.x = 0;
   enemy.velocity.x = 0;

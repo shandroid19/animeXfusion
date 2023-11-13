@@ -28,13 +28,29 @@
           justify-content: flex-end;
         "
       >
-        <div style="background-color: red; height: 30px; width: 100%"></div>
+        <div
+          style="
+            background: linear-gradient(
+              rgb(241, 41, 41),
+              rgb(235, 129, 129),
+              rgb(241, 41, 41)
+            );
+            height: 30px;
+            width: 100%;
+          "
+        ></div>
         <div
           id="playerHealth"
           style="
             border: solid 0.1rem white;
             position: absolute;
-            background: rgb(0, 255, 98);
+            background: linear-gradient(
+              rgb(41, 241, 41),
+              rgb(203, 237, 203),
+              rgb(41, 241, 41)
+            );
+            /* background-image: linear-gradient(green, rgb(164, 245, 164), green); */
+            /* background: rgb(0, 255, 98); */
             top: 0;
             bottom: 0;
             right: 0;
@@ -47,7 +63,7 @@
       <div
         id="timer"
         style="
-          background-color: red;
+          background-color: rgb(0, 217, 255);
           height: 100px;
           display: flex;
           justify-content: center;
@@ -67,13 +83,26 @@
 
       <!-- Enemy Health -->
       <div style="position: relative; height: 30px; width: 100%">
-        <div style="background-color: yellow; height: 30px"></div>
+        <div
+          style="
+            background: linear-gradient(
+              rgb(241, 41, 41),
+              rgb(235, 129, 129),
+              rgb(241, 41, 41)
+            );
+            height: 30px;
+          "
+        ></div>
         <div
           id="enemyHealth"
           style="
             border: solid 0.1rem white;
             position: absolute;
-            background: rgb(0, 255, 98);
+            background: linear-gradient(
+              rgb(41, 241, 41),
+              rgb(203, 237, 203),
+              rgb(41, 241, 41)
+            );
             top: 0;
             bottom: 0;
             left: 0;

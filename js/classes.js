@@ -12,18 +12,26 @@ class Sprite {
     this.framesHold = 5;
   }
 
-  draw() {
+  draw(flip) {
+    var sHeight = this.position.x;
+    if (flip) {
+      c.save();
+      c.scale(-1, 1);
+      sHeight =
+        -this.position.x - (this.image.width / this.framesMax) * this.scale;
+    }
     c.drawImage(
       this.image,
       this.framesCurrent * (this.image.width / this.framesMax),
       0,
       this.image.width / this.framesMax,
       this.image.height,
-      this.position.x,
+      sHeight,
       this.position.y,
       (this.image.width / this.framesMax) * this.scale,
       this.image.height * this.scale
     );
+    if (flip) c.restore();
   }
 
   animateFrames() {
@@ -134,14 +142,18 @@ class Fighter extends Sprite {
     }
   }
 
-  update() {
-    this.draw();
+  update(enemy) {
+    if (this.position.x > enemy.position.x) {
+      this.draw(false);
+    } else {
+      this.draw(true);
+    }
     this.animateFrames();
     this.attackBox.position.x = this.position.x + this.attackBox.offset;
 
-    // if (this.position.x > enemy.position.x)
-    //   this.attackBox.position.x = this.position.x - 50;
-    // else this.attackBox.position.x = this.position.x + 50 - this.width;
+    if (this.position.x > enemy.position.x)
+      this.attackBox.position.x = this.position.x - 60;
+    else this.attackBox.position.x = this.position.x + 60 - this.width;
 
     this.attackBox.position.y = this.position.y + this.attackBox.offset.y;
 
