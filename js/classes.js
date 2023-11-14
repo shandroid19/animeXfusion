@@ -144,6 +144,10 @@ class Fighter extends Sprite {
   }
 
   update(enemy) {
+    const canvas = document.querySelector("canvas");
+    const canvasWidth = canvas.width;
+    console.log(canvasWidth);
+
     if (this.position.x > enemy.position.x) {
       this.draw(false);
     } else {
@@ -157,8 +161,10 @@ class Fighter extends Sprite {
     else this.attackBox.position.x = this.position.x + 60 - this.width;
 
     this.attackBox.position.y = this.position.y + this.attackBox.offset.y;
-
-    if (this.position.x + this.velocity.x !== 0)
+    if (
+      this.position.x + this.velocity.x >= 0 &&
+      this.position.x + this.velocity.x <= canvasWidth - 100
+    )
       this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
 
