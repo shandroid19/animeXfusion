@@ -83,6 +83,7 @@ class Fighter extends Sprite {
     this.color = color;
     this.isAttacking = false;
     this.health = 100;
+    this.energy = 0;
     this.framesCurrent = 0;
     this.framesElapsed = 0;
     this.framesHold = 25;
@@ -157,7 +158,8 @@ class Fighter extends Sprite {
 
     this.attackBox.position.y = this.position.y + this.attackBox.offset.y;
 
-    this.position.x += this.velocity.x;
+    if (this.position.x + this.velocity.x !== 0)
+      this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
 
     if (this.position.y + this.height + this.velocity.y >= canvas.height - 20)

@@ -108,7 +108,10 @@ function determineWinner({ player, enemy }) {
 function decreaseTimer() {
   if (timer) {
     setTimeout(decreaseTimer, 1000);
-
+    if (player.energy < 100) player.energy += 5;
+    if (enemy.energy < 100) enemy.energy += 5;
+    document.querySelector("#playerEnergy").style.width = enemy.energy + "%";
+    document.querySelector("#enemyEnergy").style.width = enemy.energy + "%";
     timer--;
     document.querySelector("#timer").innerHTML = timer;
   }
