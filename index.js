@@ -14,12 +14,18 @@ const background = new Sprite({
   imageSrc: "./bg.webp",
 });
 
+const playerAttack2 = new Attack({
+  position: { x: 200, y: 0 },
+  imageSrc: "./sprites/zoro/attack2FX.png",
+  scale: 2.4,
+  framesMax: 4,
+});
+
 const player = new Fighter({
   position: { x: 200, y: 0 },
   velocity: { x: 0, y: 0 },
   color: "blue",
   offset: { x: 0, y: 0 },
-  imageSrc: "./sprites/luffy/idle.png",
   framesMax: 7,
   scale: 2.4,
   sprites: {
@@ -38,6 +44,14 @@ const player = new Fighter({
     attack1: {
       imageSrc: "./sprites/zoro/attack1.png",
       framesMax: 4,
+    },
+    attack2: {
+      imageSrc: "./sprites/zoro/attack2.png",
+      framesMax: 4,
+    },
+    fall: {
+      imageSrc: "./sprites/luffy/fall.png",
+      framesMax: 10,
     },
   },
 });
@@ -69,6 +83,16 @@ const enemy = new Fighter({
       imageSrc: "./sprites/luffy/attack1.png",
       framesMax: 3.3,
     },
+
+    attack2: {
+      imageSrc: "./sprites/luffy/attack1.png",
+      framesMax: 3.3,
+    },
+
+    fall: {
+      imageSrc: "./sprites/luffy/fall.png",
+      framesMax: 10,
+    },
   },
 });
 
@@ -93,6 +117,15 @@ function rectangularCollision({ rectangle1, rectangle2 }) {
   );
 }
 
+function attackCollision({ rectangle1, rectangle2 }) {
+  return (
+    rectangle1.position.x + rectangle1.width >= rectangle2.position.x &&
+    rectangle1.position.x <= rectangle2.position.x + rectangle2.width &&
+    rectangle1.position.y + rectangle1.height >= rectangle2.position.y &&
+    rectangle1.position.y <= rectangle2.position.y + rectangle2.height
+  );
+}
+
 function determineWinner({ player, enemy }) {
   document.querySelector("#timer").innerHTML = 0;
   timer = 0;
@@ -108,9 +141,9 @@ function determineWinner({ player, enemy }) {
 function decreaseTimer() {
   if (timer) {
     setTimeout(decreaseTimer, 1000);
-    if (player.energy < 100) player.energy += 5;
-    if (enemy.energy < 100) enemy.energy += 5;
-    document.querySelector("#playerEnergy").style.width = enemy.energy + "%";
+    if (player.energy < 100) player.energy += 10;
+    if (enemy.energy < 100) enemy.energy += 10;
+    document.querySelector("#playerEnergy").style.width = player.energy + "%";
     document.querySelector("#enemyEnergy").style.width = enemy.energy + "%";
     timer--;
     document.querySelector("#timer").innerHTML = timer;
@@ -132,6 +165,8 @@ function animate() {
 
   player.update(enemy);
   enemy.update(player);
+
+  if (playerAttack2.launched) playerAttack2.update(enemy);
 
   player.velocity.x = 0;
   enemy.velocity.x = 0;
@@ -165,11 +200,21 @@ function animate() {
 
   //detect for collision
   if (
+    attackCollision({ rectangle1: enemy, rectangle2: playerAttack2 }) &&
+    playerAttack2.launched
+  ) {
+    playerAttack2.launched = false;
+    enemy.switchSprite("fall");
+    enemy.health -= 20;
+    document.querySelector("#enemyHealth").style.width = enemy.health + "%";
+  }
+
+  if (
     rectangularCollision({ rectangle1: player, rectangle2: enemy }) &&
     player.isAttacking
   ) {
     player.isAttacking = false;
-    enemy.health -= 20;
+    enemy.health -= 5;
     document.querySelector("#enemyHealth").style.width = enemy.health + "%";
   }
 
@@ -177,7 +222,7 @@ function animate() {
     rectangularCollision({ rectangle1: enemy, rectangle2: player }) &&
     enemy.isAttacking
   ) {
-    player.health -= 20;
+    player.health -= 5;
     document.querySelector("#playerHealth").style.width = player.health + "%";
     enemy.isAttacking = false;
   }
@@ -221,11 +266,21 @@ window.addEventListener("keydown", (e) => {
       break;
 
     case " ":
-      player.attack();
+      player.attack1();
       break;
 
-    case "Insert":
-      enemy.attack();
+    case "q":
+      if (player.energy == 100) {
+        player.attack2(enemy);
+        playerAttack2.release(player.position);
+        player.energy = 0;
+        document.querySelector("#playerEnergy").style.width =
+          player.energy + "%";
+      }
+      break;
+
+    case "Control":
+      enemy.attack1();
       break;
   }
 });

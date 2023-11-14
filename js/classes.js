@@ -50,6 +50,50 @@ class Sprite {
   }
 }
 
+class Attack extends Sprite {
+  constructor({ position, imageSrc, scale = 1, framesMax = 1 }) {
+    super({
+      imageSrc,
+      scale,
+      framesMax,
+    });
+    this.position = position;
+    this.launched = false;
+    this.velocity = { x: 5, y: 0 };
+    this.imageSrc = imageSrc;
+    this.scale = scale;
+    this.framesMax = framesMax;
+    this.height = 150;
+    this.width = 50;
+  }
+
+  release(position) {
+    this.position = { x: position.x + 20, y: position.y + 20 };
+    this.launched = true;
+  }
+
+  update(enemy) {
+    const canvas = document.querySelector("canvas");
+    const canvasWidth = canvas.width;
+
+    this.draw(true);
+    if (this.position.x > enemy.position.x) {
+      this.draw(false);
+    } else {
+      this.draw(true);
+    }
+    this.animateFrames();
+
+    if (
+      this.position.x + this.velocity.x >= 0 &&
+      this.position.x + this.velocity.x <= canvasWidth - 100
+    )
+      this.position.x += this.velocity.x;
+    else this.launched = false;
+    this.position.y += this.velocity.y;
+  }
+}
+
 class Fighter extends Sprite {
   constructor({
     position,
@@ -96,7 +140,7 @@ class Fighter extends Sprite {
     }
   }
 
-  attack() {
+  attack1() {
     this.switchSprite("attack1");
     this.isAttacking = true;
     setTimeout(() => {
@@ -104,10 +148,26 @@ class Fighter extends Sprite {
     }, 200);
   }
 
+  attack2(enemy) {
+    this.switchSprite("attack2");
+  }
+
   switchSprite(sprite) {
     if (
       this.image === this.sprites.attack1.image &&
       this.framesCurrent < this.sprites.attack1.framesMax - 1
+    )
+      return;
+
+    if (
+      this.image === this.sprites.attack2.image &&
+      this.framesCurrent < this.sprites.attack2.framesMax - 1
+    )
+      return;
+
+    if (
+      this.image === this.sprites.fall.image &&
+      this.framesCurrent < this.sprites.fall.framesMax - 1
     )
       return;
 
@@ -140,13 +200,28 @@ class Fighter extends Sprite {
           this.framesCurrent = 0;
         }
         break;
+
+      case "attack2":
+        if (this.image !== this.sprites.attack2.image) {
+          this.image = this.sprites.attack2.image;
+          this.framesMax = this.sprites.attack2.framesMax;
+          this.framesCurrent = 0;
+        }
+        break;
+
+      case "fall":
+        if (this.image !== this.sprites.fall.image) {
+          this.image = this.sprites.fall.image;
+          this.framesMax = this.sprites.fall.framesMax;
+          this.framesCurrent = 0;
+        }
+        break;
     }
   }
 
   update(enemy) {
     const canvas = document.querySelector("canvas");
     const canvasWidth = canvas.width;
-    console.log(canvasWidth);
 
     if (this.position.x > enemy.position.x) {
       this.draw(false);
