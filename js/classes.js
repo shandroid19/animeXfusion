@@ -51,7 +51,7 @@ class Sprite {
 }
 
 class Attack extends Sprite {
-  constructor({ position, imageSrc, scale = 1, framesMax = 1 }) {
+  constructor({ position, imageSrc, scale = 1, framesMax = 1, velocity }) {
     super({
       imageSrc,
       scale,
@@ -59,7 +59,7 @@ class Attack extends Sprite {
     });
     this.position = position;
     this.launched = false;
-    this.velocity = { x: 5, y: 0 };
+    this.velocity = velocity;
     this.imageSrc = imageSrc;
     this.scale = scale;
     this.framesMax = framesMax;
@@ -68,7 +68,7 @@ class Attack extends Sprite {
   }
 
   release(position) {
-    this.position = { x: position.x + 20, y: position.y + 20 };
+    this.position = { x: position.x, y: position.y };
     this.launched = true;
   }
 
@@ -148,8 +148,13 @@ class Fighter extends Sprite {
     }, 200);
   }
 
-  attack2(enemy) {
+  attack2() {
     this.switchSprite("attack2");
+  }
+
+  takeHit() {
+    this.switchSprite("takeHit");
+    this.health -= 5;
   }
 
   switchSprite(sprite) {
@@ -168,6 +173,12 @@ class Fighter extends Sprite {
     if (
       this.image === this.sprites.fall.image &&
       this.framesCurrent < this.sprites.fall.framesMax - 1
+    )
+      return;
+
+    if (
+      this.image === this.sprites.takeHit.image &&
+      this.framesCurrent < this.sprites.takeHit.framesMax - 1
     )
       return;
 
@@ -213,6 +224,14 @@ class Fighter extends Sprite {
         if (this.image !== this.sprites.fall.image) {
           this.image = this.sprites.fall.image;
           this.framesMax = this.sprites.fall.framesMax;
+          this.framesCurrent = 0;
+        }
+        break;
+
+      case "takeHit":
+        if (this.image !== this.sprites.takeHit.image) {
+          this.image = this.sprites.takeHit.image;
+          this.framesMax = this.sprites.takeHit.framesMax;
           this.framesCurrent = 0;
         }
         break;

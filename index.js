@@ -19,6 +19,15 @@ const playerAttack2 = new Attack({
   imageSrc: "./sprites/zoro/attack2FX.png",
   scale: 2.4,
   framesMax: 4,
+  velocity: { x: 5, y: 0 },
+});
+
+const enemyAttack2 = new Attack({
+  position: { x: 800, y: 100 },
+  imageSrc: "./sprites/luffy/attack2FX.png",
+  scale: 4,
+  framesMax: 1,
+  velocity: { x: -5, y: 0 },
 });
 
 const player = new Fighter({
@@ -49,8 +58,12 @@ const player = new Fighter({
       imageSrc: "./sprites/zoro/attack2.png",
       framesMax: 4,
     },
+    takeHit: {
+      imageSrc: "./sprites/zoro/takeHit.png",
+      framesMax: 3,
+    },
     fall: {
-      imageSrc: "./sprites/luffy/fall.png",
+      imageSrc: "./sprites/zoro/fall.png",
       framesMax: 10,
     },
   },
@@ -88,7 +101,10 @@ const enemy = new Fighter({
       imageSrc: "./sprites/luffy/attack1.png",
       framesMax: 3.3,
     },
-
+    takeHit: {
+      imageSrc: "./sprites/luffy/takeHit.png",
+      framesMax: 3,
+    },
     fall: {
       imageSrc: "./sprites/luffy/fall.png",
       framesMax: 10,
@@ -105,55 +121,6 @@ const keys = {
   enemyRight: { pressed: false },
 };
 
-function rectangularCollision({ rectangle1, rectangle2 }) {
-  return (
-    rectangle1.attackBox.position.x + rectangle1.attackBox.width >=
-      rectangle2.position.x &&
-    rectangle1.attackBox.position.x <=
-      rectangle2.position.x + rectangle2.width &&
-    rectangle1.attackBox.position.y + rectangle1.attackBox.height >=
-      rectangle2.position.y &&
-    rectangle1.attackBox.position.y <= rectangle2.position.y + rectangle2.height
-  );
-}
-
-function attackCollision({ rectangle1, rectangle2 }) {
-  return (
-    rectangle1.position.x + rectangle1.width >= rectangle2.position.x &&
-    rectangle1.position.x <= rectangle2.position.x + rectangle2.width &&
-    rectangle1.position.y + rectangle1.height >= rectangle2.position.y &&
-    rectangle1.position.y <= rectangle2.position.y + rectangle2.height
-  );
-}
-
-function determineWinner({ player, enemy }) {
-  document.querySelector("#timer").innerHTML = 0;
-  timer = 0;
-
-  if (player.health > enemy.health)
-    document.querySelector("#result").innerHTML = "Player 1 Wins!";
-  else if (player.health < enemy.health)
-    document.querySelector("#result").innerHTML = "Player 2 Wins!";
-  else document.querySelector("#result").innerHTML = "Draw!";
-  document.querySelector("#result").style.display = "flex";
-}
-
-function decreaseTimer() {
-  if (timer) {
-    setTimeout(decreaseTimer, 1000);
-    if (player.energy < 100) player.energy += 10;
-    if (enemy.energy < 100) enemy.energy += 10;
-    document.querySelector("#playerEnergy").style.width = player.energy + "%";
-    document.querySelector("#enemyEnergy").style.width = enemy.energy + "%";
-    timer--;
-    document.querySelector("#timer").innerHTML = timer;
-  }
-
-  if (timer === 0) {
-    determineWinner({ player, enemy });
-  }
-}
-
 decreaseTimer();
 
 function animate() {
@@ -167,6 +134,7 @@ function animate() {
   enemy.update(player);
 
   if (playerAttack2.launched) playerAttack2.update(enemy);
+  if (enemyAttack2.launched) enemyAttack2.update(player);
 
   player.velocity.x = 0;
   enemy.velocity.x = 0;
@@ -198,7 +166,7 @@ function animate() {
     enemy.switchSprite("jump");
   }
 
-  //detect for collision
+  //detect for attack collision
   if (
     attackCollision({ rectangle1: enemy, rectangle2: playerAttack2 }) &&
     playerAttack2.launched
@@ -210,11 +178,23 @@ function animate() {
   }
 
   if (
+    attackCollision({ rectangle1: player, rectangle2: enemyAttack2 }) &&
+    enemyAttack2.launched
+  ) {
+    enemyAttack2.launched = false;
+    player.switchSprite("fall");
+    player.health -= 20;
+    document.querySelector("#playerHealth").style.width = player.health + "%";
+  }
+
+  //detect for player collision
+
+  if (
     rectangularCollision({ rectangle1: player, rectangle2: enemy }) &&
     player.isAttacking
   ) {
     player.isAttacking = false;
-    enemy.health -= 5;
+    enemy.takeHit();
     document.querySelector("#enemyHealth").style.width = enemy.health + "%";
   }
 
@@ -222,7 +202,7 @@ function animate() {
     rectangularCollision({ rectangle1: enemy, rectangle2: player }) &&
     enemy.isAttacking
   ) {
-    player.health -= 5;
+    player.takeHit();
     document.querySelector("#playerHealth").style.width = player.health + "%";
     enemy.isAttacking = false;
   }
@@ -270,13 +250,11 @@ window.addEventListener("keydown", (e) => {
       break;
 
     case "q":
-      if (player.energy == 100) {
-        player.attack2(enemy);
-        playerAttack2.release(player.position);
-        player.energy = 0;
-        document.querySelector("#playerEnergy").style.width =
-          player.energy + "%";
-      }
+      executeAttack2(player, playerAttack2, "#playerEnergy");
+      break;
+
+    case "0":
+      executeAttack2(enemy, enemyAttack2, "#enemyEnergy");
       break;
 
     case "Control":
