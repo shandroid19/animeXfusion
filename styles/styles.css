@@ -1,0 +1,145 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.gameContainer {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  align-items: center;
+  justify-content: center;
+}
+
+.statusBar {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+}
+
+.statusBarContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: flex-start;
+}
+
+.healthBar {
+  background: linear-gradient(
+    rgb(241, 41, 41),
+    rgb(235, 129, 129),
+    rgb(241, 41, 41)
+  );
+  height: 30px;
+  width: 100%;
+}
+
+.healthLevel {
+  border: solid 0.1rem white;
+  position: absolute;
+  background: linear-gradient(
+    rgb(41, 241, 41),
+    rgb(203, 237, 203),
+    rgb(41, 241, 41)
+  );
+  top: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+.energyBarBox {
+  position: relative;
+  height: 30px;
+  width: 50%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.energyBar {
+  background: linear-gradient(
+    rgb(51, 41, 241),
+    rgb(129, 154, 235),
+    rgb(51, 41, 241)
+  );
+  height: 15px;
+  width: 100%;
+}
+
+.energyLevel {
+  border: solid 0.1rem white;
+  position: absolute;
+  background: linear-gradient(
+    rgb(231, 241, 41),
+    rgb(244, 250, 173),
+    rgb(231, 241, 41)
+  );
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  height: 15px;
+}
+
+.energyBarContainer {
+  position: relative;
+  height: 30px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.health {
+  background-color: yellow;
+}
+
+.timer {
+  background-color: rgb(0, 217, 255);
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 50px;
+  font-weight: bold;
+  width: 100px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border-style: solid;
+  border-color: white;
+  border-width: 1rem;
+}
+
+.postGameContainer {
+  position: absolute;
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  font-size: 50px;
+  flex-direction: column;
+}
+
+#result {
+  margin: 3rem;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.btn {
+  padding: 1rem;
+  color: white;
+  border-radius: 1rem;
+  box-shadow: 0rem 0rem 5rem 0.5rem black;
+  margin: 2rem;
+}
+
+.text-center {
+  text-align: center;
+}

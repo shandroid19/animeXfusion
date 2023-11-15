@@ -11,7 +11,7 @@ let timer = 60;
 
 const background = new Sprite({
   position: { x: 0, y: 0 },
-  imageSrc: "./bg.webp",
+  imageSrc: "assets/bg.webp",
 });
 
 const playerAttack2 = new Attack({
@@ -246,19 +246,21 @@ window.addEventListener("keydown", (e) => {
       break;
 
     case " ":
-      player.attack1();
+      if (player.health > 0 && enemy.health > 0) player.attack1();
       break;
 
     case "q":
-      executeAttack2(player, playerAttack2, "#playerEnergy");
+      if (player.health > 0 && enemy.health > 0)
+        executeAttack2(player, playerAttack2, "#playerEnergy");
       break;
 
     case "0":
-      executeAttack2(enemy, enemyAttack2, "#enemyEnergy");
+      if (player.health > 0 && enemy.health > 0)
+        executeAttack2(enemy, enemyAttack2, "#enemyEnergy");
       break;
 
     case "Control":
-      enemy.attack1();
+      if (player.health > 0 && enemy.health > 0) enemy.attack1();
       break;
   }
 });

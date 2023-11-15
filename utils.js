@@ -45,6 +45,18 @@ function determineWinner({ player, enemy }) {
     document.querySelector("#result").innerHTML = "Player 2 Wins!";
   else document.querySelector("#result").innerHTML = "Draw!";
   document.querySelector("#result").style.display = "flex";
+
+  const restartButton =
+    '<button  class="btn"  style="background-color: rgb(59, 123, 102)"  onclick="restart()"  >Restart</button>';
+
+  const quitButton =
+    '<button  class="btn"  style="background-color: rgb(160, 61, 61)"  onclick="quit()"  >Quit</button>';
+  if ($("#menu").children().length == 0) {
+    $("#menu").append(restartButton);
+    $("#menu").append(quitButton);
+  }
+
+  timer = 100;
 }
 
 function executeAttack2(player, attack, selector) {
@@ -54,4 +66,12 @@ function executeAttack2(player, attack, selector) {
     player.energy = 0;
     document.querySelector(selector).style.width = player.energy + "%";
   }
+}
+
+function restart() {
+  location.reload();
+}
+
+function quit() {
+  window.close();
 }
