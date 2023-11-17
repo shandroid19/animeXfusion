@@ -11,60 +11,55 @@ let timer = 60;
 
 const background = new Sprite({
   position: { x: 0, y: 0 },
-  imageSrc: "assets/bg.webp",
+  imageSrc: "../assets/bg.webp",
 });
 
-const playerAttack2 = new Attack({
-  position: { x: 200, y: 0 },
-  imageSrc: "./sprites/zoro/attack2FX.png",
-  scale: 2.4,
-  framesMax: 4,
-  velocity: { x: 5, y: 0 },
-});
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
 
-const enemyAttack2 = new Attack({
-  position: { x: 800, y: 100 },
-  imageSrc: "./sprites/luffy/attack2FX.png",
-  scale: 4,
-  framesMax: 1,
-  velocity: { x: -5, y: 0 },
-});
+const p1 = parseInt(urlParams.get("p1"));
+const p2 = parseInt(urlParams.get("p2"));
 
 const player = new Fighter({
   position: { x: 200, y: 0 },
   velocity: { x: 0, y: 0 },
-  color: "blue",
-  offset: { x: 0, y: 0 },
-  framesMax: 7,
-  scale: 2.4,
+  scale: players[p1].scale,
+  attack2Object: new Attack({
+    position: { x: 200, y: 0 },
+    imageSrc: `../sprites/${players[p1].name}/attack2FX.png`,
+    scale: players[p1].attack.scale,
+    framesMax: players[p1].attack.framesMax,
+    velocity: { x: 5, y: 0 },
+  }),
+
   sprites: {
     idle: {
-      imageSrc: "./sprites/zoro/idle.png",
-      framesMax: 2,
+      imageSrc: `../sprites/${players[p1].name}/idle.png`,
+      framesMax: players[p1].moves[0],
     },
     run: {
-      imageSrc: "./sprites/zoro/run.png",
-      framesMax: 6,
+      imageSrc: `../sprites/${players[p1].name}/run.png`,
+      framesMax: players[p1].moves[1],
     },
     jump: {
-      imageSrc: "./sprites/zoro/jump.png",
-      framesMax: 3,
+      imageSrc: `../sprites/${players[p1].name}/jump.png`,
+      framesMax: players[p1].moves[2],
     },
     attack1: {
-      imageSrc: "./sprites/zoro/attack1.png",
-      framesMax: 4,
+      imageSrc: `../sprites/${players[p1].name}/attack1.png`,
+      framesMax: players[p1].moves[3],
     },
     attack2: {
-      imageSrc: "./sprites/zoro/attack2.png",
-      framesMax: 4,
+      imageSrc: `../sprites/${players[p1].name}/attack2.png`,
+      framesMax: players[p1].moves[4],
     },
     takeHit: {
-      imageSrc: "./sprites/zoro/takeHit.png",
-      framesMax: 3,
+      imageSrc: `../sprites/${players[p1].name}/takeHit.png`,
+      framesMax: players[p1].moves[5],
     },
     fall: {
-      imageSrc: "./sprites/zoro/fall.png",
-      framesMax: 10,
+      imageSrc: `../sprites/${players[p1].name}/fall.png`,
+      framesMax: players[p1].moves[6],
     },
   },
 });
@@ -72,42 +67,43 @@ const player = new Fighter({
 const enemy = new Fighter({
   position: { x: 800, y: 100 },
   velocity: { x: 0, y: 0 },
-  color: "green",
-  offset: { x: 0, y: 0 },
-  imageSrc: "./sprites/zoro/idle.png",
-  framesMax: 7,
-  scale: 3,
-  framesMax: 7,
-  scale: 3,
+  scale: players[p2].scale,
+  attack2Object: new Attack({
+    position: { x: 200, y: 0 },
+    imageSrc: `../sprites/${players[p2].name}/attack2FX.png`,
+    scale: players[p2].attack.scale,
+    framesMax: players[p2].attack.framesMax,
+    velocity: { x: -5, y: 0 },
+  }),
+
   sprites: {
     idle: {
-      imageSrc: "./sprites/luffy/idle.png",
-      framesMax: 7,
+      imageSrc: `../sprites/${players[p2].name}/idle.png`,
+      framesMax: players[p2].moves[0],
     },
     run: {
-      imageSrc: "./sprites/luffy/run.png",
-      framesMax: 5.8,
+      imageSrc: `../sprites/${players[p2].name}/run.png`,
+      framesMax: players[p2].moves[1],
     },
     jump: {
-      imageSrc: "./sprites/luffy/jump.png",
-      framesMax: 6,
+      imageSrc: `../sprites/${players[p2].name}/jump.png`,
+      framesMax: players[p2].moves[2],
     },
     attack1: {
-      imageSrc: "./sprites/luffy/attack1.png",
-      framesMax: 3.3,
+      imageSrc: `../sprites/${players[p2].name}/attack1.png`,
+      framesMax: players[p2].moves[3],
     },
-
     attack2: {
-      imageSrc: "./sprites/luffy/attack1.png",
-      framesMax: 3.3,
+      imageSrc: `../sprites/${players[p2].name}/attack2.png`,
+      framesMax: players[p2].moves[4],
     },
     takeHit: {
-      imageSrc: "./sprites/luffy/takeHit.png",
-      framesMax: 3,
+      imageSrc: `../sprites/${players[p2].name}/takeHit.png`,
+      framesMax: players[p2].moves[5],
     },
     fall: {
-      imageSrc: "./sprites/luffy/fall.png",
-      framesMax: 10,
+      imageSrc: `../sprites/${players[p2].name}/fall.png`,
+      framesMax: players[p2].moves[6],
     },
   },
 });
@@ -133,8 +129,8 @@ function animate() {
   player.update(enemy);
   enemy.update(player);
 
-  if (playerAttack2.launched) playerAttack2.update(enemy);
-  if (enemyAttack2.launched) enemyAttack2.update(player);
+  if (player.attack2Object.launched) player.attack2Object.update(enemy);
+  if (enemy.attack2Object.launched) enemy.attack2Object.update(player);
 
   player.velocity.x = 0;
   enemy.velocity.x = 0;
@@ -168,20 +164,20 @@ function animate() {
 
   //detect for attack collision
   if (
-    attackCollision({ rectangle1: enemy, rectangle2: playerAttack2 }) &&
-    playerAttack2.launched
+    attackCollision({ rectangle1: enemy, rectangle2: player.attack2Object }) &&
+    player.attack2Object.launched
   ) {
-    playerAttack2.launched = false;
+    player.attack2Object.launched = false;
     enemy.switchSprite("fall");
     enemy.health -= 20;
     document.querySelector("#enemyHealth").style.width = enemy.health + "%";
   }
 
   if (
-    attackCollision({ rectangle1: player, rectangle2: enemyAttack2 }) &&
-    enemyAttack2.launched
+    attackCollision({ rectangle1: player, rectangle2: enemy.attack2Object }) &&
+    enemy.attack2Object.launched
   ) {
-    enemyAttack2.launched = false;
+    enemy.attack2Object.launched = false;
     player.switchSprite("fall");
     player.health -= 20;
     document.querySelector("#playerHealth").style.width = player.health + "%";
@@ -251,12 +247,12 @@ window.addEventListener("keydown", (e) => {
 
     case "q":
       if (player.health > 0 && enemy.health > 0)
-        executeAttack2(player, playerAttack2, "#playerEnergy");
+        executeAttack2(player, player.attack2Object, "#playerEnergy");
       break;
 
     case "0":
       if (player.health > 0 && enemy.health > 0)
-        executeAttack2(enemy, enemyAttack2, "#enemyEnergy");
+        executeAttack2(enemy, enemy.attack2Object, "#enemyEnergy");
       break;
 
     case "Control":

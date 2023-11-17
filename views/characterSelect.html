@@ -5,17 +5,21 @@
     crossorigin="anonymous"
     referrerpolicy="no-referrer"
   ></script>
+  <script>
+    $(document).ready(() => getCurrentPlayer());
+  </script>
   <link rel="stylesheet" href="../styles/selectStyles.css" />
   <link rel="stylesheet" href="../styles/styles.css" />
 </head>
-<body onshow="getCurrentPlayer()">
+<body>
   <div class="gameContainer">
     <div class="selectContainer">
       <div class="innerBox">
         <div class="rowContainer">
-          <h2 style="text-align: center; text-transform: uppercase">
-            Select your Character <span id="currentPlayer"></span>
-          </h2>
+          <h1 style="text-align: center; text-transform: uppercase">
+            Select your Character
+            <h1 id="currentPlayer"></span>
+          </h1>
 
           <div class="colContainer">
             <div class="characterBox" onclick="selectCharacter(0)">

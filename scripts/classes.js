@@ -60,7 +60,6 @@ class Attack extends Sprite {
     this.position = position;
     this.launched = false;
     this.velocity = velocity;
-    this.imageSrc = imageSrc;
     this.scale = scale;
     this.framesMax = framesMax;
     this.height = 150;
@@ -99,11 +98,11 @@ class Fighter extends Sprite {
     position,
     velocity,
     color,
-    offset,
     imageSrc,
     scale = 1,
     framesMax = 1,
     sprites,
+    attack2Object,
   }) {
     super({
       position,
@@ -122,7 +121,7 @@ class Fighter extends Sprite {
       },
       width: 100,
       height: 50,
-      offset,
+      offset: { x: 0, y: 0 },
     };
     this.color = color;
     this.isAttacking = false;
@@ -133,6 +132,7 @@ class Fighter extends Sprite {
     this.framesHold = 25;
     this.sprites = sprites;
     this.isJumping = false;
+    this.attack2Object = attack2Object;
 
     for (const sprite in this.sprites) {
       sprites[sprite].image = new Image();
