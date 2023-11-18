@@ -39,11 +39,13 @@ function determineWinner({ player, enemy }) {
   document.querySelector("#timer").innerHTML = 0;
   timer = 0;
 
+  $("#overlay").addClass("overlay");
+
   if (player.health > enemy.health)
     document.querySelector("#result").innerHTML = "Player 1 Wins!";
   else if (player.health < enemy.health)
     document.querySelector("#result").innerHTML = "Player 2 Wins!";
-  else document.querySelector("#result").innerHTML = "Draw!";
+  else document.querySelector("#result").innerHTML = "Draw game!";
   document.querySelector("#result").style.display = "flex";
 
   const restartButton =

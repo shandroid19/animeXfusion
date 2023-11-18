@@ -120,10 +120,26 @@
   width: 100%;
   font-size: 50px;
   flex-direction: column;
+  z-index: 100;
+}
+
+.overlay {
+  position: absolute;
+  height: 100%;
+  z-index: 50;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+#gameBox {
+  position: relative;
+  display: inline-block;
 }
 
 #result {
   margin: 3rem;
+  color: white;
+  z-index: 100;
 }
 
 .container {

@@ -7,7 +7,7 @@ canvas.height = 576;
 c.fillRect(0, 0, canvas.width, canvas.height);
 
 const gravity = 0.1;
-let timer = 60;
+let timer = 100;
 
 const background = new Sprite({
   position: { x: 0, y: 0 },
