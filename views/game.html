@@ -1,0 +1,64 @@
+<head>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+    integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
+  <link rel="stylesheet" href="../styles/styles.css" />
+</head>
+<body>
+  <div class="gameContainer">
+    <!-- healthbar -->
+    <div id="gameBox">
+      <div class="statusBar">
+        <div class="statusBarContainer" style="align-items: flex-start">
+          <!-- Player Health -->
+
+          <div class="energyBarContainer">
+            <div class="healthBar"></div>
+            <div id="playerHealth" class="healthLevel"></div>
+          </div>
+
+          <!-- Player Energy -->
+
+          <div class="energyBarBox">
+            <div class="energyBar"></div>
+            <div id="playerEnergy" class="energyLevel"></div>
+          </div>
+        </div>
+
+        <!-- Timer -->
+        <div id="timer" class="timer">10</div>
+
+        <div class="statusBarContainer" style="align-items: flex-end">
+          <!-- Enemy Health -->
+
+          <div class="energyBarContainer">
+            <div class="healthBar"></div>
+            <div id="enemyHealth" style="left: 0" class="healthLevel"></div>
+          </div>
+
+          <div class="energyBarBox">
+            <div class="energyBar"></div>
+
+            <!-- Enemy Energy -->
+            <div id="enemyEnergy" class="energyLevel" style="right: 0"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="postGameContainer">
+        <div id="result"></div>
+        <div id="menu" class="container"></div>
+      </div>
+      <div id="overlay"></div>
+      <canvas id="mainCanvas"></canvas>
+    </div>
+  </div>
+  <script src="../scripts/classes.js"></script>
+
+  <script src="../scripts/characters.js"></script>
+  <script src="../scripts/utils.js"></script>
+  <script src="../scripts/index.js"></script>
+</body>

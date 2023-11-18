@@ -1,0 +1,70 @@
+.selectContainer {
+  width: 1024;
+  height: 596;
+  background-image: url(/assets/characterSelectBg.jpg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: antiquewhite;
+  padding: 2rem;
+}
+
+.innerBox {
+  border: solid black 1rem;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.rowContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.colContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.characterBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 1rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: aliceblue;
+  border: solid black 0.2rem;
+  transition: transform 0.2s;
+}
+
+.characterBox:hover {
+  transform: scale(1.2);
+  border: solid yellow 0.2rem;
+}
+
+.characterImage {
+  object-fit: cover;
+  height: 5rem;
+  width: 5rem;
+  border: solid black 0.1rem;
+}
+
+.modeBox {
+  padding: 1rem;
+  border: solid 0.5rem black;
+  border-radius: 1rem;
+  margin: 0.5rem;
+  transition: transform 0.2s;
+}
+
+.modeBox:hover {
+  transform: scale(1.2);
+  border-color: yellow;
+}

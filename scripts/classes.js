@@ -50,16 +50,59 @@ class Sprite {
   }
 }
 
+class Attack extends Sprite {
+  constructor({ position, imageSrc, scale = 1, framesMax = 1, velocity }) {
+    super({
+      imageSrc,
+      scale,
+      framesMax,
+    });
+    this.position = position;
+    this.launched = false;
+    this.velocity = velocity;
+    this.scale = scale;
+    this.framesMax = framesMax;
+    this.height = 150;
+    this.width = 50;
+  }
+
+  release(position) {
+    this.position = { x: position.x, y: position.y };
+    this.launched = true;
+  }
+
+  update(enemy) {
+    const canvas = document.querySelector("canvas");
+    const canvasWidth = canvas.width;
+
+    this.draw(true);
+    if (this.position.x > enemy.position.x) {
+      this.draw(false);
+    } else {
+      this.draw(true);
+    }
+    this.animateFrames();
+
+    if (
+      this.position.x + this.velocity.x >= 0 &&
+      this.position.x + this.velocity.x <= canvasWidth - 100
+    )
+      this.position.x += this.velocity.x;
+    else this.launched = false;
+    this.position.y += this.velocity.y;
+  }
+}
+
 class Fighter extends Sprite {
   constructor({
     position,
     velocity,
     color,
-    offset,
     imageSrc,
     scale = 1,
     framesMax = 1,
     sprites,
+    attack2Object,
   }) {
     super({
       position,
@@ -78,16 +121,18 @@ class Fighter extends Sprite {
       },
       width: 100,
       height: 50,
-      offset,
+      offset: { x: 0, y: 0 },
     };
     this.color = color;
     this.isAttacking = false;
     this.health = 100;
+    this.energy = 0;
     this.framesCurrent = 0;
     this.framesElapsed = 0;
     this.framesHold = 25;
     this.sprites = sprites;
     this.isJumping = false;
+    this.attack2Object = attack2Object;
 
     for (const sprite in this.sprites) {
       sprites[sprite].image = new Image();
@@ -95,7 +140,7 @@ class Fighter extends Sprite {
     }
   }
 
-  attack() {
+  attack1() {
     this.switchSprite("attack1");
     this.isAttacking = true;
     setTimeout(() => {
@@ -103,10 +148,37 @@ class Fighter extends Sprite {
     }, 200);
   }
 
+  attack2() {
+    this.switchSprite("attack2");
+  }
+
+  takeHit() {
+    this.switchSprite("takeHit");
+    this.health -= 5;
+  }
+
   switchSprite(sprite) {
     if (
       this.image === this.sprites.attack1.image &&
       this.framesCurrent < this.sprites.attack1.framesMax - 1
+    )
+      return;
+
+    if (
+      this.image === this.sprites.attack2.image &&
+      this.framesCurrent < this.sprites.attack2.framesMax - 1
+    )
+      return;
+
+    if (
+      this.image === this.sprites.fall.image &&
+      this.framesCurrent < this.sprites.fall.framesMax - 1
+    )
+      return;
+
+    if (
+      this.image === this.sprites.takeHit.image &&
+      this.framesCurrent < this.sprites.takeHit.framesMax - 1
     )
       return;
 
@@ -139,10 +211,37 @@ class Fighter extends Sprite {
           this.framesCurrent = 0;
         }
         break;
+
+      case "attack2":
+        if (this.image !== this.sprites.attack2.image) {
+          this.image = this.sprites.attack2.image;
+          this.framesMax = this.sprites.attack2.framesMax;
+          this.framesCurrent = 0;
+        }
+        break;
+
+      case "fall":
+        if (this.image !== this.sprites.fall.image) {
+          this.image = this.sprites.fall.image;
+          this.framesMax = this.sprites.fall.framesMax;
+          this.framesCurrent = 0;
+        }
+        break;
+
+      case "takeHit":
+        if (this.image !== this.sprites.takeHit.image) {
+          this.image = this.sprites.takeHit.image;
+          this.framesMax = this.sprites.takeHit.framesMax;
+          this.framesCurrent = 0;
+        }
+        break;
     }
   }
 
   update(enemy) {
+    const canvas = document.querySelector("canvas");
+    const canvasWidth = canvas.width;
+
     if (this.position.x > enemy.position.x) {
       this.draw(false);
     } else {
@@ -156,8 +255,11 @@ class Fighter extends Sprite {
     else this.attackBox.position.x = this.position.x + 60 - this.width;
 
     this.attackBox.position.y = this.position.y + this.attackBox.offset.y;
-
-    this.position.x += this.velocity.x;
+    if (
+      this.position.x + this.velocity.x >= 0 &&
+      this.position.x + this.velocity.x <= canvasWidth - 100
+    )
+      this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
 
     if (this.position.y + this.height + this.velocity.y >= canvas.height - 20)

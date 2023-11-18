@@ -1,131 +1,37 @@
 <head>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-  </style>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+    integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
+  <link rel="stylesheet" href="styles/selectStyles.css" />
+  <link rel="stylesheet" href="styles/styles.css" />
 </head>
 <body>
-  <!-- healthbar -->
-  <div style="position: relative; display: inline-block">
-    <div
-      style="
-        position: absolute;
-        display: flex;
-        align-items: center;
-        width: 100%;
-        padding: 20px;
-      "
-    >
-      <!-- Player Health -->
+  <div class="gameContainer">
+    <div class="selectContainer">
+      <div class="innerBox">
+        <div class="rowContainer">
+          <h1 style="text-align: center; text-transform: uppercase">
+            Select Your Mode
+          </h1>
 
-      <div
-        style="
-          position: relative;
-          height: 30px;
-          width: 100%;
-          display: flex;
-          justify-content: flex-end;
-        "
-      >
-        <div
-          style="
-            background: linear-gradient(
-              rgb(241, 41, 41),
-              rgb(235, 129, 129),
-              rgb(241, 41, 41)
-            );
-            height: 30px;
-            width: 100%;
-          "
-        ></div>
-        <div
-          id="playerHealth"
-          style="
-            border: solid 0.1rem white;
-            position: absolute;
-            background: linear-gradient(
-              rgb(41, 241, 41),
-              rgb(203, 237, 203),
-              rgb(41, 241, 41)
-            );
-            /* background-image: linear-gradient(green, rgb(164, 245, 164), green); */
-            /* background: rgb(0, 255, 98); */
-            top: 0;
-            bottom: 0;
-            right: 0;
-            width: 100%;
-          "
-        ></div>
-      </div>
+          <div class="modeBox" style="background-color: rgb(99, 211, 175);">
+            <a href="views/characterSelect.html?online=1"><h2>Online</h2></a>
+          </div>
 
-      <!-- Timer -->
-      <div
-        id="timer"
-        style="
-          background-color: rgb(0, 217, 255);
-          height: 100px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          font-size: 50px;
-          font-weight: bold;
-          width: 100px;
-          flex-shrink: 0;
-          border-radius: 50%;
-          border-style: solid;
-          border-color: white;
-          border-width: 1rem;
-        "
-      >
-        10
-      </div>
+          <div class="modeBox" style="background-color: rgb(211, 99, 99);">
+            <a href="views/characterSelect.html?online=0"><h2>Offline</h2></a>
+          </div>
 
-      <!-- Enemy Health -->
-      <div style="position: relative; height: 30px; width: 100%">
-        <div
-          style="
-            background: linear-gradient(
-              rgb(241, 41, 41),
-              rgb(235, 129, 129),
-              rgb(241, 41, 41)
-            );
-            height: 30px;
-          "
-        ></div>
-        <div
-          id="enemyHealth"
-          style="
-            border: solid 0.1rem white;
-            position: absolute;
-            background: linear-gradient(
-              rgb(41, 241, 41),
-              rgb(203, 237, 203),
-              rgb(41, 241, 41)
-            );
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-          "
-        ></div>
+
+          </div>
+        </div>
       </div>
     </div>
-    <div
-      id="result"
-      style="
-        position: absolute;
-        color: white;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
-        width: 100%;
-        font-size: 50px;
-      "
-    ></div>
-    <canvas></canvas>
   </div>
-  <script src="js/classes.js"></script>
-  <script src="index.js"></script>
+  <script src="/scripts/utils.js"></script>
+  <script src="/scripts/classes.js"></script>
+  <script src="/scripts/index.js"></script>
 </body>
