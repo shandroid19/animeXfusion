@@ -17,14 +17,14 @@ const players = [
   {
     name: "zoro",
     scale: 1,
-    moves: [4, 6, 8, 4, 4, 4, 7],
+    moves: [4, 6, 8, 4, 6, 4, 7],
     attack: { scale: 2.4, framesMax: 4 },
     offset: [
       { x: 0, y: -40 },
       { x: 0, y: -30 },
       { x: 0, y: -30 },
       { x: 0, y: -60 },
-      { x: 0, y: -55 },
+      { x: 0, y: -80 },
       { x: 0, y: -30 },
       { x: 0, y: -20 },
     ],

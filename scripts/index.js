@@ -135,6 +135,7 @@ const keys = {
 };
 
 decreaseTimer();
+restoreEnergy();
 
 function animate() {
   window.requestAnimationFrame(animate);

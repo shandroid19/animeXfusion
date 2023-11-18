@@ -1,16 +1,23 @@
 function decreaseTimer() {
   if (timer) {
     setTimeout(decreaseTimer, 1000);
-    if (player.energy < 100) player.energy += 10;
-    if (enemy.energy < 100) enemy.energy += 10;
-    document.querySelector("#playerEnergy").style.width = player.energy + "%";
-    document.querySelector("#enemyEnergy").style.width = enemy.energy + "%";
+
     timer--;
     document.querySelector("#timer").innerHTML = timer;
   }
 
   if (timer === 0) {
     determineWinner({ player, enemy });
+  }
+}
+
+function restoreEnergy() {
+  setTimeout(restoreEnergy, 10);
+  if (timer) {
+    if (player.energy < 100) player.energy += 0.1;
+    if (enemy.energy < 100) enemy.energy += 0.1;
+    document.querySelector("#playerEnergy").style.width = player.energy + "%";
+    document.querySelector("#enemyEnergy").style.width = enemy.energy + "%";
   }
 }
 
@@ -62,7 +69,7 @@ function determineWinner({ player, enemy }) {
 }
 
 function executeAttack2(player, attack, selector) {
-  if (player.energy == 100) {
+  if (parseInt(player.energy) == 100) {
     player.attack2(enemy);
     attack.release(player.position);
     player.energy = 0;

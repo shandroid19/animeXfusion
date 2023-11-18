@@ -271,7 +271,16 @@ class Fighter extends Sprite {
     const canvas = document.querySelector("canvas");
     const canvasWidth = canvas.width;
 
-    if (this.position.x > enemy.position.x) {
+    if (this.image === this.sprites.run.image) {
+      if (
+        (this.position.x > enemy.position.x && this.velocity.x <= 0) ||
+        (this.position.x < enemy.position.x && this.velocity.x < 0)
+      ) {
+        this.draw(false);
+      } else {
+        this.draw(true);
+      }
+    } else if (this.position.x > enemy.position.x) {
       this.draw(false);
     } else {
       this.draw(true);
