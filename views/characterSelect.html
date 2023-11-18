@@ -5,6 +5,7 @@
     crossorigin="anonymous"
     referrerpolicy="no-referrer"
   ></script>
+  <script src="../scripts/characters.js"></script>
   <script>
     $(document).ready(() => getCurrentPlayer());
   </script>
@@ -21,21 +22,8 @@
             <h1 id="currentPlayer"></span>
           </h1>
 
-          <div class="colContainer">
-            <div class="characterBox" onclick="selectCharacter(0)">
-              <img
-                class="characterImage"
-                src="https://i.pinimg.com/originals/e4/88/7e/e4887edb34a20c68899d0a6753267d9a.jpg"
-              />
-              <b class="text-center">Luffy</b>
-            </div>
-            <div class="characterBox" onclick="selectCharacter(1)">
-              <img
-                class="characterImage"
-                src="https://wrapime.com/wp-content/uploads/2023/10/10-choses-savoir-roronoa-zoro-boutique-one-piece-11-1200x675.jpeg"
-              />
-              <b class="text-center">Zoro</b>
-            </div>
+          <div id="allCharacters" class="colContainer">
+            
           </div>
         </div>
       </div>

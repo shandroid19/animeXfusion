@@ -23,3 +23,11 @@ function selectCharacter(id) {
     }
   }
 }
+
+$(document).ready(() => {
+  players.map((player, id) => {
+    $("#allCharacters").append(
+      `<div class="characterBox" onclick="selectCharacter(${id})"><img class="characterImage"src="../sprites/${player.name}/portrait.jpg"/> <b class="text-center">${player.name}</b></div>`
+    );
+  });
+});

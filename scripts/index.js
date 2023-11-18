@@ -11,7 +11,7 @@ let timer = 100;
 
 const background = new Sprite({
   position: { x: 0, y: 0 },
-  imageSrc: "../assets/bg.webp",
+  imageSrc: "../assets/bg.jpg",
 });
 
 const queryString = window.location.search;
@@ -24,42 +24,50 @@ const player = new Fighter({
   position: { x: 200, y: 0 },
   velocity: { x: 0, y: 0 },
   scale: players[p1].scale,
+  offset: players[p1].offset[0],
   attack2Object: new Attack({
     position: { x: 200, y: 0 },
     imageSrc: `../sprites/${players[p1].name}/attack2FX.png`,
     scale: players[p1].attack.scale,
     framesMax: players[p1].attack.framesMax,
-    velocity: { x: 5, y: 0 },
+    velocity: { x: -5, y: 0 },
   }),
 
   sprites: {
     idle: {
       imageSrc: `../sprites/${players[p1].name}/idle.png`,
       framesMax: players[p1].moves[0],
+      offset: players[p1].offset[0],
     },
     run: {
       imageSrc: `../sprites/${players[p1].name}/run.png`,
       framesMax: players[p1].moves[1],
+      offset: players[p1].offset[1],
     },
     jump: {
       imageSrc: `../sprites/${players[p1].name}/jump.png`,
       framesMax: players[p1].moves[2],
+      offset: players[p1].offset[2],
     },
     attack1: {
       imageSrc: `../sprites/${players[p1].name}/attack1.png`,
       framesMax: players[p1].moves[3],
+      offset: players[p1].offset[3],
     },
     attack2: {
       imageSrc: `../sprites/${players[p1].name}/attack2.png`,
       framesMax: players[p1].moves[4],
+      offset: players[p1].offset[4],
     },
     takeHit: {
-      imageSrc: `../sprites/${players[p1].name}/takeHit.png`,
+      imageSrc: `../sprites/${players[p1].name}/takeHit1.png`,
       framesMax: players[p1].moves[5],
+      offset: players[p1].offset[5],
     },
     fall: {
       imageSrc: `../sprites/${players[p1].name}/fall.png`,
       framesMax: players[p1].moves[6],
+      offset: players[p1].offset[6],
     },
   },
 });
@@ -68,6 +76,8 @@ const enemy = new Fighter({
   position: { x: 800, y: 100 },
   velocity: { x: 0, y: 0 },
   scale: players[p2].scale,
+  offset: players[p2].offset[0],
+
   attack2Object: new Attack({
     position: { x: 200, y: 0 },
     imageSrc: `../sprites/${players[p2].name}/attack2FX.png`,
@@ -80,30 +90,37 @@ const enemy = new Fighter({
     idle: {
       imageSrc: `../sprites/${players[p2].name}/idle.png`,
       framesMax: players[p2].moves[0],
+      offset: players[p2].offset[0],
     },
     run: {
       imageSrc: `../sprites/${players[p2].name}/run.png`,
       framesMax: players[p2].moves[1],
+      offset: players[p2].offset[1],
     },
     jump: {
       imageSrc: `../sprites/${players[p2].name}/jump.png`,
       framesMax: players[p2].moves[2],
+      offset: players[p2].offset[2],
     },
     attack1: {
       imageSrc: `../sprites/${players[p2].name}/attack1.png`,
       framesMax: players[p2].moves[3],
+      offset: players[p2].offset[3],
     },
     attack2: {
       imageSrc: `../sprites/${players[p2].name}/attack2.png`,
       framesMax: players[p2].moves[4],
+      offset: players[p2].offset[4],
     },
     takeHit: {
-      imageSrc: `../sprites/${players[p2].name}/takeHit.png`,
+      imageSrc: `../sprites/${players[p2].name}/takeHit1.png`,
       framesMax: players[p2].moves[5],
+      offset: players[p2].offset[5],
     },
     fall: {
       imageSrc: `../sprites/${players[p2].name}/fall.png`,
       framesMax: players[p2].moves[6],
+      offset: players[p2].offset[6],
     },
   },
 });
@@ -138,27 +155,36 @@ function animate() {
   if (keys.playerLeft.pressed && player.lastKey == "playerLeft") {
     player.velocity.x = -2;
     player.switchSprite("run");
+    // enemy.offset = enemy.sprites.run.offset;
   } else if (keys.playerRight.pressed && player.lastKey == "playerRight") {
     player.velocity.x = 2;
     player.switchSprite("run");
+    // enemy.offset = enemy.sprites.run.offset;
   } else {
     player.switchSprite("idle");
+    // enemy.offset = enemy.sprites.idle.offset;
   }
 
   if (player.velocity.y < 0) {
     player.switchSprite("jump");
+    // enemy.offset = enemy.sprites.jump.offset;
   }
 
   if (keys.enemyLeft.pressed && enemy.lastKey == "enemyLeft") {
     enemy.velocity.x = -2;
     enemy.switchSprite("run");
+    // enemy.offset = enemy.sprites.run.offset;
   } else if (keys.enemyRight.pressed && enemy.lastKey == "enemyRight") {
     enemy.velocity.x = 2;
     enemy.switchSprite("run");
+    // enemy.offset = enemy.sprites.run.offset;
   } else {
     enemy.switchSprite("idle");
+    // enemy.offset = enemy.sprites.idle.offset;
   }
   if (enemy.velocity.y < 0) {
+    // enemy.offset = enemy.sprites.jump.offset;
+
     enemy.switchSprite("jump");
   }
 
@@ -265,18 +291,25 @@ window.addEventListener("keyup", (e) => {
   switch (e.key) {
     case "d":
       keys.playerRight.pressed = false;
+      player.offset = player.sprites.idle.offset;
       break;
 
     case "a":
       keys.playerLeft.pressed = false;
+      player.offset = player.sprites.idle.offset;
+
       break;
 
     case "ArrowRight":
       keys.enemyRight.pressed = false;
+      enemy.offset = enemy.sprites.idle.offset;
+
       break;
 
     case "ArrowLeft":
       keys.enemyLeft.pressed = false;
+      enemy.offset = enemy.sprites.idle.offset;
+
       break;
   }
 });
