@@ -87,7 +87,11 @@ class Attack extends Sprite {
       this.position.x + this.velocity.x >= 0 &&
       this.position.x + this.velocity.x <= canvasWidth - 100
     )
-      this.position.x += this.velocity.x;
+      if (this.position.x > enemy.position.x) {
+        this.position.x += this.velocity.x;
+      } else {
+        this.position.x -= this.velocity.x;
+      }
     else this.launched = false;
     this.position.y += this.velocity.y;
   }
@@ -103,6 +107,7 @@ class Fighter extends Sprite {
     framesMax = 1,
     sprites,
     attack2Object,
+    offset,
   }) {
     super({
       position,
@@ -114,6 +119,7 @@ class Fighter extends Sprite {
     this.height = 150;
     this.width = 50;
     this.lastKey;
+    this.offset = offset;
     this.attackBox = {
       position: {
         x: this.position.x,
@@ -129,7 +135,7 @@ class Fighter extends Sprite {
     this.energy = 0;
     this.framesCurrent = 0;
     this.framesElapsed = 0;
-    this.framesHold = 25;
+    this.framesHold = 20;
     this.sprites = sprites;
     this.isJumping = false;
     this.attack2Object = attack2Object;
@@ -182,57 +188,80 @@ class Fighter extends Sprite {
     )
       return;
 
+    //jump
+    if (
+      this.image === this.sprites.jump.image &&
+      this.framesCurrent < this.sprites.jump.framesMax - 1
+    )
+      return;
+
     switch (sprite) {
       case "idle":
         if (this.image !== this.sprites.idle.image) {
           this.image = this.sprites.idle.image;
+          this.offset = this.sprites.idle.offset;
           this.framesMax = this.sprites.idle.framesMax;
           this.framesCurrent = 0;
+          this.position.y += this.sprites.idle.offset.y;
         }
         break;
       case "run":
         if (this.image !== this.sprites.run.image) {
           this.image = this.sprites.run.image;
+          this.offset = this.sprites.run.offset;
           this.framesMax = this.sprites.run.framesMax;
           this.framesCurrent = 0;
+          this.position.y += this.sprites.run.offset.y;
         }
         break;
       case "jump":
         if (this.image !== this.sprites.jump.image) {
           this.image = this.sprites.jump.image;
+          this.offset = this.sprites.jump.offset;
           this.framesMax = this.sprites.jump.framesMax;
           this.framesCurrent = 0;
+          this.position.y += this.sprites.jump.offset.y;
         }
         break;
       case "attack1":
         if (this.image !== this.sprites.attack1.image) {
           this.image = this.sprites.attack1.image;
+          this.offset = this.sprites.attack1.offset;
           this.framesMax = this.sprites.attack1.framesMax;
           this.framesCurrent = 0;
+          this.position.y += this.sprites.attack1.offset.y;
         }
         break;
 
       case "attack2":
         if (this.image !== this.sprites.attack2.image) {
           this.image = this.sprites.attack2.image;
+          this.offset = this.sprites.attack2.offset;
+
           this.framesMax = this.sprites.attack2.framesMax;
           this.framesCurrent = 0;
+          this.position.y += this.sprites.attack2.offset.y;
         }
         break;
 
       case "fall":
         if (this.image !== this.sprites.fall.image) {
           this.image = this.sprites.fall.image;
+          this.offset = this.sprites.fall.offset;
+
           this.framesMax = this.sprites.fall.framesMax;
           this.framesCurrent = 0;
+          this.position.y += this.sprites.fall.offset.y;
         }
         break;
 
       case "takeHit":
         if (this.image !== this.sprites.takeHit.image) {
           this.image = this.sprites.takeHit.image;
+          this.offset = this.sprites.takeHit.offset;
           this.framesMax = this.sprites.takeHit.framesMax;
           this.framesCurrent = 0;
+          this.position.y += this.sprites.takeHit.offset.y;
         }
         break;
     }
@@ -242,7 +271,16 @@ class Fighter extends Sprite {
     const canvas = document.querySelector("canvas");
     const canvasWidth = canvas.width;
 
-    if (this.position.x > enemy.position.x) {
+    if (this.image === this.sprites.run.image) {
+      if (
+        (this.position.x > enemy.position.x && this.velocity.x <= 0) ||
+        (this.position.x < enemy.position.x && this.velocity.x < 0)
+      ) {
+        this.draw(false);
+      } else {
+        this.draw(true);
+      }
+    } else if (this.position.x > enemy.position.x) {
       this.draw(false);
     } else {
       this.draw(true);
@@ -260,9 +298,12 @@ class Fighter extends Sprite {
       this.position.x + this.velocity.x <= canvasWidth - 100
     )
       this.position.x += this.velocity.x;
-    this.position.y += this.velocity.y;
+    this.position.y = this.position.y + this.velocity.y;
 
-    if (this.position.y + this.height + this.velocity.y >= canvas.height - 20)
+    if (
+      this.position.y + this.height + this.velocity.y >=
+      canvas.height + this.offset.y
+    )
       this.velocity.y = 0;
     else this.velocity.y += gravity;
   }

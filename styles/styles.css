@@ -95,7 +95,7 @@
 }
 
 .timer {
-  background-color: rgb(0, 217, 255);
+  background-color: rgb(0, 47, 255);
   height: 100px;
   display: flex;
   justify-content: center;
@@ -107,7 +107,9 @@
   border-radius: 50%;
   border-style: solid;
   border-color: white;
-  border-width: 1rem;
+  border-width: 0.5rem;
+  color: white;
+  font-family: sans-serif;
 }
 
 .postGameContainer {
