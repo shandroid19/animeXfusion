@@ -4,6 +4,8 @@ const c = canvas.getContext("2d");
 canvas.width = 1024;
 canvas.height = 576;
 
+var started = false;
+
 c.fillRect(0, 0, canvas.width, canvas.height);
 
 const gravity = 0.1;
@@ -144,8 +146,10 @@ const keys = {
   enemyRight: { pressed: false },
 };
 
-decreaseTimer();
-restoreEnergy();
+$(document).ready(() => {
+  background.update();
+  startCountdown(decreaseTimer, restoreEnergy);
+});
 
 function animate() {
   window.requestAnimationFrame(animate);
@@ -153,7 +157,6 @@ function animate() {
   c.fillRect(0, 0, canvas.width, canvas.height);
 
   background.update();
-
   player.update(enemy);
   enemy.update(player);
 
@@ -238,6 +241,7 @@ function animate() {
 animate();
 
 window.addEventListener("keydown", (e) => {
+  if (!started) return;
   switch (e.key) {
     case "d":
       keys.playerRight.pressed = true;
@@ -310,6 +314,8 @@ window.addEventListener("keydown", (e) => {
 });
 
 window.addEventListener("keyup", (e) => {
+  if (!started) return;
+
   switch (e.key) {
     case "d":
       keys.playerRight.pressed = false;
