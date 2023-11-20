@@ -1,7 +1,7 @@
 .selectContainer {
   width: 1024;
   height: 596;
-  background-image: url(/public/assets/characterSelectBg.jpg);
+  background-image: url(../assets/characterSelectBg.jpg);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

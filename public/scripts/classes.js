@@ -67,7 +67,7 @@ class Attack extends Sprite {
   }
 
   release(position) {
-    this.position = { x: position.x, y: position.y };
+    this.position = { x: position.x, y: position.y + 50 };
     this.launched = true;
   }
 
