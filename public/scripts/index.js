@@ -69,6 +69,11 @@ const player = new Fighter({
       framesMax: players[p1].moves[6],
       offset: players[p1].offset[6],
     },
+    block: {
+      imageSrc: `../sprites/${players[p1].name}/block.png`,
+      framesMax: players[p1].moves[7],
+      offset: players[p1].offset[7],
+    },
   },
 });
 
@@ -122,6 +127,11 @@ const enemy = new Fighter({
       framesMax: players[p2].moves[6],
       offset: players[p2].offset[6],
     },
+    block: {
+      imageSrc: `../sprites/${players[p2].name}/block.png`,
+      framesMax: players[p2].moves[7],
+      offset: players[p2].offset[7],
+    },
   },
 });
 
@@ -156,36 +166,27 @@ function animate() {
   if (keys.playerLeft.pressed && player.lastKey == "playerLeft") {
     player.velocity.x = -2;
     player.switchSprite("run");
-    // enemy.offset = enemy.sprites.run.offset;
   } else if (keys.playerRight.pressed && player.lastKey == "playerRight") {
     player.velocity.x = 2;
     player.switchSprite("run");
-    // enemy.offset = enemy.sprites.run.offset;
   } else {
     player.switchSprite("idle");
-    // enemy.offset = enemy.sprites.idle.offset;
   }
 
   if (player.velocity.y < 0) {
     player.switchSprite("jump");
-    // enemy.offset = enemy.sprites.jump.offset;
   }
 
   if (keys.enemyLeft.pressed && enemy.lastKey == "enemyLeft") {
     enemy.velocity.x = -2;
     enemy.switchSprite("run");
-    // enemy.offset = enemy.sprites.run.offset;
   } else if (keys.enemyRight.pressed && enemy.lastKey == "enemyRight") {
     enemy.velocity.x = 2;
     enemy.switchSprite("run");
-    // enemy.offset = enemy.sprites.run.offset;
   } else {
     enemy.switchSprite("idle");
-    // enemy.offset = enemy.sprites.idle.offset;
   }
   if (enemy.velocity.y < 0) {
-    // enemy.offset = enemy.sprites.jump.offset;
-
     enemy.switchSprite("jump");
   }
 
@@ -284,6 +285,24 @@ window.addEventListener("keydown", (e) => {
 
     case "Control":
       if (player.health > 0 && enemy.health > 0) enemy.attack1();
+      break;
+
+    case "e":
+      if (
+        !player.isAttacking &&
+        player.velocity.y === 0 &&
+        player.velocity.x === 0
+      )
+        player.block();
+      break;
+
+    case "Shift":
+      if (
+        !enemy.isAttacking &&
+        enemy.velocity.y === 0 &&
+        enemy.velocity.x === 0
+      )
+        enemy.block();
       break;
   }
 });

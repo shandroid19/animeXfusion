@@ -40,7 +40,7 @@ class Sprite {
     if (this.framesElapsed % this.framesHold === 0) {
       if (this.framesCurrent < this.framesMax - 1) {
         this.framesCurrent++;
-      } else this.framesCurrent = 0;
+      } else if (!this.isBlocking) this.framesCurrent = 0;
     }
   }
 
@@ -139,6 +139,7 @@ class Fighter extends Sprite {
     this.sprites = sprites;
     this.isJumping = false;
     this.attack2Object = attack2Object;
+    this.isBlocking = false;
 
     for (const sprite in this.sprites) {
       sprites[sprite].image = new Image();
@@ -159,8 +160,20 @@ class Fighter extends Sprite {
   }
 
   takeHit() {
+    if (this.isBlocking) {
+      this.health -= 1;
+      return;
+    }
     this.switchSprite("takeHit");
     this.health -= 5;
+  }
+
+  block() {
+    this.isBlocking = true;
+    this.switchSprite("block");
+    setTimeout(() => {
+      this.isBlocking = false;
+    }, 2000);
   }
 
   switchSprite(sprite) {
@@ -194,6 +207,8 @@ class Fighter extends Sprite {
       this.framesCurrent < this.sprites.jump.framesMax - 1
     )
       return;
+
+    if (this.image === this.sprites.block.image && this.isBlocking) return;
 
     switch (sprite) {
       case "idle":
@@ -262,6 +277,16 @@ class Fighter extends Sprite {
           this.framesMax = this.sprites.takeHit.framesMax;
           this.framesCurrent = 0;
           this.position.y += this.sprites.takeHit.offset.y;
+        }
+        break;
+
+      case "block":
+        if (this.image !== this.sprites.block.image) {
+          this.image = this.sprites.block.image;
+          this.offset = this.sprites.block.offset;
+          this.framesMax = this.sprites.block.framesMax;
+          this.framesCurrent = 0;
+          this.position.y += this.sprites.block.offset.y;
         }
         break;
     }
