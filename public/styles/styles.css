@@ -1,6 +1,7 @@
 * {
   box-sizing: border-box;
   margin: 0;
+  font-family: sans-serif;
 }
 
 .gameContainer {
@@ -165,4 +166,25 @@
 a {
   text-decoration: none;
   color: black;
+}
+
+#countdown {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: inline-block;
+  transform: translate(-50%, -50%);
+  transition: 1s;
+  font-size: 0;
+  font-weight: bolder;
+  opacity: 50%;
+  color: yellow;
+  font-size: 0rem;
+}
+
+#countdownBox {
+  background-color: rgba(0, 0, 0, 0.8);
+  height: 100%;
+  width: 100%;
+  position: absolute;
 }

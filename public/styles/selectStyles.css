@@ -1,7 +1,13 @@
+.title {
+  color: white;
+  text-align: center;
+  text-transform: uppercase;
+}
+
 .selectContainer {
   width: 1024;
   height: 596;
-  background-image: url(../assets/characterSelectBg.jpg);
+  background-image: url(../assets/welcome.jpg);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -10,7 +16,7 @@
 }
 
 .innerBox {
-  border: solid black 1rem;
+  /* border: solid black 1rem; */
   width: 100%;
   height: 100%;
   display: flex;

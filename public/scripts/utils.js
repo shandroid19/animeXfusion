@@ -84,3 +84,31 @@ function restart() {
 function quit() {
   window.close();
 }
+
+function startCountdown(startGame) {
+  let counter = 3;
+  var timer = setInterval(function () {
+    $("#countdown").remove();
+
+    var countdown = $(
+      '<span id="countdown">' + (counter == 0 ? "FIGHT" : counter) + "</span>"
+    );
+    countdown.appendTo($("#countdownBox"));
+    setTimeout(() => {
+      if (counter > -1) {
+        $("#countdown").css({ "font-size": "10rem", opacity: 0 });
+      } else {
+        $("#countdown").css({ "font-size": "2rem", opacity: 1 });
+      }
+    }, 20);
+    counter--;
+    if (counter == -2) {
+      clearInterval(timer);
+      $("#countdown").remove();
+      $("#countdownBox").hide();
+      started = true;
+      decreaseTimer();
+      restoreEnergy();
+    }
+  }, 1000);
+}
