@@ -67,7 +67,7 @@ class Attack extends Sprite {
   }
 
   release(position) {
-    this.position = { x: position.x, y: position.y };
+    this.position = { x: position.x, y: position.y + 50 };
     this.launched = true;
   }
 
@@ -140,6 +140,7 @@ class Fighter extends Sprite {
     this.isJumping = false;
     this.attack2Object = attack2Object;
     this.isBlocking = false;
+    this.isAttacked = false;
 
     for (const sprite in this.sprites) {
       sprites[sprite].image = new Image();
@@ -164,8 +165,12 @@ class Fighter extends Sprite {
       this.health -= 1;
       return;
     }
-    this.switchSprite("takeHit");
-    this.health -= 5;
+    this.isAttacked = true;
+    setTimeout(() => {
+      this.switchSprite("takeHit");
+      this.health -= 5;
+      this.isAttacked = false;
+    }, 100);
   }
 
   block() {
