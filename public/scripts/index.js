@@ -270,21 +270,23 @@ window.addEventListener("keydown", (e) => {
       break;
 
     case " ":
-      if (player.health > 0 && enemy.health > 0) player.attack1();
+      if (player.health > 0 && enemy.health > 0 && !player.isAttacked)
+        player.attack1();
       break;
 
     case "q":
-      if (player.health > 0 && enemy.health > 0)
+      if (player.health > 0 && enemy.health > 0 && !player.isAttacked)
         executeAttack2(player, player.attack2Object, "#playerEnergy");
       break;
 
     case "0":
-      if (player.health > 0 && enemy.health > 0)
+      if (player.health > 0 && enemy.health > 0 && !enemy.isAttacked)
         executeAttack2(enemy, enemy.attack2Object, "#enemyEnergy");
       break;
 
     case "Control":
-      if (player.health > 0 && enemy.health > 0) enemy.attack1();
+      if (player.health > 0 && enemy.health > 0 && !enemy.isAttacked)
+        enemy.attack1();
       break;
 
     case "e":
@@ -296,7 +298,7 @@ window.addEventListener("keydown", (e) => {
         player.block();
       break;
 
-    case "Shift":
+    case "1":
       if (
         !enemy.isAttacking &&
         enemy.velocity.y === 0 &&
@@ -331,5 +333,12 @@ window.addEventListener("keyup", (e) => {
       enemy.offset = enemy.sprites.idle.offset;
 
       break;
+
+    case "1":
+      enemy.isBlocking = false;
+      break;
+
+    case "e":
+      player.isBlocking = false;
   }
 });
