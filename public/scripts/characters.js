@@ -62,10 +62,10 @@ const players = [
   {
     name: "naruto",
     scale: 1.8,
-    moves: [4, 6, 4, 4, 4, 2, 2],
+    moves: [4, 6, 4, 5, 5, 3, 6],
     attack: { scale: 1.2, framesMax: 4 },
     offset: [
-      { x: 0, y: -20 },
+      { x: 0, y: 0 },
       { x: 0, y: -10 },
       { x: 0, y: -30 },
       { x: 0, y: -30 },
