@@ -146,9 +146,14 @@ const keys = {
   enemyRight: { pressed: false },
 };
 
+const startGame = () => {
+  decreaseTimer();
+  restoreEnergy();
+};
+
 $(document).ready(() => {
   background.update();
-  startCountdown(decreaseTimer, restoreEnergy);
+  waitForPlayer(startGame);
 });
 
 function animate() {

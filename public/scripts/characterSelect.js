@@ -8,7 +8,7 @@ function getCurrentPlayer() {
 }
 
 function selectCharacter(id) {
-  const online = parseInt(urlParams.get("online"));
+  const online = parseInt(urlParams.get("initiator"));
   if (online === 1) {
     window.open(
       `game.html${window.location.search}&p1=${id}&p2=0`,

@@ -85,8 +85,24 @@ function quit() {
   window.close();
 }
 
+function waitForPlayer(startGame) {
+  if (!urlParams.has("initiator")) {
+    startCountdown(startGame);
+    return;
+  }
+  var message = $(
+    '<h2 style="color:white;text-align:center;" id="message"> Waiting for the other player to join ... </h2>'
+  );
+  message.appendTo($("#countdownBox"));
+  setTimeout(() => {
+    startCountdown(startGame);
+  }, 3000);
+}
+
 function startCountdown(startGame) {
   let counter = 3;
+  $("#message").remove();
+
   var timer = setInterval(function () {
     $("#countdown").remove();
 
