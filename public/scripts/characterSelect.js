@@ -9,9 +9,11 @@ function getCurrentPlayer() {
 
 function selectCharacter(id) {
   const online = parseInt(urlParams.get("online"));
-  console.log(online);
   if (online === 1) {
-    console.log(online);
+    window.open(
+      `game.html${window.location.search}&p1=${id}&p2=0`,
+      (target = "_self")
+    );
   } else {
     if (urlParams.has("p1")) {
       window.open(
@@ -27,7 +29,7 @@ function selectCharacter(id) {
 $(document).ready(() => {
   players.map((player, id) => {
     $("#allCharacters").append(
-      `<div class="characterBox" onclick="selectCharacter(${id})"><img class="characterImage"src="../sprites/${player.name}/portrait.jpg"/> <b class="text-center">${player.name}</b></div>`
+      `<div class="characterBox" onclick="selectCharacter(${id})"><img class="characterImage"src="../sprites/${player.name}/portrait.jpg"/> <b class="text-center" style="text-transform:capitalize">${player.name}</b></div>`
     );
   });
 });

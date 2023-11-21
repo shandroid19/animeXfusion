@@ -1,0 +1,46 @@
+<head>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+    integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
+  <link rel="stylesheet" href="../styles/selectStyles.css" />
+  <link rel="stylesheet" href="../styles/styles.css" />
+</head>
+<body>
+  <div class="gameContainer">
+    <div class="selectContainer">
+      <div class="innerBox">
+        <div
+          class="rowContainer"
+          style="justify-content: space-around; height: 100%"
+        >
+          <div class="rowContainer">
+            <h2 class="heading">Enter code</h2>
+
+            <form name="roomForm" onsubmit="return false">
+              <input
+                name="codeInput"
+                class="codeInput"
+                placeholder="Enter code here"
+                type="text"
+              />
+              <button class="join" onclick="join()">Join</button>
+            </form>
+          </div>
+          <p class="heading">OR</p>
+          <div class="rowContainer">
+            <h2 class="heading">Generate code for your friend</h2>
+
+            <a class="code" onclick="generateCode()">Generate</a>
+          </div>
+          <div>
+            <img src="../assets/loading.gif" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="../scripts/lobby.js"></script>
+</body>

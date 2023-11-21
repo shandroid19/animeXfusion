@@ -188,3 +188,40 @@ a {
   width: 100%;
   position: absolute;
 }
+
+.code {
+  background-color: cadetblue;
+  color: rgb(0, 0, 0);
+  padding: 1rem;
+  border-radius: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  text-decoration: none;
+}
+
+.code:hover {
+  color: white;
+}
+
+.heading {
+  color: white;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.join {
+  background-color: rgb(9, 107, 61);
+  border-top-right-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  color: white;
+  border-style: solid;
+  padding: 1rem;
+}
+
+.codeInput {
+  height: 100%;
+  border-top-left-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+  border-style: solid;
+  border-color: black;
+}
