@@ -211,7 +211,11 @@ a {
 }
 
 .code:hover {
-  color: white;
+  color: yellow;
+}
+
+transition {
+  transform: scale(1.2);
 }
 
 .heading {
@@ -227,6 +231,12 @@ a {
   color: white;
   border-style: solid;
   padding: 1rem;
+  transition: transform 0.2s;
+}
+
+.join:hover {
+  transform: scale(1.1);
+  border-color: yellow;
 }
 
 .codeInput {
