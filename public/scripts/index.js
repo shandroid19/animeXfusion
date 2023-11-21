@@ -22,7 +22,7 @@ const urlParams = new URLSearchParams(queryString);
 const p1 = parseInt(urlParams.get("p1"));
 const p2 = parseInt(urlParams.get("p2"));
 
-const player = new Fighter({
+var player = new Fighter({
   position: { x: 200, y: 0 },
   velocity: { x: 0, y: 0 },
   scale: players[p1].scale,
@@ -79,7 +79,7 @@ const player = new Fighter({
   },
 });
 
-const enemy = new Fighter({
+var enemy = new Fighter({
   position: { x: 800, y: 100 },
   velocity: { x: 0, y: 0 },
   scale: players[p2].scale,
