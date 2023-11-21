@@ -18,11 +18,9 @@ const background = new Sprite({
 
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
-var p1, p2;
-if (urlParams.has("initiator")) {
-  var p1 = parseInt(urlParams.get("p1"));
-  var p2 = parseInt(urlParams.get("p2"));
-}
+
+var p1 = parseInt(urlParams.get("p1"));
+var p2 = parseInt(urlParams.get("p2"));
 
 var player = new Fighter({
   position: { x: 200, y: 0 },
@@ -504,11 +502,13 @@ animate();
 // });
 
 window.addEventListener("keydown", (e) => {
-  const currentPlayer = player1 ? player : enemy;
-  const opponent = player1 ? player : enemy;
+  const currentPlayer = player1 || !urlParams.has("initiator") ? player : enemy;
+  const opponent = player1 || !urlParams.has("initiator") ? enemy : player;
 
-  const currentPlayerKey = player1 ? "player" : "enemy";
-  const opponentKey = player1 ? "player" : "enemy";
+  const currentPlayerKey =
+    player1 || !urlParams.has("initiator") ? "player" : "enemy";
+  const opponentKey =
+    player1 || !urlParams.has("initiator") ? "enemy" : "player";
 
   if (!started) return;
   switch (e.key) {
@@ -565,7 +565,7 @@ window.addEventListener("keydown", (e) => {
         executeAttack2(
           currentPlayer,
           currentPlayer.attack2Object,
-          "#playerEnergy"
+          `#${currentPlayerKey}Energy`
         );
       break;
 
@@ -575,7 +575,7 @@ window.addEventListener("keydown", (e) => {
         opponent.health > 0 &&
         !opponent.isAttacked
       )
-        executeAttack2(enemy, opponent.attack2Object, "#enemyEnergy");
+        executeAttack2(enemy, opponent.attack2Object, `#${opponentKey}Energy`);
       break;
 
     case "Control":
@@ -613,8 +613,8 @@ window.addEventListener("keydown", (e) => {
 window.addEventListener("keyup", (e) => {
   if (!started) return;
 
-  const currentPlayer = player1 ? player : enemy;
-  const opponent = player1 ? player : enemy;
+  const currentPlayer = player1 || !urlParams.has("initiator") ? player : enemy;
+  const opponent = player1 || !urlParams.has("initiator") ? enemy : player;
 
   switch (e.key) {
     case "d":

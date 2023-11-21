@@ -22,7 +22,7 @@ function selectCharacter(id) {
         (target = "_self")
       );
     } else {
-      window.open(`${window.location.href}&p1=${id}`, (target = "_self"));
+      window.open(`${window.location.href}?p1=${id}`, (target = "_self"));
     }
   }
 }

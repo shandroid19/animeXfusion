@@ -170,7 +170,7 @@ const performAction = (data) => {
         !currentPlayer.isAttacked
       )
         executeAttack2(
-          player,
+          currentPlayer,
           currentPlayer.attack2Object,
           `#${currentPlayer}Energy`
         );
