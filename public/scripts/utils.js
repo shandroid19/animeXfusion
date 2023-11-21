@@ -94,9 +94,6 @@ function waitForPlayer() {
     '<h2 style="color:white;text-align:center;" id="message"> Waiting for the other player to join ... </h2>'
   );
   message.appendTo($("#countdownBox"));
-  // setTimeout(() => {
-  // startCountdown(startGame);
-  // }, 3000);
 }
 
 function startCountdown(startGame) {

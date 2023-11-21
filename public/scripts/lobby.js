@@ -15,13 +15,21 @@ async function join(initiator) {
       );
   } else {
     var room = document.forms["roomForm"]["codeInput"].value;
-    const valid = true;
-    if (!valid)
-      return $(".roomForm").append(
-        $(".error").html(
-          "The code you have entered is in use currently. Try a different code."
-        )
-      );
+    var valid = false;
+    $.ajax({
+      url: `http://localhost:5000/checkRoom/${room}`,
+      type: "GET",
+      success: function (data) {
+        valid = true;
+      },
+      error: function (request, error) {
+        return $(".roomForm").append(
+          $(".error").html(
+            "The code you have entered is in use currently. Try a different code."
+          )
+        );
+      },
+    });
   }
   window.open(
     `${window.location.origin}/public/views/characterSelect.html?id=${room}&initiator=${initiator}`,
