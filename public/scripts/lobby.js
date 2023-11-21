@@ -13,15 +13,16 @@ async function join(initiator) {
       return $(".generateCode").append(
         $(`<p class="error">Generate the code first</p>`)
       );
+  } else {
+    var room = document.forms["roomForm"]["codeInput"].value;
+    const valid = true;
+    if (!valid)
+      return $(".roomForm").append(
+        $(".error").html(
+          "The code you have entered is in use currently. Try a different code."
+        )
+      );
   }
-  const room = document.forms["roomForm"]["codeInput"].value;
-  const valid = false;
-  if (!valid)
-    return $(".roomForm").append(
-      $(
-        `<p class="error">The entered code is either invalid or has expired.</p>`
-      )
-    );
   window.open(
     `${window.location.origin}/public/views/characterSelect.html?id=${room}&initiator=${initiator}`,
     (target = "_self")

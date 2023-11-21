@@ -16,10 +16,15 @@
           class="rowContainer"
           style="justify-content: space-around; height: 100%"
         >
-          <div class="rowContainer">
+          <div class="rowContainer" style="justify-content: center">
             <h2 class="heading">Enter code</h2>
 
-            <form class="roomForm" name="roomForm" onsubmit="return false">
+            <form
+              style="text-align: center"
+              class="roomForm"
+              name="roomForm"
+              onsubmit="return false"
+            >
               <input
                 name="codeInput"
                 class="codeInput"
@@ -28,8 +33,9 @@
               />
               <button class="join" onclick="join(0)">Join</button>
             </form>
+            <p class="error"></p>
           </div>
-          <p class="heading">OR</p>
+          <!-- <p class="heading">OR</p>
           <div class="rowContainer">
             <h2 class="heading">Generate code for your friend</h2>
 
@@ -37,7 +43,7 @@
               <a class="code" onclick="generateCode()">Generate</a>
               <button class="join" onclick="join(1)">Join</button>
             </div>
-          </div>
+          </div> -->
           <div>
             <img src="../assets/loading.gif" />
           </div>
