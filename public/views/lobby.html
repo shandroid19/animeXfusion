@@ -19,21 +19,24 @@
           <div class="rowContainer">
             <h2 class="heading">Enter code</h2>
 
-            <form name="roomForm" onsubmit="return false">
+            <form class="roomForm" name="roomForm" onsubmit="return false">
               <input
                 name="codeInput"
                 class="codeInput"
                 placeholder="Enter code here"
                 type="text"
               />
-              <button class="join" onclick="join()">Join</button>
+              <button class="join" onclick="join(0)">Join</button>
             </form>
           </div>
           <p class="heading">OR</p>
           <div class="rowContainer">
             <h2 class="heading">Generate code for your friend</h2>
 
-            <a class="code" onclick="generateCode()">Generate</a>
+            <div class="generateCode">
+              <a class="code" onclick="generateCode()">Generate</a>
+              <button class="join" onclick="join(1)">Join</button>
+            </div>
           </div>
           <div>
             <img src="../assets/loading.gif" />

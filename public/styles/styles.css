@@ -182,6 +182,15 @@ a {
   font-size: 0rem;
 }
 
+#message {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: inline-block;
+  transform: translate(-50%, -50%);
+  font-weight: bolder;
+}
+
 #countdownBox {
   background-color: rgba(0, 0, 0, 0.8);
   height: 100%;
@@ -193,14 +202,20 @@ a {
   background-color: cadetblue;
   color: rgb(0, 0, 0);
   padding: 1rem;
-  border-radius: 1rem;
   margin-top: 1rem;
   margin-bottom: 1rem;
   text-decoration: none;
+  border-bottom-left-radius: 1rem;
+  border-top-left-radius: 1rem;
+  border: solid;
 }
 
 .code:hover {
-  color: white;
+  color: yellow;
+}
+
+transition {
+  transform: scale(1.2);
 }
 
 .heading {
@@ -216,12 +231,24 @@ a {
   color: white;
   border-style: solid;
   padding: 1rem;
+  transition: transform 0.2s;
+}
+
+.join:hover {
+  transform: scale(1.1);
+  border-color: yellow;
 }
 
 .codeInput {
-  height: 100%;
+  padding: 1rem;
   border-top-left-radius: 1rem;
   border-bottom-left-radius: 1rem;
   border-style: solid;
   border-color: black;
+}
+
+.error {
+  color: red;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
