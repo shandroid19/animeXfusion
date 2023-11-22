@@ -128,7 +128,7 @@ class Fighter extends Sprite {
     this.energy = 0;
     this.framesCurrent = 0;
     this.framesElapsed = 0;
-    this.framesHold = 20;
+    this.framesHold = 10;
     this.sprites = sprites;
     this.isJumping = false;
     this.attack2Object = attack2Object;
@@ -294,6 +294,8 @@ class Fighter extends Sprite {
   }
 
   update(enemy) {
+    const t1 = performance.now();
+
     const canvas = document.querySelector("canvas");
     const canvasWidth = canvas.width;
 
