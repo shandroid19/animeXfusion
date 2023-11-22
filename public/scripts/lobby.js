@@ -8,13 +8,16 @@ async function generateCode() {
 
 async function join() {
   var room = document.forms["roomForm"]["codeInput"].value;
+  console.log(window.location.origin);
   $.ajax({
     url: `https://animexfusion-backend.onrender.com/checkRoom/${room}`,
     type: "GET",
     success: function (data) {
       console.log(data);
       window.open(
-        `${window.location.origin}/public/views/characterSelect.html?id=${room}&online=1`,
+        `${window.location.origin}${
+          window.location.origin === "http://127.0.0.1:5500" ? "/public" : ""
+        }/views/characterSelect.html?id=${room}&online=1`,
         (target = "_self")
       );
     },
