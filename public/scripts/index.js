@@ -28,7 +28,7 @@ window.addEventListener("resize", handleResize);
 
 c.fillRect(0, 0, canvas.width, canvas.height);
 
-const gravity = 0.1;
+const gravity = 0.15;
 let timer = 100;
 
 const background = new Sprite({
@@ -326,10 +326,10 @@ function animate() {
   enemy.velocity.x = 0;
 
   if (player.keys.left && player.lastKey == "playerLeft") {
-    player.velocity.x = -2;
+    player.velocity.x = -4;
     player.switchSprite("run");
   } else if (player.keys.right && player.lastKey == "playerRight") {
-    player.velocity.x = 2;
+    player.velocity.x = 4;
     player.switchSprite("run");
   } else {
     player.switchSprite("idle");
@@ -340,10 +340,10 @@ function animate() {
   }
 
   if (enemy.keys.left && enemy.lastKey == "enemyLeft") {
-    enemy.velocity.x = -2;
+    enemy.velocity.x = -4;
     enemy.switchSprite("run");
   } else if (enemy.keys.right && enemy.lastKey == "enemyRight") {
-    enemy.velocity.x = 2;
+    enemy.velocity.x = 4;
     enemy.switchSprite("run");
   } else {
     enemy.switchSprite("idle");
