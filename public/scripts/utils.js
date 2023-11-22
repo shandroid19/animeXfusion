@@ -68,12 +68,27 @@ function determineWinner({ player, enemy }) {
   timer = 100;
 }
 
-function executeAttack2(player, attack, selector) {
-  if (parseInt(player.energy) == 100) {
-    player.attack2(enemy);
-    attack.release(player.position);
-    player.energy = 0;
-    document.querySelector(selector).style.width = player.energy + "%";
+function executeAttack2(player1, attack, enemy1, selector) {
+  if (parseInt(player1.energy) <= 100) {
+    if (player1.position.x > enemy1.position.x) {
+      attack.flipped = false;
+      console.log(player1.position.x, enemy1.position.x);
+      attack.velocity = {
+        x: -Math.abs(attack.velocity.x),
+        y: attack.velocity.y,
+      };
+    } else {
+      attack.velocity = {
+        x: Math.abs(attack.velocity.x),
+        y: attack.velocity.y,
+      };
+      attack.flipped = true;
+    }
+
+    player1.attack2(enemy1);
+    attack.release(player1.position);
+    player1.energy = 0;
+    document.querySelector(selector).style.width = player1.energy + "%";
   }
 }
 
@@ -130,10 +145,9 @@ const performAction = (data) => {
   if (!started) return;
 
   const currentPlayer = !player1 ? player : enemy;
-  const opponent = !player1 ? player : enemy;
-
-  const currentPlayerKey = !player1 ? "player" : "enemy";
-  const opponentKey = !player1 ? "player" : "enemy";
+  const opponent = !player1 ? enemy : player;
+  const currentPlayerKey = player1 ? "enemy" : "player";
+  const opponentKey = player1 ? "player" : "enemy";
 
   switch (data) {
     case "rightDown":
@@ -169,7 +183,8 @@ const performAction = (data) => {
         executeAttack2(
           currentPlayer,
           currentPlayer.attack2Object,
-          `#${currentPlayer}Energy`
+          opponent,
+          `#${currentPlayerKey}Energy`
         );
       break;
 

@@ -62,8 +62,9 @@ class Attack extends Sprite {
     this.velocity = velocity;
     this.scale = scale;
     this.framesMax = framesMax;
-    this.height = 150;
+    this.height = 50;
     this.width = 50;
+    this.flipped = false;
   }
 
   release(position) {
@@ -71,28 +72,20 @@ class Attack extends Sprite {
     this.launched = true;
   }
 
-  update(enemy) {
-    const canvas = document.querySelector("canvas");
+  update() {
+    const canvas = document.querySelector("#mainCanvas");
     const canvasWidth = canvas.width;
+    this.draw(this.flipped);
 
-    this.draw(true);
-    if (this.position.x > enemy.position.x) {
-      this.draw(false);
-    } else {
-      this.draw(true);
-    }
     this.animateFrames();
-
     if (
       this.position.x + this.velocity.x >= 0 &&
       this.position.x + this.velocity.x <= canvasWidth - 100
-    )
-      if (this.position.x > enemy.position.x) {
-        this.position.x += this.velocity.x;
-      } else {
-        this.position.x -= this.velocity.x;
-      }
-    else this.launched = false;
+    ) {
+      this.position.x += this.velocity.x;
+    } else {
+      this.launched = false;
+    }
     this.position.y += this.velocity.y;
   }
 }
@@ -125,7 +118,7 @@ class Fighter extends Sprite {
         x: this.position.x,
         y: this.position.y,
       },
-      width: 100,
+      width: 125,
       height: 50,
       offset: { x: 0, y: 0 },
     };
@@ -182,9 +175,6 @@ class Fighter extends Sprite {
   block() {
     this.isBlocking = true;
     this.switchSprite("block");
-    // setTimeout(() => {
-    //   this.isBlocking = false;
-    // }, 2000);
   }
 
   switchSprite(sprite) {
