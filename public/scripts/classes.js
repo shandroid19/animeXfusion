@@ -141,6 +141,12 @@ class Fighter extends Sprite {
     this.attack2Object = attack2Object;
     this.isBlocking = false;
     this.isAttacked = false;
+    this.keys = {
+      up: false,
+      left: false,
+      right: false,
+      block: false,
+    };
 
     for (const sprite in this.sprites) {
       sprites[sprite].image = new Image();
@@ -176,9 +182,9 @@ class Fighter extends Sprite {
   block() {
     this.isBlocking = true;
     this.switchSprite("block");
-    setTimeout(() => {
-      this.isBlocking = false;
-    }, 2000);
+    // setTimeout(() => {
+    //   this.isBlocking = false;
+    // }, 2000);
   }
 
   switchSprite(sprite) {

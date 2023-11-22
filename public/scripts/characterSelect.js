@@ -2,14 +2,15 @@ const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 
 function getCurrentPlayer() {
+  if (urlParams.has("online")) return;
   if (urlParams.has("p1"))
     document.querySelector("#currentPlayer").innerHTML = "Player 2";
   else document.querySelector("#currentPlayer").innerHTML = "Player 1";
 }
 
 function selectCharacter(id) {
-  const online = parseInt(urlParams.get("initiator"));
-  if (online === 1) {
+  const online = urlParams.has("online");
+  if (online) {
     window.open(
       `game.html${window.location.search}&p1=${id}&p2=0`,
       (target = "_self")
@@ -21,7 +22,7 @@ function selectCharacter(id) {
         (target = "_self")
       );
     } else {
-      window.open(`${window.location.href}&p1=${id}`, (target = "_self"));
+      window.open(`${window.location.href}?p1=${id}`, (target = "_self"));
     }
   }
 }
