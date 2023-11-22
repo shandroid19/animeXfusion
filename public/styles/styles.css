@@ -257,3 +257,110 @@ transition {
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
+
+.controlsContainer {
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+  display: flex;
+  flex-direction: row;
+}
+
+.controlsRow {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.controlsColumn {
+  display: flex;
+  margin: 1rem;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+}
+
+.innerControlsRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.controlBtn {
+  height: 5rem;
+  width: 5rem;
+  border-radius: 100%;
+  background-color: rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-style: solid;
+  border-color: white;
+}
+
+.attack2Row {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.attack2Btn {
+  height: 4rem;
+  width: 4rem;
+  border-radius: 100%;
+  background-color: rgba(0, 0, 0, 0.1);
+  color: white;
+  border-style: solid;
+  border-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.attack1Btn {
+  height: 7rem;
+  width: 7rem;
+  border-radius: 100%;
+  background-color: rgba(0, 0, 0, 0.1);
+  color: white;
+  border-style: solid;
+  border-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btnLogo {
+  object-fit: contain;
+  height: 4.5rem;
+  text-align: center;
+  opacity: 0.7;
+}
+
+.blockLogo {
+  object-fit: contain;
+  height: 3rem;
+  text-align: center;
+  opacity: 0.7;
+}
+
+.attack2Logo {
+  object-fit: contain;
+  height: 3rem;
+  text-align: center;
+  opacity: 0.7;
+}
+
+.attack1Logo {
+  object-fit: contain;
+  height: 4.5rem;
+  text-align: center;
+  opacity: 0.7;
+}
+
+.hidden {
+  display: none;
+}

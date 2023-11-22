@@ -3,8 +3,28 @@ const c = canvas.getContext("2d");
 
 canvas.width = 1024;
 canvas.height = 576;
-
 var started = false;
+
+function handleResize() {
+  const aspectRatio = canvas.width / canvas.height;
+  const windowAspectRatio = window.innerWidth / window.innerHeight;
+
+  if (windowAspectRatio > aspectRatio) {
+    // Fit canvas height to window height
+    canvas.style.width = "auto";
+    canvas.style.height = "100%";
+  } else {
+    // Fit canvas width to window width
+    canvas.style.width = "100%";
+    canvas.style.height = "auto";
+  }
+}
+
+// Call the resize function on page load and window resize
+window.addEventListener("load", handleResize);
+window.addEventListener("resize", handleResize);
+
+// Rest of your existing code...
 
 c.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -32,7 +52,7 @@ var player = new Fighter({
     imageSrc: `../sprites/${players[p1].name}/attack2FX.png`,
     scale: players[p1].attack.scale,
     framesMax: players[p1].attack.framesMax,
-    velocity: { x: -5, y: 0 },
+    velocity: { x: 5, y: 0 },
   }),
 
   sprites: {
@@ -90,7 +110,7 @@ var enemy = new Fighter({
     imageSrc: `../sprites/${players[p2].name}/attack2FX.png`,
     scale: players[p2].attack.scale,
     framesMax: players[p2].attack.framesMax,
-    velocity: { x: -5, y: 0 },
+    velocity: { x: 5, y: 0 },
   }),
 
   sprites: {
@@ -158,7 +178,7 @@ var online = false;
 $(document).ready(() => {
   if (urlParams.has("online")) {
     online = true;
-    socket = io.connect("http://localhost:5000");
+    socket = io.connect("https://animexfusion-backend.onrender.com/");
     socket?.emit("joinRoom", urlParams.get("id"), p1);
 
     socket.on("keyPress", (data) => {
@@ -170,7 +190,6 @@ $(document).ready(() => {
 
       p1 = characters[members[0]];
       p2 = characters[members[1]];
-      console.log(p1, p2);
       player = new Fighter({
         position: { x: 200, y: 0 },
         velocity: { x: 0, y: 0 },
@@ -181,7 +200,7 @@ $(document).ready(() => {
           imageSrc: `../sprites/${players[p1].name}/attack2FX.png`,
           scale: players[p1].attack.scale,
           framesMax: players[p1].attack.framesMax,
-          velocity: { x: -5, y: 0 },
+          velocity: { x: 5, y: 0 },
         }),
 
         sprites: {
@@ -239,7 +258,7 @@ $(document).ready(() => {
           imageSrc: `../sprites/${players[p2].name}/attack2FX.png`,
           scale: players[p2].attack.scale,
           framesMax: players[p2].attack.framesMax,
-          velocity: { x: -5, y: 0 },
+          velocity: { x: 5, y: 0 },
         }),
 
         sprites: {
@@ -301,8 +320,8 @@ function animate() {
   player.update(enemy);
   enemy.update(player);
 
-  if (player.attack2Object.launched) player.attack2Object.update(enemy);
-  if (enemy.attack2Object.launched) enemy.attack2Object.update(player);
+  if (player.attack2Object.launched) player.attack2Object.update();
+  if (enemy.attack2Object.launched) enemy.attack2Object.update();
 
   player.velocity.x = 0;
   enemy.velocity.x = 0;
@@ -421,6 +440,7 @@ window.addEventListener("keydown", (e) => {
 
     case "q":
       socket?.emit("keyPress", "attack2", urlParams.get("id"));
+
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
@@ -429,6 +449,7 @@ window.addEventListener("keydown", (e) => {
         executeAttack2(
           currentPlayer,
           currentPlayer.attack2Object,
+          opponent,
           `#${currentPlayerKey}Energy`
         );
       break;
@@ -443,8 +464,6 @@ window.addEventListener("keydown", (e) => {
       )
         currentPlayer.block();
       break;
-
-      if (online) return;
 
     case "ArrowRight":
       if (online) return;
@@ -474,7 +493,12 @@ window.addEventListener("keydown", (e) => {
         opponent.health > 0 &&
         !opponent.isAttacked
       )
-        executeAttack2(enemy, opponent.attack2Object, `#${opponentKey}Energy`);
+        executeAttack2(
+          opponent,
+          opponent.attack2Object,
+          currentPlayer,
+          `#${opponentKey}Energy`
+        );
       break;
 
     case "Control":
@@ -552,3 +576,23 @@ window.addEventListener("keyup", (e) => {
       break;
   }
 });
+
+$(document).ready(() => {
+  if (!detectMobile()) $(".controlsContainer").addClass("hidden");
+});
+
+const detectMobile = () => {
+  if (
+    navigator.userAgent.match(/Android/i) ||
+    navigator.userAgent.match(/webOS/i) ||
+    navigator.userAgent.match(/iPhone/i) ||
+    navigator.userAgent.match(/iPad/i) ||
+    navigator.userAgent.match(/iPod/i) ||
+    navigator.userAgent.match(/BlackBerry/i) ||
+    navigator.userAgent.match(/Windows Phone/i)
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+};

@@ -1,4 +1,6 @@
 <head>
+  <link rel="manifest" href="../manifest.json" />
+
   <script
     src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
     integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
@@ -51,8 +53,73 @@
       </div>
 
       <div class="postGameContainer">
-        <div id="result"></div>
-        <div id="menu" class="container"></div>
+        <div style="z-index: 100" id="result"></div>
+        <div style="z-index: 100" id="menu" class="container"></div>
+        <div class="controlsContainer">
+          <!-- movement -->
+
+          <div class="controlsRow">
+            <div class="controlsColumn">
+              <div class="innerControlsRow">
+                <button onmousedown="performAction('up')" class="controlBtn">
+                  <img class="btnLogo" src="../assets/up.svg" />
+                </button>
+              </div>
+              <div class="innerControlsRow">
+                <div class="controlsColumn">
+                  <button
+                    onmousedown="performAction('leftDown')"
+                    onmouseup="performAction('leftUp')"
+                    class="controlBtn"
+                  >
+                    <img class="btnLogo" src="../assets/left.svg" />
+                  </button>
+                </div>
+                <div class="controlsColumn">
+                  <button
+                    onmousedown="performAction('rightDown')"
+                    onmouseup="performAction('rightUp')"
+                    class="controlBtn"
+                  >
+                    <img class="btnLogo" src="../assets/right.svg" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- fighting -->
+
+            <div class="controlsColumn">
+              <div class="attack2Row">
+                <button
+                  onmousedown="performAction('attack2')"
+                  class="attack2Btn"
+                >
+                  <img class="attack2Logo" src="../assets/attack2.svg" />
+                </button>
+              </div>
+              <div class="innerControlsRow">
+                <div class="controlsColumn">
+                  <button
+                    onmousedown="performAction('attack1')"
+                    class="attack1Btn"
+                  >
+                    <img class="attack1Logo" src="../assets/attack1.svg" />
+                  </button>
+                </div>
+                <div class="controlsColumn">
+                  <button
+                    onmousedown="performAction('blockDown')"
+                    onmouseup="performAction('blockUp')"
+                    class="controlBtn"
+                  >
+                    <img class="blockLogo" src="../assets/block.svg" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div id="overlay"></div>
       <canvas id="mainCanvas"></canvas>
