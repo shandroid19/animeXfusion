@@ -310,7 +310,6 @@ $(document).ready(() => {
   background.update();
   waitForPlayer();
 });
-
 function animate() {
   window.requestAnimationFrame(animate);
   c.fillStyle = "black";
