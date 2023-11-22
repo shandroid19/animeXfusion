@@ -338,6 +338,7 @@ transition {
   height: 4.5rem;
   text-align: center;
   opacity: 0.7;
+  pointer-events: none;
 }
 
 .blockLogo {
@@ -345,6 +346,7 @@ transition {
   height: 3rem;
   text-align: center;
   opacity: 0.7;
+  pointer-events: none;
 }
 
 .attack2Logo {
@@ -352,6 +354,7 @@ transition {
   height: 3rem;
   text-align: center;
   opacity: 0.7;
+  pointer-events: none;
 }
 
 .attack1Logo {
@@ -359,6 +362,7 @@ transition {
   height: 4.5rem;
   text-align: center;
   opacity: 0.7;
+  pointer-events: none;
 }
 
 .hidden {
