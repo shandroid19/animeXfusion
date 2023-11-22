@@ -1,6 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <link rel="shortcut icon" type="image/x-icon" href="logo.png" />
+    <title>AnimeXfusion</title>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+      integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="./scripts/utils.js"></script>
+    <script>
+      $(document).ready(() => {
+        const nextLink = detectMobile()
+          ? "./views/lobby.html"
+          : "views/modeSelect.html";
+        document.querySelector("#playButton").href = nextLink;
+      });
+    </script>
     <meta charset="UTF-8" />
     <meta
       name="viewport"
@@ -8,14 +25,13 @@
     />
     <title>AnimeXfusion</title>
     <link rel="stylesheet" href="styles/welcomeStyles.css" />
-    <script src="./scripts/global.js"></script>
   </head>
 
   <body style="height: 100%; margin: 0; padding: 0">
     <div class="cover"></div>
     <div class="maskedContainer">
       <img src="logo.png" />
-      <a href="views/modeSelect.html"> Play Now </a>
+      <a id="playButton"> Play Now </a>
     </div>
   </body>
 </html>

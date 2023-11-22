@@ -1,6 +1,7 @@
 <head>
   <link rel="manifest" href="../manifest.json" />
-
+  <link rel="shortcut icon" type="image/x-icon" href="../logo.png" />
+  <title>AnimeXfusion</title>
   <script
     src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
     integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
@@ -61,15 +62,15 @@
           <div class="controlsRow">
             <div class="controlsColumn">
               <div class="innerControlsRow">
-                <button onmousedown="performAction('up')" class="controlBtn">
+                <button ontouchstart="performAction('up')" class="controlBtn">
                   <img class="btnLogo" src="../assets/up.svg" />
                 </button>
               </div>
               <div class="innerControlsRow">
                 <div class="controlsColumn">
                   <button
-                    onmousedown="performAction('leftDown')"
-                    onmouseup="performAction('leftUp')"
+                    ontouchstart="performAction('leftDown')"
+                    ontouchend="performAction('leftUp')"
                     class="controlBtn"
                   >
                     <img class="btnLogo" src="../assets/left.svg" />
@@ -77,8 +78,8 @@
                 </div>
                 <div class="controlsColumn">
                   <button
-                    onmousedown="performAction('rightDown')"
-                    onmouseup="performAction('rightUp')"
+                    ontouchstart="performAction('rightDown')"
+                    ontouchend="performAction('rightUp')"
                     class="controlBtn"
                   >
                     <img class="btnLogo" src="../assets/right.svg" />
@@ -92,7 +93,7 @@
             <div class="controlsColumn">
               <div class="attack2Row">
                 <button
-                  onmousedown="performAction('attack2')"
+                  ontouchstart="performAction('attack2')"
                   class="attack2Btn"
                 >
                   <img class="attack2Logo" src="../assets/attack2.svg" />
@@ -101,7 +102,7 @@
               <div class="innerControlsRow">
                 <div class="controlsColumn">
                   <button
-                    onmousedown="performAction('attack1')"
+                    ontouchstart="performAction('attack1')"
                     class="attack1Btn"
                   >
                     <img class="attack1Logo" src="../assets/attack1.svg" />
@@ -109,8 +110,8 @@
                 </div>
                 <div class="controlsColumn">
                   <button
-                    onmousedown="performAction('blockDown')"
-                    onmouseup="performAction('blockUp')"
+                    ontouchstart="performAction('blockDown')"
+                    ontouchend="performAction('blockUp')"
                     class="controlBtn"
                   >
                     <img class="blockLogo" src="../assets/block.svg" />

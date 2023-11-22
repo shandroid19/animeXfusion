@@ -8,7 +8,6 @@ async function generateCode() {
 
 async function join() {
   var room = document.forms["roomForm"]["codeInput"].value;
-  console.log(window.location.origin);
   $.ajax({
     url: `https://animexfusion-backend.onrender.com/checkRoom/${room}`,
     type: "GET",
