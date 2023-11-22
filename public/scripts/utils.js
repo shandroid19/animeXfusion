@@ -86,7 +86,7 @@ function quit() {
 }
 
 function waitForPlayer() {
-  if (!urlParams.has("initiator")) {
+  if (!urlParams.has("online")) {
     startCountdown(startGame);
     return;
   }

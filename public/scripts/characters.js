@@ -56,7 +56,7 @@ const players = [
       { x: 0, y: -15 },
       { x: 0, y: -30 },
       { x: 0, y: -30 },
-      { x: 0, y: -30 },
+      { x: 0, y: -10 },
       { x: 0, y: -50 },
       { x: 0, y: -30 },
       { x: 0, y: -30 },
@@ -66,7 +66,7 @@ const players = [
   {
     name: "vegeta",
     scale: 1.1,
-    moves: [4, 1, 7, 6, 10, 4, 7, 3],
+    moves: [4, 1, 7, 6, 10, 4, 8, 3],
     attack: { scale: 1.2, framesMax: 1 },
     offset: [
       { x: 0, y: -15 },
@@ -98,16 +98,16 @@ const players = [
   {
     name: "ichigo",
     scale: 1,
-    moves: [4, 6, 5, 6, 9, 4, 7, 1],
+    moves: [4, 6, 5, 6, 10, 4, 7, 1],
     attack: { scale: 1, framesMax: 1 },
     offset: [
       { x: 0, y: -65 },
       { x: 0, y: -40 },
       { x: 0, y: 10 },
       { x: 0, y: -80 },
+      { x: 0, y: -20 },
+      { x: 0, y: -60 },
       { x: 0, y: -50 },
-      { x: 0, y: -30 },
-      { x: 0, y: -10 },
       { x: 0, y: -30 },
     ],
   },

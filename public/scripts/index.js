@@ -154,8 +154,10 @@ const startGame = () => {
 };
 var socket;
 var player1;
+var online = false;
 $(document).ready(() => {
-  if (urlParams.has("initiator")) {
+  if (urlParams.has("online")) {
+    online = true;
     socket = io.connect("http://localhost:5000");
     socket?.emit("joinRoom", urlParams.get("id"), p1);
 
@@ -380,13 +382,12 @@ function animate() {
 animate();
 
 window.addEventListener("keydown", (e) => {
-  const currentPlayer = player1 || !urlParams.has("initiator") ? player : enemy;
-  const opponent = player1 || !urlParams.has("initiator") ? enemy : player;
+  const currentPlayer = player1 || !urlParams.has("online") ? player : enemy;
+  const opponent = player1 || !urlParams.has("online") ? enemy : player;
 
   const currentPlayerKey =
-    player1 || !urlParams.has("initiator") ? "player" : "enemy";
-  const opponentKey =
-    player1 || !urlParams.has("initiator") ? "enemy" : "player";
+    player1 || !urlParams.has("online") ? "player" : "enemy";
+  const opponentKey = player1 || !urlParams.has("online") ? "enemy" : "player";
 
   if (!started) return;
   switch (e.key) {
@@ -406,21 +407,6 @@ window.addEventListener("keydown", (e) => {
       socket?.emit("keyPress", "up", urlParams.get("id"));
       currentPlayer.keys.up = true;
       if (currentPlayer.velocity.y == 0) currentPlayer.velocity.y = -8;
-      break;
-
-    case "ArrowRight":
-      opponent.keys.right = true;
-      opponent.lastKey = `${opponentKey}Right`;
-      break;
-
-    case "ArrowLeft":
-      opponent.keys.left = true;
-      opponent.lastKey = `${opponentKey}Left`;
-      break;
-
-    case "ArrowUp":
-      opponent.keys.up = true;
-      if (opponent.velocity.y == 0) opponent.velocity.y = -8;
       break;
 
     case " ":
@@ -447,24 +433,6 @@ window.addEventListener("keydown", (e) => {
         );
       break;
 
-    case "0":
-      if (
-        currentPlayer.health > 0 &&
-        opponent.health > 0 &&
-        !opponent.isAttacked
-      )
-        executeAttack2(enemy, opponent.attack2Object, `#${opponentKey}Energy`);
-      break;
-
-    case "Control":
-      if (
-        currentPlayer.health > 0 &&
-        opponent.health > 0 &&
-        !opponent.isAttacked
-      )
-        opponent.attack1();
-      break;
-
     case "e":
       socket?.emit("keyPress", "blockDown", urlParams.get("id"));
       currentPlayer.keys.block = true;
@@ -476,7 +444,53 @@ window.addEventListener("keydown", (e) => {
         currentPlayer.block();
       break;
 
+      if (online) return;
+
+    case "ArrowRight":
+      if (online) return;
+      opponent.keys.right = true;
+      opponent.lastKey = `${opponentKey}Right`;
+      break;
+
+    case "ArrowLeft":
+      if (online) return;
+
+      opponent.keys.left = true;
+      opponent.lastKey = `${opponentKey}Left`;
+      break;
+
+    case "ArrowUp":
+      if (online) return;
+
+      opponent.keys.up = true;
+      if (opponent.velocity.y == 0) opponent.velocity.y = -8;
+      break;
+
+    case "0":
+      if (online) return;
+
+      if (
+        currentPlayer.health > 0 &&
+        opponent.health > 0 &&
+        !opponent.isAttacked
+      )
+        executeAttack2(enemy, opponent.attack2Object, `#${opponentKey}Energy`);
+      break;
+
+    case "Control":
+      if (online) return;
+
+      if (
+        currentPlayer.health > 0 &&
+        opponent.health > 0 &&
+        !opponent.isAttacked
+      )
+        opponent.attack1();
+      break;
+
     case "1":
+      if (online) return;
+
       opponent.keys.block = true;
       if (
         !opponent.isAttacking &&
@@ -491,8 +505,8 @@ window.addEventListener("keydown", (e) => {
 window.addEventListener("keyup", (e) => {
   if (!started) return;
 
-  const currentPlayer = player1 || !urlParams.has("initiator") ? player : enemy;
-  const opponent = player1 || !urlParams.has("initiator") ? enemy : player;
+  const currentPlayer = player1 || !urlParams.has("online") ? player : enemy;
+  const opponent = player1 || !urlParams.has("online") ? enemy : player;
 
   switch (e.key) {
     case "d":
@@ -508,26 +522,33 @@ window.addEventListener("keyup", (e) => {
 
       break;
 
+    case "e":
+      socket?.emit("keyPress", "blockUp", urlParams.get("id"));
+      currentPlayer.isBlocking = false;
+      currentPlayer.keys.block = false;
+      break;
+
     case "ArrowRight":
+      if (online) return;
+
       opponent.keys.right = false;
       opponent.offset = opponent.sprites.idle.offset;
 
       break;
 
     case "ArrowLeft":
+      if (online) return;
+
       opponent.keys.left = false;
       opponent.offset = opponent.sprites.idle.offset;
 
       break;
 
     case "1":
+      if (online) return;
+
       opponent.isBlocking = false;
       opponent.keys.block = false;
       break;
-
-    case "e":
-      socket?.emit("keyPress", "blockUp", urlParams.get("id"));
-      currentPlayer.isBlocking = false;
-      currentPlayer.keys.block = false;
   }
 });

@@ -2,14 +2,14 @@ const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 
 function getCurrentPlayer() {
-  if (urlParams.has("initiator")) return;
+  if (urlParams.has("online")) return;
   if (urlParams.has("p1"))
     document.querySelector("#currentPlayer").innerHTML = "Player 2";
   else document.querySelector("#currentPlayer").innerHTML = "Player 1";
 }
 
 function selectCharacter(id) {
-  const online = urlParams.has("initiator");
+  const online = urlParams.has("online");
   if (online) {
     window.open(
       `game.html${window.location.search}&p1=${id}&p2=0`,
