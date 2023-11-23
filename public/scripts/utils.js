@@ -19,7 +19,7 @@ function decreaseTimer() {
 function syncValues(roomCode) {
   if (timer) {
     setTimeout(syncValues, 300);
-
+    console.log(player.position.x, enemy.position.x);
     socket.emit("syncValues", {
       player: { health: player.health, position: player.position },
       enemy: { health: enemy.health, position: enemy.position },
@@ -152,7 +152,7 @@ function startCountdown(startGame) {
       started = true;
       decreaseTimer();
       restoreEnergy();
-      if (player1 && online) syncValues(urlParams.get("id"));
+      if (urlParams.has("online")) syncValues(urlParams.get("id"));
     }
   }, 1000);
 }

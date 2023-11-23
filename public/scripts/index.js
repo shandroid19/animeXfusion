@@ -188,6 +188,8 @@ $(document).ready(() => {
       player.position = newValues.player.position;
       enemy.health = newValues.enemy.health;
       enemy.position = newValues.enemy.position;
+      document.querySelector("#enemyHealth").style.width = enemy.health + "%";
+      document.querySelector("#playerHealth").style.width = player.health + "%";
     });
 
     socket.on("keyPress", (data) => {
