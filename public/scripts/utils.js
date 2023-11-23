@@ -16,17 +16,17 @@ function decreaseTimer() {
   }
 }
 
-function syncValues() {
-  setTimeout(syncValues, 300);
+function syncValues(roomCode) {
   if (timer) {
+    setTimeout(syncValues, 300);
+    console.log("synced");
     socket.emit("syncValues", {
       player: { health: player.health, position: player.position },
       enemy: { health: enemy.health, position: enemy.position },
-      roomCode: urlParams.get("id"),
+      roomCode,
     });
   }
 }
-
 function restoreEnergy() {
   setTimeout(restoreEnergy, 10);
   if (timer) {
@@ -152,6 +152,7 @@ function startCountdown(startGame) {
       started = true;
       decreaseTimer();
       restoreEnergy();
+      if (player1 && online) syncValues(urlParams.get("id"));
     }
   }, 1000);
 }
