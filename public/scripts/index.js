@@ -62,7 +62,7 @@ var player = new Fighter({
       offset: players[p1].offset[0],
     },
     run: {
-      imageSrc: `../sprites/${players[p1].name}/run.png`,
+      imageSrc: `../sprites/${players[p1].name}/walk.png`,
       framesMax: players[p1].moves[1],
       offset: players[p1].offset[1],
     },
@@ -120,7 +120,7 @@ var enemy = new Fighter({
       offset: players[p2].offset[0],
     },
     run: {
-      imageSrc: `../sprites/${players[p2].name}/run.png`,
+      imageSrc: `../sprites/${players[p2].name}/walk.png`,
       framesMax: players[p2].moves[1],
       offset: players[p2].offset[1],
     },
@@ -224,7 +224,7 @@ $(document).ready(() => {
             offset: players[p1].offset[0],
           },
           run: {
-            imageSrc: `../sprites/${players[p1].name}/run.png`,
+            imageSrc: `../sprites/${players[p1].name}/walk.png`,
             framesMax: players[p1].moves[1],
             offset: players[p1].offset[1],
           },
@@ -282,7 +282,7 @@ $(document).ready(() => {
             offset: players[p2].offset[0],
           },
           run: {
-            imageSrc: `../sprites/${players[p2].name}/run.png`,
+            imageSrc: `../sprites/${players[p2].name}/walk.png`,
             framesMax: players[p2].moves[1],
             offset: players[p2].offset[1],
           },
