@@ -178,8 +178,8 @@ var online = false;
 $(document).ready(() => {
   if (urlParams.has("online")) {
     online = true;
-    const origin = "http://localhost:5000";
-    // const origin = "https://animexfusion-backend.onrender.com";
+    // const origin = "http://localhost:5000";
+    const origin = "https://animexfusion-backend.onrender.com";
     socket = io.connect(origin);
     socket?.emit("joinRoom", urlParams.get("id"), p1);
     roomCode = urlParams.get("id");
