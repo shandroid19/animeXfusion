@@ -178,7 +178,9 @@ var online = false;
 $(document).ready(() => {
   if (urlParams.has("online")) {
     online = true;
-    socket = io.connect("https://animexfusion-backend.onrender.com/");
+    const origin = "http://localhost:5000";
+    // const origin = "https://animexfusion-backend.onrender.com";
+    socket = io.connect(origin);
     socket?.emit("joinRoom", urlParams.get("id"), p1);
 
     socket.on("keyPress", (data) => {
@@ -187,9 +189,9 @@ $(document).ready(() => {
 
     socket.on("startGame", ({ members, characters }) => {
       player1 = members[0] === socket.id;
-
       p1 = characters[members[0]];
       p2 = characters[members[1]];
+
       player = new Fighter({
         position: { x: 200, y: 0 },
         velocity: { x: 0, y: 0 },
@@ -324,12 +326,11 @@ function animate() {
 
   player.velocity.x = 0;
   enemy.velocity.x = 0;
-
   if (player.keys.left && player.lastKey == "playerLeft") {
-    player.velocity.x = -4;
+    player.velocity.x = -2;
     player.switchSprite("run");
   } else if (player.keys.right && player.lastKey == "playerRight") {
-    player.velocity.x = 4;
+    player.velocity.x = 2;
     player.switchSprite("run");
   } else {
     player.switchSprite("idle");
@@ -340,10 +341,10 @@ function animate() {
   }
 
   if (enemy.keys.left && enemy.lastKey == "enemyLeft") {
-    enemy.velocity.x = -4;
+    enemy.velocity.x = -2;
     enemy.switchSprite("run");
   } else if (enemy.keys.right && enemy.lastKey == "enemyRight") {
-    enemy.velocity.x = 4;
+    enemy.velocity.x = 2;
     enemy.switchSprite("run");
   } else {
     enemy.switchSprite("idle");
@@ -575,6 +576,92 @@ window.addEventListener("keyup", (e) => {
       break;
   }
 });
+
+const performTouchAction = (e, touch = false) => {
+  if (!started) return;
+
+  const currentPlayer = player1 || !urlParams.has("online") ? player : enemy;
+  const opponent = player1 || !urlParams.has("online") ? enemy : player;
+  const currentPlayerKey =
+    player1 || !urlParams.has("online") ? "player" : "enemy";
+
+  switch (e) {
+    case "rightDown":
+      socket?.emit("keyPress", "rightDown", urlParams.get("id"));
+      currentPlayer.keys.right = true;
+      currentPlayer.lastKey = `${currentPlayerKey}Right`;
+      break;
+
+    case "leftDown":
+      socket?.emit("keyPress", "leftDown", urlParams.get("id"));
+      currentPlayer.keys.left = true;
+      currentPlayer.lastKey = `${currentPlayerKey}Left`;
+      break;
+
+    case "rightUp":
+      socket?.emit("keyPress", e, urlParams.get("id"));
+      currentPlayer.keys.right = false;
+      currentPlayer.offset = currentPlayer.sprites.idle.offset;
+
+      break;
+
+    case "leftUp":
+      socket?.emit("keyPress", e, urlParams.get("id"));
+      currentPlayer.keys.left = false;
+      currentPlayer.offset = currentPlayer.sprites.idle.offset;
+
+      break;
+
+    case "blockDown":
+      socket?.emit("keyPress", "blockDown", urlParams.get("id"));
+      currentPlayer.keys.block = true;
+      if (
+        !currentPlayer.isAttacking &&
+        currentPlayer.velocity.y === 0 &&
+        currentPlayer.velocity.x === 0
+      )
+        currentPlayer.block();
+      break;
+
+    case "blockUp":
+      socket?.emit("keyPress", e, urlParams.get("id"));
+      currentPlayer.isBlocking = false;
+      currentPlayer.keys.block = false;
+      break;
+
+    case "up":
+      socket?.emit("keyPress", e, urlParams.get("id"));
+      currentPlayer.keys.up = true;
+      if (currentPlayer.velocity.y == 0) currentPlayer.velocity.y = -8;
+      break;
+
+    case "attack1":
+      socket?.emit("keyPress", e, urlParams.get("id"));
+      if (
+        currentPlayer.health > 0 &&
+        opponent.health > 0 &&
+        !currentPlayer.isAttacked
+      )
+        currentPlayer.attack1();
+      break;
+
+    case "attack2":
+      socket?.emit("keyPress", e, urlParams.get("id"));
+
+      if (
+        currentPlayer.health > 0 &&
+        opponent.health > 0 &&
+        !currentPlayer.isAttacked
+      )
+        executeAttack2(
+          currentPlayer,
+          currentPlayer.attack2Object,
+          opponent,
+          `#${currentPlayerKey}Energy`
+        );
+      break;
+  }
+};
 
 $(document).ready(() => {
   if (!detectMobile()) $(".controlsContainer").addClass("hidden");

@@ -111,7 +111,7 @@ class Fighter extends Sprite {
     this.velocity = velocity;
     this.height = 150;
     this.width = 50;
-    this.lastKey;
+    this.lastKey = "None";
     this.offset = offset;
     this.attackBox = {
       position: {
