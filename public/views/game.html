@@ -62,15 +62,18 @@
           <div class="controlsRow">
             <div class="controlsColumn">
               <div class="innerControlsRow">
-                <button ontouchstart="performAction('up')" class="controlBtn">
+                <button
+                  ontouchstart="performTouchAction('up',true)"
+                  class="controlBtn"
+                >
                   <img class="btnLogo" src="../assets/up.svg" />
                 </button>
               </div>
               <div class="innerControlsRow">
                 <div class="controlsColumn">
                   <button
-                    ontouchstart="performAction('leftDown')"
-                    ontouchend="performAction('leftUp')"
+                    ontouchstart="performTouchAction('leftDown',true)"
+                    ontouchend="performTouchAction('leftUp',true)"
                     class="controlBtn"
                   >
                     <img class="btnLogo" src="../assets/left.svg" />
@@ -78,8 +81,8 @@
                 </div>
                 <div class="controlsColumn">
                   <button
-                    ontouchstart="performAction('rightDown')"
-                    ontouchend="performAction('rightUp')"
+                    ontouchstart="performTouchAction('rightDown',true)"
+                    ontouchend="performTouchAction('rightUp',true)"
                     class="controlBtn"
                   >
                     <img class="btnLogo" src="../assets/right.svg" />
@@ -93,7 +96,7 @@
             <div class="controlsColumn">
               <div class="attack2Row">
                 <button
-                  ontouchstart="performAction('attack2')"
+                  ontouchstart="performTouchAction('attack2',true)"
                   class="attack2Btn"
                 >
                   <img class="attack2Logo" src="../assets/attack2.svg" />
@@ -102,7 +105,7 @@
               <div class="innerControlsRow">
                 <div class="controlsColumn">
                   <button
-                    ontouchstart="performAction('attack1')"
+                    ontouchstart="performTouchAction('attack1',true)"
                     class="attack1Btn"
                   >
                     <img class="attack1Logo" src="../assets/attack1.svg" />
@@ -110,8 +113,8 @@
                 </div>
                 <div class="controlsColumn">
                   <button
-                    ontouchstart="performAction('blockDown')"
-                    ontouchend="performAction('blockUp')"
+                    ontouchstart="performTouchAction('blockDown',true)"
+                    ontouchend="performTouchAction('blockUp')"
                     class="controlBtn"
                   >
                     <img class="blockLogo" src="../assets/block.svg" />

@@ -69,10 +69,9 @@ function determineWinner({ player, enemy }) {
 }
 
 function executeAttack2(player1, attack, enemy1, selector) {
-  if (parseInt(player1.energy) <= 100) {
+  if (parseInt(player1.energy) == 100) {
     if (player1.position.x > enemy1.position.x) {
       attack.flipped = false;
-      console.log(player1.position.x, enemy1.position.x);
       attack.velocity = {
         x: -Math.abs(attack.velocity.x),
         y: attack.velocity.y,
@@ -141,8 +140,10 @@ function startCountdown(startGame) {
   }, 1000);
 }
 
-const performAction = (data) => {
+const performAction = (data, touch = false) => {
   if (!started) return;
+
+  if (touch) socket?.emit("keyPress", data, urlParams.get("id"));
 
   const currentPlayer = !player1 ? player : enemy;
   const opponent = !player1 ? enemy : player;
