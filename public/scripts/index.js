@@ -183,6 +183,13 @@ $(document).ready(() => {
     socket = io.connect(origin);
     socket?.emit("joinRoom", urlParams.get("id"), p1);
 
+    socket.on("syncValues", (newValues) => {
+      player.health = newValues.player.health;
+      player.position = newValues.player.position;
+      enemy.health = newValues.enemy.health;
+      enemy.position = newValues.enemy.position;
+    });
+
     socket.on("keyPress", (data) => {
       performAction(data);
     });
