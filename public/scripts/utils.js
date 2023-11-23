@@ -8,21 +8,22 @@ function decreaseTimer() {
 
   if (timer === 0) {
     determineWinner({ player, enemy });
-    socket.emit("syncValues", {
-      player: { health: player.health, position: player.position },
-      enemy: { health: enemy.health, position: enemy.position },
-      roomCode: urlParams.get("id"),
+    socket.emit("syncHealth", {
+      player: player.health,
+      enemy: enemy.health,
+      roomCode,
     });
   }
 }
 
-function syncValues(roomCode) {
+var roomCode;
+
+function syncPosition() {
   if (timer) {
-    setTimeout(syncValues, 300);
-    console.log(player.position.x, enemy.position.x);
-    socket.emit("syncValues", {
-      player: { health: player.health, position: player.position },
-      enemy: { health: enemy.health, position: enemy.position },
+    setTimeout(syncPosition, 500);
+    socket.emit("syncPosition", {
+      player: player.position,
+      enemy: enemy.position,
       roomCode,
     });
   }
@@ -152,7 +153,7 @@ function startCountdown(startGame) {
       started = true;
       decreaseTimer();
       restoreEnergy();
-      if (urlParams.has("online")) syncValues(urlParams.get("id"));
+      if (urlParams.has("online") && player1) syncPosition();
     }
   }, 1000);
 }

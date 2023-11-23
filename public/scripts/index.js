@@ -178,18 +178,21 @@ var online = false;
 $(document).ready(() => {
   if (urlParams.has("online")) {
     online = true;
-    // const origin = "http://localhost:5000";
-    const origin = "https://animexfusion-backend.onrender.com";
+    const origin = "http://localhost:5000";
+    // const origin = "https://animexfusion-backend.onrender.com";
     socket = io.connect(origin);
     socket?.emit("joinRoom", urlParams.get("id"), p1);
+    roomCode = urlParams.get("id");
+    socket.on("syncPosition", (newValues) => {
+      player.position = newValues.player;
+      enemy.position = newValues.enemy;
+    });
 
-    socket.on("syncValues", (newValues) => {
-      player.health = newValues.player.health;
-      player.position = newValues.player.position;
-      enemy.health = newValues.enemy.health;
-      enemy.position = newValues.enemy.position;
-      document.querySelector("#enemyHealth").style.width = enemy.health + "%";
+    socket.on("syncHealth", (newValues) => {
+      player.health = newValues.player;
+      enemy.health = newValues.enemy;
       document.querySelector("#playerHealth").style.width = player.health + "%";
+      document.querySelector("#enemyHealth").style.width = enemy.health + "%";
     });
 
     socket.on("keyPress", (data) => {
@@ -371,6 +374,12 @@ function animate() {
     enemy.switchSprite("fall");
     enemy.health -= 20;
     document.querySelector("#enemyHealth").style.width = enemy.health + "%";
+
+    socket.emit("syncHealth", {
+      player: player.health,
+      enemy: enemy.health,
+      roomCode,
+    });
   }
 
   if (
@@ -381,6 +390,12 @@ function animate() {
     player.switchSprite("fall");
     player.health -= 20;
     document.querySelector("#playerHealth").style.width = player.health + "%";
+
+    socket.emit("syncHealth", {
+      player: player.health,
+      enemy: enemy.health,
+      roomCode,
+    });
   }
 
   //detect for player collision
@@ -392,6 +407,15 @@ function animate() {
     player.isAttacking = false;
     enemy.takeHit();
     document.querySelector("#enemyHealth").style.width = enemy.health + "%";
+    setTimeout(
+      () =>
+        socket.emit("syncHealth", {
+          player: player.health,
+          enemy: enemy.health,
+          roomCode,
+        }),
+      200
+    );
   }
 
   if (
@@ -401,6 +425,15 @@ function animate() {
     player.takeHit();
     document.querySelector("#playerHealth").style.width = player.health + "%";
     enemy.isAttacking = false;
+    setTimeout(
+      () =>
+        socket.emit("syncHealth", {
+          player: player.health,
+          enemy: enemy.health,
+          roomCode,
+        }),
+      200
+    );
   }
 
   if (enemy.health <= 0 || player.health <= 0)
