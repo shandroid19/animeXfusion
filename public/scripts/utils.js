@@ -20,7 +20,7 @@ var roomCode;
 
 function syncPosition() {
   if (timer) {
-    setTimeout(syncPosition, 500);
+    setTimeout(syncPosition, 200);
     socket.emit("syncPosition", {
       player: player.position,
       enemy: enemy.position,
