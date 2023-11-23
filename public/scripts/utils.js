@@ -19,7 +19,7 @@ function decreaseTimer() {
 function syncValues(roomCode) {
   if (timer) {
     setTimeout(syncValues, 300);
-    console.log("synced");
+
     socket.emit("syncValues", {
       player: { health: player.health, position: player.position },
       enemy: { health: enemy.health, position: enemy.position },
