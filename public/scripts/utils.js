@@ -73,13 +73,12 @@ function determineWinner({ player, enemy }) {
   document.querySelector("#result").style.display = "flex";
 
   const restartButton =
-    '<button  class="btn"  style="background-color: rgb(59, 123, 102)"  onclick="restart()"  >Restart</button>';
+    '<button  class="btn"  style="background-color: rgb(59, 123, 102)"  onclick="restart()"  >New Game</button>';
 
   const quitButton =
     '<button  class="btn"  style="background-color: rgb(160, 61, 61)"  onclick="quit()"  >Quit</button>';
   if ($("#menu").children().length == 0) {
     $("#menu").append(restartButton);
-    $("#menu").append(quitButton);
   }
 
   timer = 100;
@@ -109,7 +108,7 @@ function executeAttack2(player1, attack, enemy1, selector) {
 }
 
 function restart() {
-  location.reload();
+  window.history.go(-1);
 }
 
 function quit() {
