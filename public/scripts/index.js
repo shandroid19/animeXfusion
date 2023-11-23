@@ -171,6 +171,7 @@ const keys = {
 const startGame = () => {
   decreaseTimer();
   restoreEnergy();
+  if (player1) syncValues();
 };
 var socket;
 var player1;
