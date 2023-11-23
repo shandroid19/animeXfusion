@@ -8,6 +8,22 @@ function decreaseTimer() {
 
   if (timer === 0) {
     determineWinner({ player, enemy });
+    socket.emit("syncValues", {
+      player: { health: player.health, position: player.position },
+      enemy: { health: enemy.health, position: enemy.position },
+      roomCode: urlParams.get("id"),
+    });
+  }
+}
+
+function syncValues() {
+  setTimeout(syncValues, 300);
+  if (timer) {
+    socket.emit("syncValues", {
+      player: { health: player.health, position: player.position },
+      enemy: { health: enemy.health, position: enemy.position },
+      roomCode: urlParams.get("id"),
+    });
   }
 }
 
