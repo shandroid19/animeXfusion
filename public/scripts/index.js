@@ -373,13 +373,12 @@ function animate() {
     player.attack2Object.launched = false;
     enemy.switchSprite("fall");
     enemy.health -= 20;
-    document.querySelector("#enemyHealth").style.width = enemy.health + "%";
-
     socket.emit("syncHealth", {
       player: player.health,
       enemy: enemy.health,
       roomCode,
     });
+    document.querySelector("#enemyHealth").style.width = enemy.health + "%";
   }
 
   if (
@@ -389,13 +388,12 @@ function animate() {
     enemy.attack2Object.launched = false;
     player.switchSprite("fall");
     player.health -= 20;
-    document.querySelector("#playerHealth").style.width = player.health + "%";
-
     socket.emit("syncHealth", {
       player: player.health,
       enemy: enemy.health,
       roomCode,
     });
+    document.querySelector("#playerHealth").style.width = player.health + "%";
   }
 
   //detect for player collision
