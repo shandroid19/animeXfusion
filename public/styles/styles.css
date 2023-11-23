@@ -2,6 +2,7 @@
   box-sizing: border-box;
   margin: 0;
   font-family: sans-serif;
+  touch-action: manipulation;
 }
 
 body {
@@ -298,6 +299,7 @@ transition {
   align-items: center;
   border-style: solid;
   border-color: white;
+  touch-action: manipulation;
 }
 
 .attack2Row {
@@ -318,6 +320,7 @@ transition {
   display: flex;
   justify-content: center;
   align-items: center;
+  touch-action: manipulation;
 }
 
 .attack1Btn {
@@ -331,6 +334,7 @@ transition {
   display: flex;
   justify-content: center;
   align-items: center;
+  touch-action: manipulation;
 }
 
 .btnLogo {
