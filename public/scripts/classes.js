@@ -36,9 +36,10 @@ class Sprite {
 
   animateFrames() {
     this.framesElapsed++;
-
     if (this.framesElapsed % this.framesHold === 0) {
-      if (this.framesCurrent < this.framesMax - 1) {
+      if (this.framesCurrent == this.framesMax - 1 && this.isSplAttacking) {
+        this.framesCurrent--;
+      } else if (this.framesCurrent < this.framesMax - 1) {
         this.framesCurrent++;
       } else if (!this.isBlocking) this.framesCurrent = 0;
     }
@@ -51,7 +52,14 @@ class Sprite {
 }
 
 class Attack extends Sprite {
-  constructor({ position, imageSrc, scale = 1, framesMax = 1, velocity }) {
+  constructor({
+    position,
+    imageSrc,
+    scale = 1,
+    framesMax = 1,
+    velocity,
+    width = 50,
+  }) {
     super({
       imageSrc,
       scale,
@@ -62,14 +70,23 @@ class Attack extends Sprite {
     this.velocity = velocity;
     this.scale = scale;
     this.framesMax = framesMax;
-    this.height = 50;
-    this.width = 50;
+    this.height = 100;
+    this.width = width;
     this.flipped = false;
   }
 
-  release(position) {
-    this.position = { x: position.x, y: position.y + 50 };
+  release(position, flipped = false, special = false) {
+    var offset = 0;
+    if (special) offset = !flipped ? -this.width : 100;
+    this.position = {
+      x: position.x + offset,
+      y: position.y,
+    };
+
     this.launched = true;
+    setTimeout(() => {
+      this.launched = false;
+    }, 2000);
   }
 
   update() {
@@ -100,7 +117,9 @@ class Fighter extends Sprite {
     framesMax = 1,
     sprites,
     attack2Object,
+    splAttackObject,
     offset,
+    name,
   }) {
     super({
       position,
@@ -108,6 +127,7 @@ class Fighter extends Sprite {
       scale,
       framesMax,
     });
+    this.name = name;
     this.velocity = velocity;
     this.height = 150;
     this.width = 50;
@@ -133,8 +153,10 @@ class Fighter extends Sprite {
     this.sprites = sprites;
     this.isJumping = false;
     this.attack2Object = attack2Object;
+    this.splAttackObject = splAttackObject;
     this.isBlocking = false;
     this.isAttacked = false;
+    this.isSplAttacking = false;
     this.keys = {
       up: false,
       left: false,
@@ -158,6 +180,10 @@ class Fighter extends Sprite {
 
   attack2() {
     this.switchSprite("attack2");
+  }
+
+  splAttack() {
+    this.switchSprite("splAttack");
   }
 
   takeHit() {
@@ -188,6 +214,20 @@ class Fighter extends Sprite {
     if (
       this.image === this.sprites.attack2.image &&
       this.framesCurrent < this.sprites.attack2.framesMax - 1
+    )
+      return;
+
+    if (
+      this.image === this.sprites.splAttack.image &&
+      this.isSplAttacking &&
+      this.framesCurrent <= this.sprites.splAttack.framesMax - 1
+    )
+      return;
+
+    if (
+      this.image === this.sprites.splAttack.image &&
+      !this.isSplAttacking &&
+      this.framesCurrent < this.sprites.splAttack.framesMax - 1
     )
       return;
 
@@ -261,6 +301,17 @@ class Fighter extends Sprite {
         }
         break;
 
+      case "splAttack":
+        if (this.image !== this.sprites.splAttack.image) {
+          this.image = this.sprites.splAttack.image;
+          this.offset = this.sprites.splAttack.offset;
+
+          this.framesMax = this.sprites.splAttack.framesMax;
+          this.framesCurrent = 0;
+          this.position.y += this.sprites.splAttack.offset.y;
+        }
+        break;
+
       case "fall":
         if (this.image !== this.sprites.fall.image) {
           this.image = this.sprites.fall.image;
@@ -295,8 +346,6 @@ class Fighter extends Sprite {
   }
 
   update(enemy) {
-    const t1 = performance.now();
-
     const canvas = document.querySelector("canvas");
     const canvasWidth = canvas.width;
 

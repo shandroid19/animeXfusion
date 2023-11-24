@@ -57,6 +57,15 @@ var player = new Fighter({
     velocity: { x: 5 * speed, y: 0 },
   }),
 
+  splAttackObject: new Attack({
+    position: { x: 200, y: 0 },
+    imageSrc: `../sprites/${players[p1].name}/splAttackFX.png`,
+    scale: players[p1].spl.scale,
+    framesMax: players[p1].spl.framesMax,
+    velocity: { x: players[p1].spl.long ? speed * 5 : 0, y: 0 },
+    width: 250,
+  }),
+
   sprites: {
     idle: {
       imageSrc: `../sprites/${players[p1].name}/idle.png`,
@@ -82,6 +91,11 @@ var player = new Fighter({
       imageSrc: `../sprites/${players[p1].name}/attack2.png`,
       framesMax: players[p1].moves[4],
       offset: players[p1].offset[4],
+    },
+    splAttack: {
+      imageSrc: `../sprites/${players[p1].name}/splAttack.png`,
+      framesMax: players[p1].moves[8],
+      offset: players[p1].offset[8],
     },
     takeHit: {
       imageSrc: `../sprites/${players[p1].name}/takeHit1.png`,
@@ -115,6 +129,15 @@ var enemy = new Fighter({
     velocity: { x: 5 * speed, y: 0 },
   }),
 
+  splAttackObject: new Attack({
+    position: { x: 200, y: 0 },
+    imageSrc: `../sprites/${players[p2].name}/splAttackFX.png`,
+    scale: players[p2].spl.scale,
+    framesMax: players[p2].spl.framesMax,
+    velocity: { x: players[p2].spl.long ? speed * 5 : 0, y: 0 },
+    width: 250,
+  }),
+
   sprites: {
     idle: {
       imageSrc: `../sprites/${players[p2].name}/idle.png`,
@@ -140,6 +163,11 @@ var enemy = new Fighter({
       imageSrc: `../sprites/${players[p2].name}/attack2.png`,
       framesMax: players[p2].moves[4],
       offset: players[p2].offset[4],
+    },
+    splAttack: {
+      imageSrc: `../sprites/${players[p2].name}/splAttack.png`,
+      framesMax: players[p2].moves[8],
+      offset: players[p2].offset[8],
     },
     takeHit: {
       imageSrc: `../sprites/${players[p2].name}/takeHit1.png`,
@@ -219,6 +247,15 @@ $(document).ready(() => {
           velocity: { x: 5 * speed, y: 0 },
         }),
 
+        splAttackObject: new Attack({
+          position: { x: 200, y: 0 },
+          imageSrc: `../sprites/${players[p1].name}/splAttackFX.png`,
+          scale: players[p1].spl.scale,
+          framesMax: players[p1].spl.framesMax,
+          velocity: { x: players[p1].spl.long ? speed * 5 : 0, y: 0 },
+          width: 250,
+        }),
+
         sprites: {
           idle: {
             imageSrc: `../sprites/${players[p1].name}/idle.png`,
@@ -244,6 +281,11 @@ $(document).ready(() => {
             imageSrc: `../sprites/${players[p1].name}/attack2.png`,
             framesMax: players[p1].moves[4],
             offset: players[p1].offset[4],
+          },
+          splAttack: {
+            imageSrc: `../sprites/${players[p1].name}/splAttack.png`,
+            framesMax: players[p1].moves[8],
+            offset: players[p1].offset[8],
           },
           takeHit: {
             imageSrc: `../sprites/${players[p1].name}/takeHit1.png`,
@@ -277,6 +319,15 @@ $(document).ready(() => {
           velocity: { x: 5 * speed, y: 0 },
         }),
 
+        splAttackObject: new Attack({
+          position: { x: 200, y: 0 },
+          imageSrc: `../sprites/${players[p2].name}/splAttackFX.png`,
+          scale: players[p2].spl.scale,
+          framesMax: players[p2].spl.framesMax,
+          velocity: { x: players[p2].spl.long ? speed * 5 : 0, y: 0 },
+          width: 250,
+        }),
+
         sprites: {
           idle: {
             imageSrc: `../sprites/${players[p2].name}/idle.png`,
@@ -302,6 +353,11 @@ $(document).ready(() => {
             imageSrc: `../sprites/${players[p2].name}/attack2.png`,
             framesMax: players[p2].moves[4],
             offset: players[p2].offset[4],
+          },
+          splAttack: {
+            imageSrc: `../sprites/${players[p2].name}/splAttack.png`,
+            framesMax: players[p2].moves[8],
+            offset: players[p2].offset[8],
           },
           takeHit: {
             imageSrc: `../sprites/${players[p2].name}/takeHit1.png`,
@@ -337,6 +393,9 @@ function animate() {
 
   if (player.attack2Object.launched) player.attack2Object.update();
   if (enemy.attack2Object.launched) enemy.attack2Object.update();
+
+  if (player.splAttackObject.launched) player.splAttackObject.update();
+  if (enemy.splAttackObject.launched) enemy.splAttackObject.update();
 
   player.velocity.x = 0;
   enemy.velocity.x = 0;
@@ -374,9 +433,10 @@ function animate() {
     player.attack2Object.launched
   ) {
     player.attack2Object.launched = false;
+
     enemy.switchSprite("fall");
     enemy.health -= 20;
-    socket.emit("syncHealth", {
+    socket?.emit("syncHealth", {
       player: player.health,
       enemy: enemy.health,
       roomCode,
@@ -391,12 +451,68 @@ function animate() {
     enemy.attack2Object.launched = false;
     player.switchSprite("fall");
     player.health -= 20;
-    socket.emit("syncHealth", {
+    socket?.emit("syncHealth", {
       player: player.health,
       enemy: enemy.health,
       roomCode,
     });
     document.querySelector("#playerHealth").style.width = player.health + "%";
+  }
+
+  if (
+    attackCollision({
+      rectangle1: enemy,
+      rectangle2: player.splAttackObject,
+    }) &&
+    player.splAttackObject.launched
+  ) {
+    enemy.switchSprite("takeHit");
+    if (!player.isSplAttacking) {
+      player.isSplAttacking = true;
+      enemy.isAttacked = true;
+
+      setTimeout(() => {
+        player.isSplAttacking = false;
+        player.splAttackObject.launched = false;
+        enemy.switchSprite("fall");
+        enemy.health -= 40;
+        socket?.emit("syncHealth", {
+          player: player.health,
+          enemy: enemy.health,
+          roomCode,
+        });
+        document.querySelector("#enemyHealth").style.width = enemy.health + "%";
+        enemy.isAttacked = false;
+      }, 2000);
+    }
+  }
+  if (
+    attackCollision({
+      rectangle1: player,
+      rectangle2: enemy.splAttackObject,
+    }) &&
+    enemy.splAttackObject.launched
+  ) {
+    player.switchSprite("takeHit");
+    if (!enemy.isSplAttacking) {
+      enemy.isSplAttacking = true;
+      player.isAttacked = true;
+
+      setTimeout(() => {
+        enemy.isSplAttacking = false;
+        enemy.splAttackObject.launched = false;
+        player.health -= 40;
+        player.switchSprite("fall");
+        socket?.emit("syncHealth", {
+          player: player.health,
+          enemy: enemy.health,
+          roomCode,
+        });
+        document.querySelector("#playerHealth").style.width =
+          player.health + "%";
+        player.isAttacked = false;
+      }, 2000);
+    }
   }
 
   //detect for player collision
@@ -405,12 +521,13 @@ function animate() {
     rectangularCollision({ rectangle1: player, rectangle2: enemy }) &&
     player.isAttacking
   ) {
+    if (enemy.isAttacked) return;
     player.isAttacking = false;
     enemy.takeHit();
     document.querySelector("#enemyHealth").style.width = enemy.health + "%";
     setTimeout(
       () =>
-        socket.emit("syncHealth", {
+        socket?.emit("syncHealth", {
           player: player.health,
           enemy: enemy.health,
           roomCode,
@@ -423,12 +540,14 @@ function animate() {
     rectangularCollision({ rectangle1: enemy, rectangle2: player }) &&
     enemy.isAttacking
   ) {
+    if (player.isAttacked) return;
+
     player.takeHit();
     document.querySelector("#playerHealth").style.width = player.health + "%";
     enemy.isAttacking = false;
     setTimeout(
       () =>
-        socket.emit("syncHealth", {
+        socket?.emit("syncHealth", {
           player: player.health,
           enemy: enemy.health,
           roomCode,
@@ -437,8 +556,10 @@ function animate() {
     );
   }
 
-  if (enemy.health <= 0 || player.health <= 0)
+  if (enemy.health <= 0 || player.health <= 0) {
     determineWinner({ player, enemy });
+    started = false;
+  }
 }
 
 animate();
@@ -452,6 +573,9 @@ window.addEventListener("keydown", (e) => {
   const opponentKey = player1 || !urlParams.has("online") ? "enemy" : "player";
 
   if (!started) return;
+
+  if (currentPlayer.isAttacked || opponent.isAttacked) return;
+
   switch (e.key) {
     case "d":
       socket?.emit("keyPress", "rightDown", urlParams.get("id"));
@@ -492,6 +616,22 @@ window.addEventListener("keydown", (e) => {
         executeAttack2(
           currentPlayer,
           currentPlayer.attack2Object,
+          opponent,
+          `#${currentPlayerKey}Energy`
+        );
+      break;
+
+    case "r":
+      socket?.emit("keyPress", "splAttack", urlParams.get("id"));
+
+      if (
+        currentPlayer.health > 0 &&
+        opponent.health > 0 &&
+        !currentPlayer.isAttacked
+      )
+        executeSplAttack(
+          currentPlayer,
+          currentPlayer.splAttackObject,
           opponent,
           `#${currentPlayerKey}Energy`
         );
@@ -539,6 +679,22 @@ window.addEventListener("keydown", (e) => {
         executeAttack2(
           opponent,
           opponent.attack2Object,
+          currentPlayer,
+          `#${opponentKey}Energy`
+        );
+      break;
+
+    case "2":
+      if (online) return;
+
+      if (
+        currentPlayer.health > 0 &&
+        opponent.health > 0 &&
+        !opponent.isAttacked
+      )
+        executeSplAttack(
+          opponent,
+          opponent.splAttackObject,
           currentPlayer,
           `#${opponentKey}Energy`
         );
@@ -703,9 +859,25 @@ const performTouchAction = (e, touch = false) => {
           `#${currentPlayerKey}Energy`
         );
       break;
+
+    case "splAttack":
+      socket?.emit("keyPress", e, urlParams.get("id"));
+
+      if (
+        currentPlayer.health > 0 &&
+        opponent.health > 0 &&
+        !currentPlayer.isAttacked
+      )
+        executeSplAttack(
+          currentPlayer,
+          currentPlayer.splAttackObject,
+          opponent,
+          `#${currentPlayerKey}Energy`
+        );
+      break;
   }
 };
 
 $(document).ready(() => {
-  // if (!detectMobile()) $(".controlsContainer").addClass("hidden");
+  if (!detectMobile()) $(".controlsContainer").addClass("hidden");
 });

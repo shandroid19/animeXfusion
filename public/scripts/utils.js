@@ -8,7 +8,7 @@ function decreaseTimer() {
 
   if (timer === 0) {
     determineWinner({ player, enemy });
-    socket.emit("syncHealth", {
+    socket?.emit("syncHealth", {
       player: player.health,
       enemy: enemy.health,
       roomCode,
@@ -21,7 +21,7 @@ var roomCode;
 function syncPosition() {
   if (timer) {
     setTimeout(syncPosition, 200);
-    socket.emit("syncPosition", {
+    socket?.emit("syncPosition", {
       player: player.position,
       enemy: enemy.position,
       roomCode,
@@ -31,8 +31,10 @@ function syncPosition() {
 function restoreEnergy() {
   setTimeout(restoreEnergy, 10);
   if (timer) {
-    if (player.energy < 100) player.energy += 0.1;
-    if (enemy.energy < 100) enemy.energy += 0.1;
+    if (player.energy < 100) player.energy += 0.05;
+    if (enemy.energy < 100) enemy.energy += 0.05;
+    if (player.energy >= 50) $("#attack2Btn").css("border-color", "#fff");
+    if (player.energy >= 100) $("#splAttackBtn").css("border-color", "#fff");
     document.querySelector("#playerEnergy").style.width = player.energy + "%";
     document.querySelector("#enemyEnergy").style.width = enemy.energy + "%";
   }
@@ -66,9 +68,13 @@ function determineWinner({ player, enemy }) {
   $("#overlay").addClass("overlay");
 
   if (player.health > enemy.health)
-    document.querySelector("#result").innerHTML = "Player 1 Wins!";
+    document.querySelector(
+      "#result"
+    ).innerHTML = `Player 1 (${players[p1].name}) Wins!`;
   else if (player.health < enemy.health)
-    document.querySelector("#result").innerHTML = "Player 2 Wins!";
+    document.querySelector(
+      "#result"
+    ).innerHTML = `Player 2 (${players[p2].name}) Wins!`;
   else document.querySelector("#result").innerHTML = "Draw game!";
   document.querySelector("#result").style.display = "flex";
 
@@ -85,7 +91,7 @@ function determineWinner({ player, enemy }) {
 }
 
 function executeAttack2(player1, attack, enemy1, selector) {
-  if (parseInt(player1.energy) == 100) {
+  if (parseInt(player1.energy) >= 50) {
     if (player1.position.x > enemy1.position.x) {
       attack.flipped = false;
       attack.velocity = {
@@ -102,6 +108,29 @@ function executeAttack2(player1, attack, enemy1, selector) {
 
     player1.attack2(enemy1);
     attack.release(player1.position);
+    player1.energy -= 50;
+    document.querySelector(selector).style.width = player1.energy + "%";
+  }
+}
+
+function executeSplAttack(player1, attack, enemy1, selector) {
+  if (parseInt(player1.energy) == 100) {
+    if (player1.position.x > enemy1.position.x) {
+      attack.flipped = false;
+      attack.velocity = {
+        x: -Math.abs(attack.velocity.x),
+        y: attack.velocity.y,
+      };
+    } else {
+      attack.velocity = {
+        x: Math.abs(attack.velocity.x),
+        y: attack.velocity.y,
+      };
+      attack.flipped = true;
+    }
+
+    player1.splAttack(enemy1);
+    attack.release(player1.position, attack.flipped, (special = true));
     player1.energy = 0;
     document.querySelector(selector).style.width = player1.energy + "%";
   }
@@ -167,6 +196,7 @@ const performAction = (data, touch = false) => {
   const currentPlayerKey = player1 ? "enemy" : "player";
   const opponentKey = player1 ? "player" : "enemy";
 
+  if (currentPlayer.isAttacked) return;
   switch (data) {
     case "rightDown":
       currentPlayer.keys.right = true;
@@ -201,6 +231,20 @@ const performAction = (data, touch = false) => {
         executeAttack2(
           currentPlayer,
           currentPlayer.attack2Object,
+          opponent,
+          `#${currentPlayerKey}Energy`
+        );
+      break;
+
+    case "splAttack":
+      if (
+        currentPlayer.health > 0 &&
+        opponent.health > 0 &&
+        !currentPlayer.isAttacked
+      )
+        executeSplAttack(
+          currentPlayer,
+          currentPlayer.splAttackObject,
           opponent,
           `#${currentPlayerKey}Energy`
         );
