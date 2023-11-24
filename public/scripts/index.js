@@ -1,5 +1,6 @@
 const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
+const speed = 2;
 
 canvas.width = 1024;
 canvas.height = 576;
@@ -29,7 +30,7 @@ window.addEventListener("resize", handleResize);
 c.fillRect(0, 0, canvas.width, canvas.height);
 
 //changed
-const gravity = 0.2;
+const gravity = 0.1 * speed;
 let timer = 100;
 
 const background = new Sprite({
@@ -53,7 +54,7 @@ var player = new Fighter({
     imageSrc: `../sprites/${players[p1].name}/attack2FX.png`,
     scale: players[p1].attack.scale,
     framesMax: players[p1].attack.framesMax,
-    velocity: { x: 5, y: 0 },
+    velocity: { x: 5 * speed, y: 0 },
   }),
 
   sprites: {
@@ -63,7 +64,7 @@ var player = new Fighter({
       offset: players[p1].offset[0],
     },
     run: {
-      imageSrc: `../sprites/${players[p1].name}/walk.png`,
+      imageSrc: `../sprites/${players[p1].name}/run.png`,
       framesMax: players[p1].moves[1],
       offset: players[p1].offset[1],
     },
@@ -111,7 +112,7 @@ var enemy = new Fighter({
     imageSrc: `../sprites/${players[p2].name}/attack2FX.png`,
     scale: players[p2].attack.scale,
     framesMax: players[p2].attack.framesMax,
-    velocity: { x: 5, y: 0 },
+    velocity: { x: 5 * speed, y: 0 },
   }),
 
   sprites: {
@@ -121,7 +122,7 @@ var enemy = new Fighter({
       offset: players[p2].offset[0],
     },
     run: {
-      imageSrc: `../sprites/${players[p2].name}/walk.png`,
+      imageSrc: `../sprites/${players[p2].name}/run.png`,
       framesMax: players[p2].moves[1],
       offset: players[p2].offset[1],
     },
@@ -179,8 +180,8 @@ var online = false;
 $(document).ready(() => {
   if (urlParams.has("online")) {
     online = true;
-    const origin = "http://localhost:5000";
-    // const origin = "https://animexfusion-backend.onrender.com";
+    // const origin = "http://localhost:5000";
+    const origin = "https://animexfusion-backend.onrender.com";
     socket = io.connect(origin);
     socket?.emit("joinRoom", urlParams.get("id"), p1);
     roomCode = urlParams.get("id");
@@ -215,7 +216,7 @@ $(document).ready(() => {
           imageSrc: `../sprites/${players[p1].name}/attack2FX.png`,
           scale: players[p1].attack.scale,
           framesMax: players[p1].attack.framesMax,
-          velocity: { x: 5, y: 0 },
+          velocity: { x: 5 * speed, y: 0 },
         }),
 
         sprites: {
@@ -225,7 +226,7 @@ $(document).ready(() => {
             offset: players[p1].offset[0],
           },
           run: {
-            imageSrc: `../sprites/${players[p1].name}/walk.png`,
+            imageSrc: `../sprites/${players[p1].name}/run.png`,
             framesMax: players[p1].moves[1],
             offset: players[p1].offset[1],
           },
@@ -273,7 +274,7 @@ $(document).ready(() => {
           imageSrc: `../sprites/${players[p2].name}/attack2FX.png`,
           scale: players[p2].attack.scale,
           framesMax: players[p2].attack.framesMax,
-          velocity: { x: 5, y: 0 },
+          velocity: { x: 5 * speed, y: 0 },
         }),
 
         sprites: {
@@ -283,7 +284,7 @@ $(document).ready(() => {
             offset: players[p2].offset[0],
           },
           run: {
-            imageSrc: `../sprites/${players[p2].name}/walk.png`,
+            imageSrc: `../sprites/${players[p2].name}/run.png`,
             framesMax: players[p2].moves[1],
             offset: players[p2].offset[1],
           },
@@ -341,10 +342,10 @@ function animate() {
   enemy.velocity.x = 0;
   if (player.keys.left && player.lastKey == "playerLeft") {
     //changed
-    player.velocity.x = -5;
+    player.velocity.x = -3 * speed;
     player.switchSprite("run");
   } else if (player.keys.right && player.lastKey == "playerRight") {
-    player.velocity.x = 5;
+    player.velocity.x = 3 * speed;
     player.switchSprite("run");
   } else {
     player.switchSprite("idle");
@@ -355,10 +356,10 @@ function animate() {
   }
 
   if (enemy.keys.left && enemy.lastKey == "enemyLeft") {
-    enemy.velocity.x = -2;
+    enemy.velocity.x = -3 * speed;
     enemy.switchSprite("run");
   } else if (enemy.keys.right && enemy.lastKey == "enemyRight") {
-    enemy.velocity.x = 2;
+    enemy.velocity.x = 3 * speed;
     enemy.switchSprite("run");
   } else {
     enemy.switchSprite("idle");
