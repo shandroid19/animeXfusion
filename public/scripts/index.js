@@ -28,7 +28,8 @@ window.addEventListener("resize", handleResize);
 
 c.fillRect(0, 0, canvas.width, canvas.height);
 
-const gravity = 0.15;
+//changed
+const gravity = 0.2;
 let timer = 100;
 
 const background = new Sprite({
@@ -178,8 +179,8 @@ var online = false;
 $(document).ready(() => {
   if (urlParams.has("online")) {
     online = true;
-    // const origin = "http://localhost:5000";
-    const origin = "https://animexfusion-backend.onrender.com";
+    const origin = "http://localhost:5000";
+    // const origin = "https://animexfusion-backend.onrender.com";
     socket = io.connect(origin);
     socket?.emit("joinRoom", urlParams.get("id"), p1);
     roomCode = urlParams.get("id");
@@ -339,10 +340,11 @@ function animate() {
   player.velocity.x = 0;
   enemy.velocity.x = 0;
   if (player.keys.left && player.lastKey == "playerLeft") {
-    player.velocity.x = -2;
+    //changed
+    player.velocity.x = -5;
     player.switchSprite("run");
   } else if (player.keys.right && player.lastKey == "playerRight") {
-    player.velocity.x = 2;
+    player.velocity.x = 5;
     player.switchSprite("run");
   } else {
     player.switchSprite("idle");
@@ -704,5 +706,5 @@ const performTouchAction = (e, touch = false) => {
 };
 
 $(document).ready(() => {
-  if (!detectMobile()) $(".controlsContainer").addClass("hidden");
+  // if (!detectMobile()) $(".controlsContainer").addClass("hidden");
 });

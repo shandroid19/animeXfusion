@@ -180,7 +180,7 @@ const performAction = (data, touch = false) => {
 
     case "up":
       currentPlayer.keys.up = true;
-      if (currentPlayer.velocity.y == 0) currentPlayer.velocity.y = -8;
+      if (currentPlayer.velocity.y == 0) currentPlayer.velocity.y = -10;
       break;
 
     case "attack1":
