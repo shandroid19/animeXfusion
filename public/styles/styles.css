@@ -316,11 +316,13 @@ transition {
   background-color: rgba(0, 0, 0, 0.1);
   color: white;
   border-style: solid;
-  border-color: white;
+  /* border-color: white; */
+  border-color: black;
   display: flex;
   justify-content: center;
   align-items: center;
   touch-action: manipulation;
+  margin-right: 2rem;
 }
 
 .attack1Btn {

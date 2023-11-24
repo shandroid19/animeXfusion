@@ -13,8 +13,8 @@
     <script>
       $(document).ready(() => {
         const nextLink = detectMobile()
-          ? "./views/lobby.html" //for phone testing
-          : // ?  "./views/modeSelect.html"
+          ? "./views/lobby.html"
+          : // "./views/modeSelect.html"//for phone testing
             "views/modeSelect.html";
         document.querySelector("#playButton").href = nextLink;
       });
