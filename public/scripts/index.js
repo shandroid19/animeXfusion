@@ -219,10 +219,14 @@ $(document).ready(() => {
     });
 
     socket.on("syncHealth", (newValues) => {
-      player.health = newValues.player;
-      enemy.health = newValues.enemy;
+      player.health = newValues.player.health;
+      enemy.health = newValues.enemy.health;
       document.querySelector("#playerHealth").style.width = player.health + "%";
       document.querySelector("#enemyHealth").style.width = enemy.health + "%";
+      player.energy = newValues.player.energy;
+      enemy.energy = newValues.enemy.energy;
+      document.querySelector("#playerEnergy").style.width = player.energy + "%";
+      document.querySelector("#enemyEnergy").style.width = enemy.energy + "%";
     });
 
     socket.on("keyPress", (data) => {
@@ -437,8 +441,8 @@ function animate() {
     enemy.switchSprite("fall");
     enemy.health -= 20;
     socket?.emit("syncHealth", {
-      player: player.health,
-      enemy: enemy.health,
+      player: { health: player.health, energy: player.energy },
+      enemy: { health: enemy.health, energy: enemy.energy },
       roomCode,
     });
     document.querySelector("#enemyHealth").style.width = enemy.health + "%";
@@ -452,8 +456,8 @@ function animate() {
     player.switchSprite("fall");
     player.health -= 20;
     socket?.emit("syncHealth", {
-      player: player.health,
-      enemy: enemy.health,
+      player: { health: player.health, energy: player.energy },
+      enemy: { health: enemy.health, energy: enemy.energy },
       roomCode,
     });
     document.querySelector("#playerHealth").style.width = player.health + "%";
@@ -477,8 +481,8 @@ function animate() {
         enemy.switchSprite("fall");
         enemy.health -= 40;
         socket?.emit("syncHealth", {
-          player: player.health,
-          enemy: enemy.health,
+          player: { health: player.health, energy: player.energy },
+          enemy: { health: enemy.health, energy: enemy.energy },
           roomCode,
         });
         document.querySelector("#enemyHealth").style.width = enemy.health + "%";
@@ -504,8 +508,8 @@ function animate() {
         player.health -= 40;
         player.switchSprite("fall");
         socket?.emit("syncHealth", {
-          player: player.health,
-          enemy: enemy.health,
+          player: { health: player.health, energy: player.energy },
+          enemy: { health: enemy.health, energy: enemy.energy },
           roomCode,
         });
         document.querySelector("#playerHealth").style.width =
@@ -528,8 +532,8 @@ function animate() {
     setTimeout(
       () =>
         socket?.emit("syncHealth", {
-          player: player.health,
-          enemy: enemy.health,
+          player: { health: player.health, energy: player.energy },
+          enemy: { health: enemy.health, energy: enemy.energy },
           roomCode,
         }),
       200
@@ -548,8 +552,8 @@ function animate() {
     setTimeout(
       () =>
         socket?.emit("syncHealth", {
-          player: player.health,
-          enemy: enemy.health,
+          player: { health: player.health, energy: player.energy },
+          enemy: { health: enemy.health, energy: enemy.energy },
           roomCode,
         }),
       200

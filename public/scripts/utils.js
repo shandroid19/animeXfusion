@@ -9,8 +9,8 @@ function decreaseTimer() {
   if (timer === 0) {
     determineWinner({ player, enemy });
     socket?.emit("syncHealth", {
-      player: player.health,
-      enemy: enemy.health,
+      player: { health: player.health, energy: player.energy },
+      enemy: { health: enemy.health, enemy: energy.energy },
       roomCode,
     });
   }
