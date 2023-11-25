@@ -208,7 +208,6 @@ function startCountdown() {
 
 const performAction = (data, touch = false) => {
   if (!started) return;
-  console.log("hey");
   if (touch) socket?.emit("keyPress", data, urlParams.get("id"));
   const currentPlayer = !player1 ? player : enemy;
   const opponent = !player1 ? enemy : player;

@@ -8,8 +8,8 @@ async function generateCode() {
 
 async function join() {
   var room = document.forms["roomForm"]["codeInput"].value;
-  const origin = "http://localhost:5000";
-  // const origin = "https://animexfusion-backend.onrender.com";
+  // const origin = "http://localhost:5000";
+  const origin = "https://animexfusion-backend.onrender.com";
   $.ajax({
     url: `${origin}/checkRoom/${room}`,
     type: "GET",
