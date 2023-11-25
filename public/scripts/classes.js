@@ -10,6 +10,7 @@ class Sprite {
     this.framesCurrent = 0;
     this.framesElapsed = 0;
     this.framesHold = 5;
+    this.sounds = {};
   }
 
   draw(flip) {
@@ -89,14 +90,18 @@ class Attack extends Sprite {
       x: position.x + offset,
       y: position.y,
     };
-    setTimeout(() => {
-      this.launched = true;
+    if (special) {
       setTimeout(() => {
-        this.launched = false;
-        if (enemy.buildUp) enemy.buildUp = false;
-        if (player.buildUp) player.buildUp = false;
-      }, 2000);
-    }, 500);
+        this.launched = true;
+        setTimeout(() => {
+          this.launched = false;
+          if (enemy.buildUp) enemy.buildUp = false;
+          if (player.buildUp) player.buildUp = false;
+        }, 2000);
+      }, 500);
+    } else {
+      this.launched = true;
+    }
   }
 
   update() {
@@ -234,20 +239,6 @@ class Fighter extends Sprite {
     )
       return;
 
-    // if (
-    //   this.image === this.sprites.splAttack.image &&
-    //   this.buildUp &&
-    //   this.framesCurrent <= this.sprites.splAttack.framesMax - 1
-    // )
-    //   return;
-
-    // if (
-    //   this.image === this.sprites.splAttack.image &&
-    //   !this.buildUp &&
-    //   this.framesCurrent < this.sprites.splAttack.framesMax - 1
-    // )
-    //   return;
-
     if (
       this.image === this.sprites.takeHit.image &&
       this.framesCurrent < this.sprites.takeHit.framesMax - 1
@@ -278,10 +269,13 @@ class Fighter extends Sprite {
           this.framesMax = this.sprites.run.framesMax;
           this.framesCurrent = 0;
           this.position.y += this.sprites.run.offset.y;
+          this.sounds.jump.play();
         }
         break;
       case "jump":
         if (this.image !== this.sprites.jump.image) {
+          this.sounds.jump.play();
+
           this.image = this.sprites.jump.image;
           this.offset = this.sprites.jump.offset;
           this.framesMax = this.sprites.jump.framesMax;
@@ -339,6 +333,7 @@ class Fighter extends Sprite {
           this.framesMax = this.sprites.takeHit.framesMax;
           this.framesCurrent = 0;
           this.position.y += this.sprites.takeHit.offset.y;
+          this.sounds.takeHit.play();
         }
         break;
 

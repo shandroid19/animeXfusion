@@ -1,6 +1,6 @@
 const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
-const speed = 2;
+const speed = 1;
 
 canvas.width = 1024;
 canvas.height = 576;
@@ -30,7 +30,7 @@ window.addEventListener("resize", handleResize);
 c.fillRect(0, 0, canvas.width, canvas.height);
 
 //changed
-const gravity = 0.1 * speed;
+const gravity = 0.08 * speed;
 var timer = 100;
 
 const background = new Sprite({
@@ -394,6 +394,23 @@ $(document).ready(() => {
       startCountdown();
     });
   }
+
+  // sounds = {
+  //   jump: new Audio("../assets/sounds/jump.mp3"),
+  //   takeHit: new Audio("../assets/sounds/takeHit.mp3"),
+  //   attack1: new Audio(`../assets/sounds/${players[p1]}Atk1.mp3`),
+  //   splAttack: new Audio("../assets/sounds/splAttack.mp3"),
+  // };
+  // player.sounds.jump = new Audio("../assets/sounds/jump.mp3");
+  // player.sounds.takeHit = new Audio("../assets/sounds/takeHit.mp3");
+  // player.sounds.attack1 = new Audio(`../assets/sounds/${players[p1]}Atk1.mp3`);
+  // player.sounds.splAttack = new Audio(`../assets/sounds/${players[p1]}Spl.mp3`);
+
+  // enemy.sounds.jump = new Audio("../assets/sounds/jump.mp3");
+  // enemy.sounds.takeHit = new Audio("../assets/sounds/takeHit.mp3");
+  // enemy.sounds.attack1 = new Audio(`../assets/sounds/${players[p2]}Atk1.mp3`);
+  // enemy.sounds.splAttack = new Audio(`../assets/sounds/${players[p2]}Spl.mp3`);
+
   background.update();
   waitForPlayer();
 });
@@ -481,6 +498,7 @@ function animate() {
     player.splAttackObject.launched
   ) {
     enemy.switchSprite("takeHit");
+
     player.splAttackObject.velocity.x = 0;
 
     if (!player.isSplAttacking) {
@@ -564,6 +582,7 @@ function animate() {
     player.isAttacking
   ) {
     if (enemy.isAttacked) return;
+
     player.isAttacking = false;
     enemy.takeHit();
     document.querySelector("#enemyHealth").style.width = enemy.health + "%";
@@ -618,7 +637,13 @@ window.addEventListener("keydown", (e) => {
 
   if (!started) return;
 
-  if (currentPlayer.isAttacked || opponent.isAttacked) return;
+  if (
+    currentPlayer.isAttacked ||
+    opponent.isAttacked ||
+    opponent.isSplAttacking ||
+    currentPlayer.isSplAttacking
+  )
+    return;
 
   switch (e.key) {
     case "d":
@@ -774,6 +799,14 @@ window.addEventListener("keyup", (e) => {
 
   const currentPlayer = player1 || !urlParams.has("online") ? player : enemy;
   const opponent = player1 || !urlParams.has("online") ? enemy : player;
+  if (
+    currentPlayer.isAttacked ||
+    opponent.isAttacked ||
+    opponent.isSplAttacking ||
+    currentPlayer.isSplAttacking
+  )
+    return;
+  if (!started) return;
 
   switch (e.key) {
     case "d":
@@ -827,6 +860,16 @@ const performTouchAction = (e, touch = false) => {
   const opponent = player1 || !urlParams.has("online") ? enemy : player;
   const currentPlayerKey =
     player1 || !urlParams.has("online") ? "player" : "enemy";
+
+  if (!started) return;
+
+  if (
+    currentPlayer.isAttacked ||
+    opponent.isAttacked ||
+    opponent.isSplAttacking ||
+    currentPlayer.isSplAttacking
+  )
+    return;
 
   switch (e) {
     case "rightDown":

@@ -15,6 +15,14 @@ function decreaseTimer() {
   }
 }
 
+function loadSounds(player, name) {
+  if (!player) return;
+  player.sounds.jump = new Audio("../assets/sounds/jump.mp3");
+  player.sounds.takeHit = new Audio("../assets/sounds/takeHit.mp3");
+  player.sounds.attack1 = new Audio(`../assets/sounds/${name}Atk1.mp3`);
+  player.sounds.splAttack = new Audio(`../assets/sounds/${name}Spl.mp3`);
+}
+
 var roomCode;
 
 function syncPosition() {
@@ -93,6 +101,7 @@ function determineWinner({ player, enemy }) {
 
 function executeAttack2(player1, attack, enemy1, selector) {
   if (parseInt(player1.energy) >= 50) {
+    player1.sounds.attack1.play();
     if (player1.position.x > enemy1.position.x) {
       attack.flipped = false;
       attack.velocity = {
@@ -116,6 +125,7 @@ function executeAttack2(player1, attack, enemy1, selector) {
 
 function executeSplAttack(player1, attack, enemy1, selector) {
   if (parseInt(player1.energy) === 100) {
+    player1.sounds.splAttack.play();
     if (player1.position.x > enemy1.position.x) {
       attack.flipped = false;
       attack.velocity = {
@@ -160,6 +170,8 @@ function waitForPlayer() {
 }
 
 function startCountdown() {
+  loadSounds(player, players[p1].name);
+  loadSounds(enemy, players[p2].name);
   let counter = 3;
   $("#message").remove();
 
@@ -203,6 +215,14 @@ const performAction = (data, touch = false) => {
   const opponent = !player1 ? enemy : player;
   const currentPlayerKey = player1 ? "enemy" : "player";
   const opponentKey = player1 ? "player" : "enemy";
+
+  if (
+    currentPlayer.isAttacked ||
+    opponent.isAttacked ||
+    opponent.isSplAttacking ||
+    currentPlayer.isSplAttacking
+  )
+    return;
 
   if (currentPlayer.isAttacked) return;
   switch (data) {
