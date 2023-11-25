@@ -149,6 +149,7 @@ body {
   margin: 3rem;
   color: white;
   z-index: 100;
+  text-transform: capitalize;
 }
 
 .container {

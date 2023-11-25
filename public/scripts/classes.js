@@ -20,24 +20,28 @@ class Sprite {
       sHeight =
         -this.position.x - (this.image.width / this.framesMax) * this.scale;
     }
-    c.drawImage(
-      this.image,
-      this.framesCurrent * (this.image.width / this.framesMax),
-      0,
-      this.image.width / this.framesMax,
-      this.image.height,
-      sHeight,
-      this.position.y,
-      (this.image.width / this.framesMax) * this.scale,
-      this.image.height * this.scale
-    );
-    if (flip) c.restore();
+    try {
+      c.drawImage(
+        this.image,
+        this.framesCurrent * (this.image.width / this.framesMax),
+        0,
+        this.image.width / this.framesMax,
+        this.image.height,
+        sHeight,
+        this.position.y,
+        (this.image.width / this.framesMax) * this.scale,
+        this.image.height * this.scale
+      );
+      if (flip) c.restore();
+    } catch (e) {
+      window.history.go(-1);
+    }
   }
 
   animateFrames() {
     this.framesElapsed++;
     if (this.framesElapsed % this.framesHold === 0) {
-      if (this.framesCurrent == this.framesMax - 1 && this.isSplAttacking) {
+      if (this.framesCurrent == this.framesMax - 1 && this.buildUp) {
         this.framesCurrent--;
       } else if (this.framesCurrent < this.framesMax - 1) {
         this.framesCurrent++;
@@ -59,6 +63,7 @@ class Attack extends Sprite {
     framesMax = 1,
     velocity,
     width = 50,
+    long = false,
   }) {
     super({
       imageSrc,
@@ -73,20 +78,25 @@ class Attack extends Sprite {
     this.height = 100;
     this.width = width;
     this.flipped = false;
+    this.long = long;
   }
 
   release(position, flipped = false, special = false) {
     var offset = 0;
-    if (special) offset = !flipped ? -this.width : 100;
+    if (special && !this.long) offset = !flipped ? -this.width : 100;
+
     this.position = {
       x: position.x + offset,
       y: position.y,
     };
-
-    this.launched = true;
     setTimeout(() => {
-      this.launched = false;
-    }, 2000);
+      this.launched = true;
+      setTimeout(() => {
+        this.launched = false;
+        if (enemy.buildUp) enemy.buildUp = false;
+        if (player.buildUp) player.buildUp = false;
+      }, 2000);
+    }, 500);
   }
 
   update() {
@@ -157,6 +167,7 @@ class Fighter extends Sprite {
     this.isBlocking = false;
     this.isAttacked = false;
     this.isSplAttacking = false;
+    this.buildUp = false;
     this.keys = {
       up: false,
       left: false,
@@ -183,6 +194,7 @@ class Fighter extends Sprite {
   }
 
   splAttack() {
+    this.buildUp = true;
     this.switchSprite("splAttack");
   }
 
@@ -205,6 +217,11 @@ class Fighter extends Sprite {
   }
 
   switchSprite(sprite) {
+    if (this.buildUp && this.image === this.sprites.splAttack.image) return;
+    if (this.image === this.sprites.block.image && this.isBlocking) {
+      return;
+    }
+
     if (
       this.image === this.sprites.attack1.image &&
       this.framesCurrent < this.sprites.attack1.framesMax - 1
@@ -217,25 +234,19 @@ class Fighter extends Sprite {
     )
       return;
 
-    if (
-      this.image === this.sprites.splAttack.image &&
-      this.isSplAttacking &&
-      this.framesCurrent <= this.sprites.splAttack.framesMax - 1
-    )
-      return;
+    // if (
+    //   this.image === this.sprites.splAttack.image &&
+    //   this.buildUp &&
+    //   this.framesCurrent <= this.sprites.splAttack.framesMax - 1
+    // )
+    //   return;
 
-    if (
-      this.image === this.sprites.splAttack.image &&
-      !this.isSplAttacking &&
-      this.framesCurrent < this.sprites.splAttack.framesMax - 1
-    )
-      return;
-
-    if (
-      this.image === this.sprites.fall.image &&
-      this.framesCurrent < this.sprites.fall.framesMax - 1
-    )
-      return;
+    // if (
+    //   this.image === this.sprites.splAttack.image &&
+    //   !this.buildUp &&
+    //   this.framesCurrent < this.sprites.splAttack.framesMax - 1
+    // )
+    //   return;
 
     if (
       this.image === this.sprites.takeHit.image &&
@@ -249,8 +260,6 @@ class Fighter extends Sprite {
       this.framesCurrent < this.sprites.jump.framesMax - 1
     )
       return;
-
-    if (this.image === this.sprites.block.image && this.isBlocking) return;
 
     switch (sprite) {
       case "idle":
