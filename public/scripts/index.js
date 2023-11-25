@@ -622,10 +622,10 @@ window.addEventListener("keydown", (e) => {
   if (!started) return;
 
   if (
-    currentPlayer.isAttacked ||
-    opponent.isAttacked ||
-    opponent.isSplAttacking ||
-    currentPlayer.isSplAttacking
+    (currentPlayer.isAttacked &&
+      currentPlayer.sprites.takeHit.image === currentPlayer.image) ||
+    (currentPlayer.isSplAttacking &&
+      currentPlayer.sprites.splAttack.image === currentPlayer.image)
   )
     return;
 
@@ -783,14 +783,14 @@ window.addEventListener("keyup", (e) => {
 
   const currentPlayer = player1 || !urlParams.has("online") ? player : enemy;
   const opponent = player1 || !urlParams.has("online") ? enemy : player;
+
   if (
-    currentPlayer.isAttacked ||
-    opponent.isAttacked ||
-    opponent.isSplAttacking ||
-    currentPlayer.isSplAttacking
+    (currentPlayer.isAttacked &&
+      currentPlayer.sprites.takeHit.image === currentPlayer.image) ||
+    (currentPlayer.isSplAttacking &&
+      currentPlayer.sprites.splAttack.image === currentPlayer.image)
   )
-    return;
-  if (!started) return;
+    if (!started) return;
 
   switch (e.key) {
     case "d":
@@ -848,105 +848,103 @@ const performTouchAction = (e, touch = false) => {
   if (!started) return;
 
   if (
-    currentPlayer.isAttacked ||
-    opponent.isAttacked ||
-    opponent.isSplAttacking ||
-    currentPlayer.isSplAttacking
+    (currentPlayer.isAttacked &&
+      currentPlayer.sprites.takeHit.image === currentPlayer.image) ||
+    (currentPlayer.isSplAttacking &&
+      currentPlayer.sprites.splAttack.image === currentPlayer.image)
   )
-    return;
+    switch (e) {
+      case "rightDown":
+        socket?.emit("keyPress", "rightDown", urlParams.get("id"));
+        currentPlayer.keys.right = true;
+        currentPlayer.lastKey = `${currentPlayerKey}Right`;
+        break;
 
-  switch (e) {
-    case "rightDown":
-      socket?.emit("keyPress", "rightDown", urlParams.get("id"));
-      currentPlayer.keys.right = true;
-      currentPlayer.lastKey = `${currentPlayerKey}Right`;
-      break;
+      case "leftDown":
+        socket?.emit("keyPress", "leftDown", urlParams.get("id"));
+        currentPlayer.keys.left = true;
+        currentPlayer.lastKey = `${currentPlayerKey}Left`;
+        break;
 
-    case "leftDown":
-      socket?.emit("keyPress", "leftDown", urlParams.get("id"));
-      currentPlayer.keys.left = true;
-      currentPlayer.lastKey = `${currentPlayerKey}Left`;
-      break;
+      case "rightUp":
+        socket?.emit("keyPress", e, urlParams.get("id"));
+        currentPlayer.keys.right = false;
+        currentPlayer.offset = currentPlayer.sprites.idle.offset;
 
-    case "rightUp":
-      socket?.emit("keyPress", e, urlParams.get("id"));
-      currentPlayer.keys.right = false;
-      currentPlayer.offset = currentPlayer.sprites.idle.offset;
+        break;
 
-      break;
+      case "leftUp":
+        socket?.emit("keyPress", e, urlParams.get("id"));
+        currentPlayer.keys.left = false;
+        currentPlayer.offset = currentPlayer.sprites.idle.offset;
 
-    case "leftUp":
-      socket?.emit("keyPress", e, urlParams.get("id"));
-      currentPlayer.keys.left = false;
-      currentPlayer.offset = currentPlayer.sprites.idle.offset;
+        break;
 
-      break;
+      case "blockDown":
+        socket?.emit("keyPress", "blockDown", urlParams.get("id"));
+        currentPlayer.keys.block = true;
+        if (
+          !currentPlayer.isAttacking &&
+          currentPlayer.velocity.y === 0 &&
+          currentPlayer.velocity.x === 0
+        )
+          currentPlayer.block();
+        break;
 
-    case "blockDown":
-      socket?.emit("keyPress", "blockDown", urlParams.get("id"));
-      currentPlayer.keys.block = true;
-      if (
-        !currentPlayer.isAttacking &&
-        currentPlayer.velocity.y === 0 &&
-        currentPlayer.velocity.x === 0
-      )
-        currentPlayer.block();
-      break;
+      case "blockUp":
+        socket?.emit("keyPress", e, urlParams.get("id"));
+        currentPlayer.isBlocking = false;
+        currentPlayer.keys.block = false;
+        break;
 
-    case "blockUp":
-      socket?.emit("keyPress", e, urlParams.get("id"));
-      currentPlayer.isBlocking = false;
-      currentPlayer.keys.block = false;
-      break;
+      case "up":
+        socket?.emit("keyPress", e, urlParams.get("id"));
+        currentPlayer.keys.up = true;
+        if (currentPlayer.velocity.y == 0) currentPlayer.velocity.y = -8;
+        break;
 
-    case "up":
-      socket?.emit("keyPress", e, urlParams.get("id"));
-      currentPlayer.keys.up = true;
-      if (currentPlayer.velocity.y == 0) currentPlayer.velocity.y = -8;
-      break;
+      case "attack1":
+        socket?.emit("keyPress", e, urlParams.get("id"));
+        if (
+          currentPlayer.health > 0 &&
+          opponent.health > 0 &&
+          !currentPlayer.isAttacked
+        )
+          currentPlayer.attack1();
+        break;
 
-    case "attack1":
-      socket?.emit("keyPress", e, urlParams.get("id"));
-      if (
-        currentPlayer.health > 0 &&
-        opponent.health > 0 &&
-        !currentPlayer.isAttacked
-      )
-        currentPlayer.attack1();
-      break;
+      case "attack2":
+        socket?.emit("keyPress", e, urlParams.get("id"));
 
-    case "attack2":
-      socket?.emit("keyPress", e, urlParams.get("id"));
+        if (
+          currentPlayer.health > 0 &&
+          opponent.health > 0 &&
+          !currentPlayer.isAttacked
+        )
+          executeAttack2(
+            currentPlayer,
+            currentPlayer.attack2Object,
+            opponent,
+            `#${currentPlayerKey}Energy`
+          );
+        break;
 
-      if (
-        currentPlayer.health > 0 &&
-        opponent.health > 0 &&
-        !currentPlayer.isAttacked
-      )
-        executeAttack2(
-          currentPlayer,
-          currentPlayer.attack2Object,
-          opponent,
-          `#${currentPlayerKey}Energy`
-        );
-      break;
+      case "splAttack":
+        socket?.emit("keyPress", e, urlParams.get("id"));
 
-    case "splAttack":
-      socket?.emit("keyPress", e, urlParams.get("id"));
-
-      if (
-        currentPlayer.health > 0 &&
-        opponent.health > 0 &&
-        !currentPlayer.isAttacked
-      )
-        executeSplAttack(
-          currentPlayer,
-          currentPlayer.splAttackObject,
-          opponent,
-          `#${currentPlayerKey}Energy`
-        );
-      break;
-  }
+        if (
+          currentPlayer.health > 0 &&
+          opponent.health > 0 &&
+          !currentPlayer.isAttacked
+        )
+          executeSplAttack(
+            currentPlayer,
+            currentPlayer.splAttackObject,
+            opponent,
+            `#${currentPlayerKey}Energy`
+          );
+        break;
+    }
 };
 
 $(document).ready(() => {

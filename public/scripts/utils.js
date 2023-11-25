@@ -217,14 +217,12 @@ const performAction = (data, touch = false) => {
   const opponentKey = player1 ? "player" : "enemy";
 
   if (
-    currentPlayer.isAttacked ||
-    opponent.isAttacked ||
-    opponent.isSplAttacking ||
-    currentPlayer.isSplAttacking
+    (currentPlayer.isAttacked &&
+      currentPlayer.sprites.takeHit.image === currentPlayer.image) ||
+    (currentPlayer.isSplAttacking &&
+      currentPlayer.sprites.splAttack.image === currentPlayer.image)
   )
-    return;
-
-  if (currentPlayer.isAttacked) return;
+    if (currentPlayer.isAttacked) return;
   switch (data) {
     case "rightDown":
       currentPlayer.keys.right = true;
