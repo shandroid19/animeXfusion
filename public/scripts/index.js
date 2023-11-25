@@ -210,8 +210,8 @@ var online = false;
 $(document).ready(() => {
   if (urlParams.has("online")) {
     online = true;
-    // const origin = "http://localhost:5000";
-    const origin = "https://animexfusion-backend.onrender.com";
+    const origin = "http://localhost:5000";
+    // const origin = "https://animexfusion-backend.onrender.com";
     socket = io.connect(origin);
     socket?.emit("joinRoom", urlParams.get("id"), p1);
     roomCode = urlParams.get("id");
@@ -790,7 +790,8 @@ window.addEventListener("keyup", (e) => {
     (currentPlayer.isSplAttacking &&
       currentPlayer.sprites.splAttack.image === currentPlayer.image)
   )
-    if (!started) return;
+    return;
+  if (!started) return;
 
   switch (e.key) {
     case "d":
@@ -853,98 +854,99 @@ const performTouchAction = (e, touch = false) => {
     (currentPlayer.isSplAttacking &&
       currentPlayer.sprites.splAttack.image === currentPlayer.image)
   )
-    switch (e) {
-      case "rightDown":
-        socket?.emit("keyPress", "rightDown", urlParams.get("id"));
-        currentPlayer.keys.right = true;
-        currentPlayer.lastKey = `${currentPlayerKey}Right`;
-        break;
+    return;
+  switch (e) {
+    case "rightDown":
+      socket?.emit("keyPress", "rightDown", urlParams.get("id"));
+      currentPlayer.keys.right = true;
+      currentPlayer.lastKey = `${currentPlayerKey}Right`;
+      break;
 
-      case "leftDown":
-        socket?.emit("keyPress", "leftDown", urlParams.get("id"));
-        currentPlayer.keys.left = true;
-        currentPlayer.lastKey = `${currentPlayerKey}Left`;
-        break;
+    case "leftDown":
+      socket?.emit("keyPress", "leftDown", urlParams.get("id"));
+      currentPlayer.keys.left = true;
+      currentPlayer.lastKey = `${currentPlayerKey}Left`;
+      break;
 
-      case "rightUp":
-        socket?.emit("keyPress", e, urlParams.get("id"));
-        currentPlayer.keys.right = false;
-        currentPlayer.offset = currentPlayer.sprites.idle.offset;
+    case "rightUp":
+      socket?.emit("keyPress", e, urlParams.get("id"));
+      currentPlayer.keys.right = false;
+      currentPlayer.offset = currentPlayer.sprites.idle.offset;
 
-        break;
+      break;
 
-      case "leftUp":
-        socket?.emit("keyPress", e, urlParams.get("id"));
-        currentPlayer.keys.left = false;
-        currentPlayer.offset = currentPlayer.sprites.idle.offset;
+    case "leftUp":
+      socket?.emit("keyPress", e, urlParams.get("id"));
+      currentPlayer.keys.left = false;
+      currentPlayer.offset = currentPlayer.sprites.idle.offset;
 
-        break;
+      break;
 
-      case "blockDown":
-        socket?.emit("keyPress", "blockDown", urlParams.get("id"));
-        currentPlayer.keys.block = true;
-        if (
-          !currentPlayer.isAttacking &&
-          currentPlayer.velocity.y === 0 &&
-          currentPlayer.velocity.x === 0
-        )
-          currentPlayer.block();
-        break;
+    case "blockDown":
+      socket?.emit("keyPress", "blockDown", urlParams.get("id"));
+      currentPlayer.keys.block = true;
+      if (
+        !currentPlayer.isAttacking &&
+        currentPlayer.velocity.y === 0 &&
+        currentPlayer.velocity.x === 0
+      )
+        currentPlayer.block();
+      break;
 
-      case "blockUp":
-        socket?.emit("keyPress", e, urlParams.get("id"));
-        currentPlayer.isBlocking = false;
-        currentPlayer.keys.block = false;
-        break;
+    case "blockUp":
+      socket?.emit("keyPress", e, urlParams.get("id"));
+      currentPlayer.isBlocking = false;
+      currentPlayer.keys.block = false;
+      break;
 
-      case "up":
-        socket?.emit("keyPress", e, urlParams.get("id"));
-        currentPlayer.keys.up = true;
-        if (currentPlayer.velocity.y == 0) currentPlayer.velocity.y = -8;
-        break;
+    case "up":
+      socket?.emit("keyPress", e, urlParams.get("id"));
+      currentPlayer.keys.up = true;
+      if (currentPlayer.velocity.y == 0) currentPlayer.velocity.y = -8;
+      break;
 
-      case "attack1":
-        socket?.emit("keyPress", e, urlParams.get("id"));
-        if (
-          currentPlayer.health > 0 &&
-          opponent.health > 0 &&
-          !currentPlayer.isAttacked
-        )
-          currentPlayer.attack1();
-        break;
+    case "attack1":
+      socket?.emit("keyPress", e, urlParams.get("id"));
+      if (
+        currentPlayer.health > 0 &&
+        opponent.health > 0 &&
+        !currentPlayer.isAttacked
+      )
+        currentPlayer.attack1();
+      break;
 
-      case "attack2":
-        socket?.emit("keyPress", e, urlParams.get("id"));
+    case "attack2":
+      socket?.emit("keyPress", e, urlParams.get("id"));
 
-        if (
-          currentPlayer.health > 0 &&
-          opponent.health > 0 &&
-          !currentPlayer.isAttacked
-        )
-          executeAttack2(
-            currentPlayer,
-            currentPlayer.attack2Object,
-            opponent,
-            `#${currentPlayerKey}Energy`
-          );
-        break;
+      if (
+        currentPlayer.health > 0 &&
+        opponent.health > 0 &&
+        !currentPlayer.isAttacked
+      )
+        executeAttack2(
+          currentPlayer,
+          currentPlayer.attack2Object,
+          opponent,
+          `#${currentPlayerKey}Energy`
+        );
+      break;
 
-      case "splAttack":
-        socket?.emit("keyPress", e, urlParams.get("id"));
+    case "splAttack":
+      socket?.emit("keyPress", e, urlParams.get("id"));
 
-        if (
-          currentPlayer.health > 0 &&
-          opponent.health > 0 &&
-          !currentPlayer.isAttacked
-        )
-          executeSplAttack(
-            currentPlayer,
-            currentPlayer.splAttackObject,
-            opponent,
-            `#${currentPlayerKey}Energy`
-          );
-        break;
-    }
+      if (
+        currentPlayer.health > 0 &&
+        opponent.health > 0 &&
+        !currentPlayer.isAttacked
+      )
+        executeSplAttack(
+          currentPlayer,
+          currentPlayer.splAttackObject,
+          opponent,
+          `#${currentPlayerKey}Energy`
+        );
+      break;
+  }
 };
 
 $(document).ready(() => {
