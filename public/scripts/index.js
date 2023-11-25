@@ -1,6 +1,6 @@
 const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
-const speed = 2;
+const speed = 1;
 
 canvas.width = 1024;
 canvas.height = 576;
@@ -31,7 +31,7 @@ c.fillRect(0, 0, canvas.width, canvas.height);
 
 //changed
 const gravity = 0.1 * speed;
-let timer = 100;
+var timer = 100;
 
 const background = new Sprite({
   position: { x: 0, y: 0 },
@@ -62,8 +62,9 @@ var player = new Fighter({
     imageSrc: `../sprites/${players[p1].name}/splAttackFX.png`,
     scale: players[p1].spl.scale,
     framesMax: players[p1].spl.framesMax,
-    velocity: { x: players[p1].spl.long ? speed * 5 : 0, y: 0 },
-    width: 250,
+    velocity: { x: players[p1].spl.long ? 3 : 0, y: 0 },
+    width: players[p1].spl.long ? 100 : 250,
+    long: players[p1].spl.long,
   }),
 
   sprites: {
@@ -134,8 +135,9 @@ var enemy = new Fighter({
     imageSrc: `../sprites/${players[p2].name}/splAttackFX.png`,
     scale: players[p2].spl.scale,
     framesMax: players[p2].spl.framesMax,
-    velocity: { x: players[p2].spl.long ? speed * 5 : 0, y: 0 },
-    width: 250,
+    velocity: { x: players[p2].spl.long ? 3 : 0, y: 0 },
+    width: players[p2].spl.long ? 100 : 250,
+    long: players[p2].spl.long,
   }),
 
   sprites: {
@@ -233,6 +235,13 @@ $(document).ready(() => {
       performAction(data);
     });
 
+    socket.on("opponentLeft", () => {
+      waitForPlayer();
+
+      timer = 100;
+      started = false;
+    });
+
     socket.on("startGame", ({ members, characters }) => {
       player1 = members[0] === socket.id;
       p1 = characters[members[0]];
@@ -256,8 +265,9 @@ $(document).ready(() => {
           imageSrc: `../sprites/${players[p1].name}/splAttackFX.png`,
           scale: players[p1].spl.scale,
           framesMax: players[p1].spl.framesMax,
-          velocity: { x: players[p1].spl.long ? speed * 5 : 0, y: 0 },
-          width: 250,
+          velocity: { x: players[p1].spl.long ? 3 : 0, y: 0 },
+          width: players[p1].spl.long ? 100 : 250,
+          long: players[p1].spl.long,
         }),
 
         sprites: {
@@ -328,8 +338,9 @@ $(document).ready(() => {
           imageSrc: `../sprites/${players[p2].name}/splAttackFX.png`,
           scale: players[p2].spl.scale,
           framesMax: players[p2].spl.framesMax,
-          velocity: { x: players[p2].spl.long ? speed * 5 : 0, y: 0 },
-          width: 250,
+          velocity: { x: players[p2].spl.long ? 3 : 0, y: 0 },
+          width: players[p2].spl.long ? 100 : 250,
+          long: players[p2].spl.long,
         }),
 
         sprites: {
@@ -380,7 +391,7 @@ $(document).ready(() => {
           },
         },
       });
-      startCountdown(startGame);
+      startCountdown();
     });
   }
   background.update();
@@ -430,7 +441,6 @@ function animate() {
   if (enemy.velocity.y < 0) {
     enemy.switchSprite("jump");
   }
-
   //detect for attack collision
   if (
     attackCollision({ rectangle1: enemy, rectangle2: player.attack2Object }) &&
@@ -471,15 +481,24 @@ function animate() {
     player.splAttackObject.launched
   ) {
     enemy.switchSprite("takeHit");
+    player.splAttackObject.velocity.x = 0;
+
     if (!player.isSplAttacking) {
       player.isSplAttacking = true;
       enemy.isAttacked = true;
+      player.framesHold *= 4;
+      for (let i = 1; i <= 8; i++)
+        setTimeout(() => {
+          enemy.health -= 5;
+          document.querySelector("#enemyHealth").style.width =
+            enemy.health + "%";
+        }, 250 * i);
 
       setTimeout(() => {
+        player.framesHold /= 4;
         player.isSplAttacking = false;
         player.splAttackObject.launched = false;
         enemy.switchSprite("fall");
-        enemy.health -= 40;
         socket?.emit("syncHealth", {
           player: { health: player.health, energy: player.energy },
           enemy: { health: enemy.health, energy: enemy.energy },
@@ -487,6 +506,9 @@ function animate() {
         });
         document.querySelector("#enemyHealth").style.width = enemy.health + "%";
         enemy.isAttacked = false;
+        player.splAttackObject.velocity.x = player.splAttackObject.long
+          ? 3 * speed
+          : 0;
       }, 2000);
     }
   }
@@ -498,15 +520,28 @@ function animate() {
     enemy.splAttackObject.launched
   ) {
     player.switchSprite("takeHit");
+    enemy.splAttackObject.velocity.x = 0;
+
     if (!enemy.isSplAttacking) {
       enemy.isSplAttacking = true;
       player.isAttacked = true;
+      enemy.framesHold *= 4;
+
+      for (let i = 1; i <= 8; i++)
+        setTimeout(() => {
+          player.health -= 5;
+          document.querySelector("#playerHealth").style.width =
+            player.health + "%";
+        }, 250 * i);
 
       setTimeout(() => {
+        enemy.framesHold /= 4;
+
         enemy.isSplAttacking = false;
         enemy.splAttackObject.launched = false;
-        player.health -= 40;
+
         player.switchSprite("fall");
+
         socket?.emit("syncHealth", {
           player: { health: player.health, energy: player.energy },
           enemy: { health: enemy.health, energy: enemy.energy },
@@ -515,6 +550,9 @@ function animate() {
         document.querySelector("#playerHealth").style.width =
           player.health + "%";
         player.isAttacked = false;
+        enemy.splAttackObject.velocity.x = enemy.splAttackObject.long
+          ? 3 * speed
+          : 0;
       }, 2000);
     }
   }
@@ -561,6 +599,8 @@ function animate() {
   }
 
   if (enemy.health <= 0 || player.health <= 0) {
+    document.querySelector("#playerHealth").style.width = player.health + "%";
+    document.querySelector("#enemyHealth").style.width = enemy.health + "%";
     determineWinner({ player, enemy });
     started = false;
   }

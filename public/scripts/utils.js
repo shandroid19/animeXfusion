@@ -1,11 +1,10 @@
 function decreaseTimer() {
-  if (timer) {
+  if (timer && started) {
     setTimeout(decreaseTimer, 1000);
 
     timer--;
     document.querySelector("#timer").innerHTML = timer;
   }
-
   if (timer === 0) {
     determineWinner({ player, enemy });
     socket?.emit("syncHealth", {
@@ -29,6 +28,8 @@ function syncPosition() {
   }
 }
 function restoreEnergy() {
+  if (!started) return;
+
   setTimeout(restoreEnergy, 10);
   if (timer) {
     if (player.energy < 100) player.energy += 0.05;
@@ -114,7 +115,7 @@ function executeAttack2(player1, attack, enemy1, selector) {
 }
 
 function executeSplAttack(player1, attack, enemy1, selector) {
-  if (parseInt(player1.energy) == 100) {
+  if (parseInt(player1.energy) === 100) {
     if (player1.position.x > enemy1.position.x) {
       attack.flipped = false;
       attack.velocity = {
@@ -137,7 +138,8 @@ function executeSplAttack(player1, attack, enemy1, selector) {
 }
 
 function restart() {
-  window.history.go(-1);
+  if (online) return window.history.go(-1);
+  window.history.go(-2);
 }
 
 function quit() {
@@ -149,13 +151,15 @@ function waitForPlayer() {
     startCountdown(startGame);
     return;
   }
+
+  $("#countdownBox").show();
   var message = $(
     '<h2 style="color:white;text-align:center;" id="message"> Waiting for the other player to join ... </h2>'
   );
   message.appendTo($("#countdownBox"));
 }
 
-function startCountdown(startGame) {
+function startCountdown() {
   let counter = 3;
   $("#message").remove();
 
@@ -178,6 +182,10 @@ function startCountdown(startGame) {
       clearInterval(timer);
       $("#countdown").remove();
       $("#countdownBox").hide();
+      player.energy = 0;
+      enemy.energy = 0;
+      player.health = 100;
+      enemy.health = 100;
       started = true;
       decreaseTimer();
       restoreEnergy();

@@ -2,7 +2,7 @@ const players = [
   {
     name: "luffy",
     scale: 1.1,
-    moves: [4, 6, 7, 5, 7, 4, 4, 3, 9],
+    moves: [4, 6, 7, 5, 7, 4, 7, 3, 9],
     offset: [
       { x: 0, y: -20 },
       { x: 0, y: -30 },
@@ -15,14 +15,14 @@ const players = [
       { x: 0, y: -45 },
     ],
     attack: { scale: 1.1, framesMax: 1 },
-    spl: { scale: 1.1, framesMax: 1, long: false },
+    spl: { scale: 1.1, framesMax: 3, long: false },
   },
   {
     name: "zoro",
     scale: 1,
     moves: [4, 6, 8, 4, 7, 4, 7, 3, 6],
     attack: { scale: 1, framesMax: 1 },
-    spl: { scale: 2.4, framesMax: 4, long: true },
+    spl: { scale: 0.8, framesMax: 4, long: true },
     offset: [
       { x: 0, y: -40 },
       { x: 0, y: -30 },
