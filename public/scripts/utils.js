@@ -43,7 +43,9 @@ function restoreEnergy() {
     if (player.energy < 100) player.energy += 0.05;
     if (enemy.energy < 100) enemy.energy += 0.05;
     if (player.energy >= 50) $("#attack2Btn").css("border-color", "#fff");
+    else $("#attack2Btn").css("border-color", "#000");
     if (player.energy >= 100) $("#splAttackBtn").css("border-color", "#fff");
+    else $("#splAttackBtn").css("border-color", "#000");
     document.querySelector("#playerEnergy").style.width = player.energy + "%";
     document.querySelector("#enemyEnergy").style.width = enemy.energy + "%";
   }
