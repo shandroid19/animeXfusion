@@ -30,7 +30,7 @@ window.addEventListener("resize", handleResize);
 c.fillRect(0, 0, canvas.width, canvas.height);
 
 //changed
-const gravity = 0.08 * speed;
+const gravity = 0.1 * speed;
 var timer = 100;
 
 const background = new Sprite({
