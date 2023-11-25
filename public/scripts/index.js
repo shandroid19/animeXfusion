@@ -395,22 +395,6 @@ $(document).ready(() => {
     });
   }
 
-  // sounds = {
-  //   jump: new Audio("../assets/sounds/jump.mp3"),
-  //   takeHit: new Audio("../assets/sounds/takeHit.mp3"),
-  //   attack1: new Audio(`../assets/sounds/${players[p1]}Atk1.mp3`),
-  //   splAttack: new Audio("../assets/sounds/splAttack.mp3"),
-  // };
-  // player.sounds.jump = new Audio("../assets/sounds/jump.mp3");
-  // player.sounds.takeHit = new Audio("../assets/sounds/takeHit.mp3");
-  // player.sounds.attack1 = new Audio(`../assets/sounds/${players[p1]}Atk1.mp3`);
-  // player.sounds.splAttack = new Audio(`../assets/sounds/${players[p1]}Spl.mp3`);
-
-  // enemy.sounds.jump = new Audio("../assets/sounds/jump.mp3");
-  // enemy.sounds.takeHit = new Audio("../assets/sounds/takeHit.mp3");
-  // enemy.sounds.attack1 = new Audio(`../assets/sounds/${players[p2]}Atk1.mp3`);
-  // enemy.sounds.splAttack = new Audio(`../assets/sounds/${players[p2]}Spl.mp3`);
-
   background.update();
   waitForPlayer();
 });
