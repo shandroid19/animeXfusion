@@ -208,9 +208,7 @@ function startCountdown() {
 
 const performAction = (data, touch = false) => {
   if (!started) return;
-
   if (touch) socket?.emit("keyPress", data, urlParams.get("id"));
-
   const currentPlayer = !player1 ? player : enemy;
   const opponent = !player1 ? enemy : player;
   const currentPlayerKey = player1 ? "enemy" : "player";
@@ -222,7 +220,7 @@ const performAction = (data, touch = false) => {
     (currentPlayer.isSplAttacking &&
       currentPlayer.sprites.splAttack.image === currentPlayer.image)
   )
-    if (currentPlayer.isAttacked) return;
+    return;
   switch (data) {
     case "rightDown":
       currentPlayer.keys.right = true;
