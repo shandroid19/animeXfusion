@@ -1,3 +1,14 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  font-family: sans-serif;
+  touch-action: manipulation;
+}
+
+body {
+  background-color: black;
+}
+
 .title {
   color: white;
   text-align: center;
@@ -11,17 +22,16 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-color: antiquewhite;
+  background-color: black;
+  justify-content: center;
   padding: 2rem;
 }
 
 .innerBox {
-  /* border: solid black 1rem; */
-  width: 100%;
-  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 
 .rowContainer {
@@ -74,4 +84,39 @@
 .modeBox:hover {
   transform: scale(1.2);
   border-color: yellow;
+}
+
+.controlsRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.key {
+  color: darkslategray;
+  margin-right: 5rem;
+}
+
+.controlsBox {
+  background-image: url(../assets/scroll.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  padding: 7rem;
+  border-radius: 1rem;
+}
+
+h1 {
+  text-align: center;
+}
+
+.gameContainer {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background-color: black;
+  align-items: center;
+  justify-content: center;
 }
