@@ -251,7 +251,8 @@ const performAction = (data, touch = false) => {
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !currentPlayer.isAttacked
+        !currentPlayer.isAttacked &&
+        !currentPlayer.isBlocking
       )
         currentPlayer.attack1();
       break;
@@ -260,7 +261,8 @@ const performAction = (data, touch = false) => {
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !currentPlayer.isAttacked
+        !currentPlayer.isAttacked &&
+        !currentPlayer.isBlocking
       )
         executeAttack2(
           currentPlayer,
@@ -274,7 +276,8 @@ const performAction = (data, touch = false) => {
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !currentPlayer.isAttacked
+        !currentPlayer.isAttacked &&
+        !currentPlayer.isBlocking
       )
         executeSplAttack(
           currentPlayer,
