@@ -217,7 +217,8 @@ $(document).ready(() => {
     socket?.emit("joinRoom", urlParams.get("id"), p1);
     roomCode = urlParams.get("id");
     socket.on("syncPosition", (newValues) => {
-      if (player1) return (enemy.position = newValues.enemy);
+      if ((player1 = members[0] === socket.id))
+        return (enemy.position = newValues.enemy);
       player.position = newValues.player;
     });
 
@@ -659,7 +660,8 @@ window.addEventListener("keydown", (e) => {
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !currentPlayer.isAttacked
+        !currentPlayer.isAttacked &&
+        !currentPlayer.isBlocking
       )
         currentPlayer.attack1();
       break;
@@ -670,7 +672,8 @@ window.addEventListener("keydown", (e) => {
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !currentPlayer.isAttacked
+        !currentPlayer.isAttacked &&
+        !currentPlayer.isBlocking
       )
         executeAttack2(
           currentPlayer,
@@ -686,7 +689,8 @@ window.addEventListener("keydown", (e) => {
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !currentPlayer.isAttacked
+        !currentPlayer.isAttacked &&
+        !currentPlayer.isBlocking
       )
         executeSplAttack(
           currentPlayer,
@@ -733,7 +737,8 @@ window.addEventListener("keydown", (e) => {
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !opponent.isAttacked
+        !opponent.isAttacked &&
+        !opponent.isBlocking
       )
         executeAttack2(
           opponent,
@@ -749,7 +754,8 @@ window.addEventListener("keydown", (e) => {
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !opponent.isAttacked
+        !opponent.isAttacked &&
+        !opponent.isBlocking
       )
         executeSplAttack(
           opponent,
@@ -765,7 +771,8 @@ window.addEventListener("keydown", (e) => {
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !opponent.isAttacked
+        !opponent.isAttacked &&
+        !opponent.isBlocking
       )
         opponent.attack1();
       break;
@@ -916,7 +923,8 @@ const performTouchAction = (e, touch = false) => {
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !currentPlayer.isAttacked
+        !currentPlayer.isAttacked &&
+        !currentPlayer.isBlocking
       )
         currentPlayer.attack1();
       break;
@@ -927,7 +935,8 @@ const performTouchAction = (e, touch = false) => {
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !currentPlayer.isAttacked
+        !currentPlayer.isAttacked &&
+        !currentPlayer.isBlocking
       )
         executeAttack2(
           currentPlayer,
@@ -943,7 +952,8 @@ const performTouchAction = (e, touch = false) => {
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !currentPlayer.isAttacked
+        !currentPlayer.isAttacked &&
+        !currentPlayer.isBlocking
       )
         executeSplAttack(
           currentPlayer,
