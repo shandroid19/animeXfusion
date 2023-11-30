@@ -27,14 +27,17 @@ var roomCode;
 
 function syncPosition() {
   if (timer) {
-    setTimeout(syncPosition, 10);
-    socket?.emit("syncPosition", {
-      player: player.position,
-      enemy: enemy.position,
-      roomCode,
-    });
+    // setTimeout(syncPosition, 10);
+    interval = setInterval(() => {
+      socket?.emit("syncPosition", {
+        player: player.position,
+        enemy: enemy.position,
+        roomCode,
+      });
+    }, 15);
   }
 }
+
 function restoreEnergy() {
   if (!started) return;
 
@@ -75,6 +78,10 @@ function attackCollision({ rectangle1, rectangle2 }) {
 function determineWinner({ player, enemy }) {
   document.querySelector("#timer").innerHTML = 0;
   timer = 0;
+  if (intervalId) {
+    clearInterval(intervalId);
+    console.log("done");
+  }
 
   $("#overlay").addClass("overlay");
 
@@ -203,7 +210,8 @@ function startCountdown() {
       started = true;
       decreaseTimer();
       restoreEnergy();
-      if (urlParams.has("online") && player1) syncPosition();
+      // if (urlParams.has("online") && player1) syncPosition();
+      if (urlParams.has("online")) syncPosition();
     }
   }, 1000);
 }
