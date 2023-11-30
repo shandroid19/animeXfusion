@@ -32,6 +32,7 @@ c.fillRect(0, 0, canvas.width, canvas.height);
 //changed
 const gravity = 0.1 * speed;
 var timer = 100;
+intervalId = null;
 
 const background = new Sprite({
   position: { x: 0, y: 0 },
@@ -216,8 +217,8 @@ $(document).ready(() => {
     socket?.emit("joinRoom", urlParams.get("id"), p1);
     roomCode = urlParams.get("id");
     socket.on("syncPosition", (newValues) => {
+      if (player1) return (enemy.position = newValues.enemy);
       player.position = newValues.player;
-      enemy.position = newValues.enemy;
     });
 
     socket.on("syncHealth", (newValues) => {
@@ -243,6 +244,11 @@ $(document).ready(() => {
     });
 
     socket.on("startGame", ({ members, characters }) => {
+      if (intervalId) {
+        clearInterval(intervalId);
+        console.log("done");
+      }
+
       player1 = members[0] === socket.id;
       p1 = characters[members[0]];
       p2 = characters[members[1]];
