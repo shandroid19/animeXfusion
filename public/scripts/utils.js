@@ -27,14 +27,17 @@ var roomCode;
 
 function syncPosition() {
   if (timer) {
-    setTimeout(syncPosition, 10);
-    socket?.emit("syncPosition", {
-      player: player.position,
-      enemy: enemy.position,
-      roomCode,
-    });
+    // setTimeout(syncPosition, 10);
+    interval = setInterval(() => {
+      socket?.emit("syncPosition", {
+        player: player.position,
+        enemy: enemy.position,
+        roomCode,
+      });
+    }, 15);
   }
 }
+
 function restoreEnergy() {
   if (!started) return;
 
@@ -75,6 +78,10 @@ function attackCollision({ rectangle1, rectangle2 }) {
 function determineWinner({ player, enemy }) {
   document.querySelector("#timer").innerHTML = 0;
   timer = 0;
+  if (intervalId) {
+    clearInterval(intervalId);
+    console.log("done");
+  }
 
   $("#overlay").addClass("overlay");
 
@@ -244,7 +251,8 @@ const performAction = (data, touch = false) => {
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !currentPlayer.isAttacked
+        !currentPlayer.isAttacked &&
+        !currentPlayer.isBlocking
       )
         currentPlayer.attack1();
       break;
@@ -253,7 +261,8 @@ const performAction = (data, touch = false) => {
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !currentPlayer.isAttacked
+        !currentPlayer.isAttacked &&
+        !currentPlayer.isBlocking
       )
         executeAttack2(
           currentPlayer,
@@ -267,7 +276,8 @@ const performAction = (data, touch = false) => {
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !currentPlayer.isAttacked
+        !currentPlayer.isAttacked &&
+        !currentPlayer.isBlocking
       )
         executeSplAttack(
           currentPlayer,
