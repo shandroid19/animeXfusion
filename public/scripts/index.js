@@ -217,9 +217,9 @@ $(document).ready(() => {
     socket?.emit("joinRoom", urlParams.get("id"), p1);
     roomCode = urlParams.get("id");
     socket.on("syncPosition", (newValues) => {
-      if ((player1 = members[0] === socket.id))
-        return (enemy.position = newValues.enemy);
-      player.position = newValues.player;
+      if (!player1) player.position = newValues.player;
+      else enemy.position = newValues.enemy;
+
     });
 
     socket.on("syncHealth", (newValues) => {
