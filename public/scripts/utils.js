@@ -203,7 +203,8 @@ function startCountdown() {
       started = true;
       decreaseTimer();
       restoreEnergy();
-      if (urlParams.has("online") && player1) syncPosition();
+      // if (urlParams.has("online") && player1) syncPosition();
+      if (urlParams.has("online")) syncPosition();
     }
   }, 1000);
 }
