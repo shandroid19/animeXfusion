@@ -232,15 +232,15 @@ const performAction = (data, touch = false) => {
   )
     return;
   switch (data) {
-    case "rightDown":
-      currentPlayer.keys.right = true;
-      currentPlayer.lastKey = `${currentPlayerKey}Right`;
-      break;
+    // case "rightDown":
+    //   currentPlayer.keys.right = true;
+    //   currentPlayer.lastKey = `${currentPlayerKey}Right`;
+    //   break;
 
-    case "leftDown":
-      currentPlayer.keys.left = true;
-      currentPlayer.lastKey = `${currentPlayerKey}Left`;
-      break;
+    // case "leftDown":
+    //   currentPlayer.keys.left = true;
+    //   currentPlayer.lastKey = `${currentPlayerKey}Left`;
+    //   break;
 
     case "up":
       currentPlayer.keys.up = true;
@@ -297,16 +297,16 @@ const performAction = (data, touch = false) => {
         currentPlayer.block();
       break;
 
-    case "rightUp":
-      currentPlayer.keys.right = false;
-      currentPlayer.offset = currentPlayer.sprites.idle.offset;
-      break;
+    // case "rightUp":
+    //   currentPlayer.keys.right = false;
+    //   currentPlayer.offset = currentPlayer.sprites.idle.offset;
+    //   break;
 
-    case "leftUp":
-      currentPlayer.keys.left = false;
-      currentPlayer.offset = currentPlayer.sprites.idle.offset;
+    // case "leftUp":
+    //   currentPlayer.keys.left = false;
+    //   currentPlayer.offset = currentPlayer.sprites.idle.offset;
 
-      break;
+    //   break;
 
     case "blockUp":
       currentPlayer.isBlocking = false;

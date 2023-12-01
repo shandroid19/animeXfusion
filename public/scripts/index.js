@@ -208,18 +208,22 @@ const startGame = () => {
 var socket;
 var player1;
 var online = false;
+var player1SocketId;
 $(document).ready(() => {
   if (urlParams.has("online")) {
     online = true;
-    // const origin = "http://localhost:5000";
-    const origin = "https://animexfusion-backend.onrender.com";
+    const origin = "http://localhost:5000";
+    // const origin = "https://animexfusion-backend.onrender.com";
     socket = io.connect(origin);
     socket?.emit("joinRoom", urlParams.get("id"), p1);
     roomCode = urlParams.get("id");
     socket.on("syncPosition", (newValues) => {
-      if ((player1 = members[0] === socket.id))
-        return (enemy.position = newValues.enemy);
-      player.position = newValues.player;
+      if (player1) {
+        enemy.position = newValues.enemy;
+        player.position = newValues.player;
+      }
+      // if (player1SocketId === socket.id) enemy.position = newValues.enemy;
+      // else player.position = newValues.player;
     });
 
     socket.on("syncHealth", (newValues) => {
@@ -247,8 +251,10 @@ $(document).ready(() => {
     socket.on("startGame", ({ members, characters }) => {
       if (intervalId) {
         clearInterval(intervalId);
-        console.log("done");
+        // console.log(members[0], members[1]);
       }
+
+      player1SocketId = members[0];
 
       player1 = members[0] === socket.id;
       p1 = characters[members[0]];
