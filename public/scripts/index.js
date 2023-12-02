@@ -32,7 +32,6 @@ c.fillRect(0, 0, canvas.width, canvas.height);
 //changed
 const gravity = 0.1 * speed;
 var timer = 100;
-intervalId = null;
 
 const background = new Sprite({
   position: { x: 0, y: 0 },
@@ -219,7 +218,6 @@ $(document).ready(() => {
     socket.on("syncPosition", (newValues) => {
       if (!player1) player.position = newValues.player;
       else enemy.position = newValues.enemy;
-
     });
 
     socket.on("syncHealth", (newValues) => {
@@ -250,11 +248,6 @@ $(document).ready(() => {
     });
 
     socket.on("startGame", ({ members, characters }) => {
-      if (intervalId) {
-        clearInterval(intervalId);
-        console.log("done");
-      }
-
       player1 = members[0] === socket.id;
       p1 = characters[members[0]];
       p2 = characters[members[1]];
@@ -651,8 +644,7 @@ window.addEventListener("keydown", (e) => {
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !currentPlayer.isAttacked &&
-        !currentPlayer.isBlocking
+        !currentPlayer.isAttacked
       )
         currentPlayer.attack1();
       break;
@@ -665,8 +657,7 @@ window.addEventListener("keydown", (e) => {
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !currentPlayer.isAttacked &&
-        !currentPlayer.isBlocking
+        !currentPlayer.isAttacked
       )
         executeAttack2(
           currentPlayer,
@@ -684,8 +675,7 @@ window.addEventListener("keydown", (e) => {
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !currentPlayer.isAttacked &&
-        !currentPlayer.isBlocking
+        !currentPlayer.isAttacked
       )
         executeSplAttack(
           currentPlayer,
@@ -739,8 +729,7 @@ window.addEventListener("keydown", (e) => {
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !opponent.isAttacked &&
-        !opponent.isBlocking
+        !opponent.isAttacked
       )
         executeAttack2(
           opponent,
@@ -757,8 +746,7 @@ window.addEventListener("keydown", (e) => {
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !opponent.isAttacked &&
-        !opponent.isBlocking
+        !opponent.isAttacked
       )
         executeSplAttack(
           opponent,
@@ -775,8 +763,7 @@ window.addEventListener("keydown", (e) => {
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !opponent.isAttacked &&
-        !opponent.isBlocking
+        !opponent.isAttacked
       )
         opponent.attack1();
       break;
@@ -938,8 +925,7 @@ const performTouchAction = (e, touch = false) => {
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !currentPlayer.isAttacked &&
-        !currentPlayer.isBlocking
+        !currentPlayer.isAttacked
       )
         currentPlayer.attack1();
       break;
@@ -952,8 +938,7 @@ const performTouchAction = (e, touch = false) => {
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !currentPlayer.isAttacked &&
-        !currentPlayer.isBlocking
+        !currentPlayer.isAttacked
       )
         executeAttack2(
           currentPlayer,
@@ -971,8 +956,7 @@ const performTouchAction = (e, touch = false) => {
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !currentPlayer.isAttacked &&
-        !currentPlayer.isBlocking
+        !currentPlayer.isAttacked
       )
         executeSplAttack(
           currentPlayer,
