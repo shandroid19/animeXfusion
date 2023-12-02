@@ -27,14 +27,23 @@ var roomCode;
 
 function syncPosition() {
   if (timer) {
-    // setTimeout(syncPosition, 10);
-    interval = setInterval(() => {
-      socket?.emit("syncPosition", {
-        player: player.position,
-        enemy: enemy.position,
-        roomCode,
-      });
-    }, 15);
+    setTimeout(syncPosition, 10);
+    socket?.emit("syncPosition", {
+      player: player.position,
+      enemy: enemy.position,
+      roomCode,
+    });
+  }
+}
+
+function syncHealth() {
+  if (timer) {
+    setTimeout(syncHealth, 200);
+    socket?.emit("syncHealth", {
+      player: { health: player.health, energy: player.energy },
+      enemy: { health: enemy.health, energy: enemy.energy },
+      roomCode,
+    });
   }
 }
 
@@ -78,10 +87,6 @@ function attackCollision({ rectangle1, rectangle2 }) {
 function determineWinner({ player, enemy }) {
   document.querySelector("#timer").innerHTML = 0;
   timer = 0;
-  if (intervalId) {
-    clearInterval(intervalId);
-    console.log("done");
-  }
 
   $("#overlay").addClass("overlay");
 
@@ -128,6 +133,11 @@ function executeAttack2(player1, attack, enemy1, selector) {
     player1.attack2(enemy1);
     attack.release(player1.position);
     player1.energy -= 50;
+    socket?.emit("syncHealth", {
+      player: { health: player.health, energy: player.energy },
+      enemy: { health: enemy.health, energy: enemy.energy },
+      roomCode,
+    });
     document.querySelector(selector).style.width = player1.energy + "%";
   }
 }
@@ -152,6 +162,11 @@ function executeSplAttack(player1, attack, enemy1, selector) {
     player1.splAttack(enemy1);
     attack.release(player1.position, attack.flipped, (special = true));
     player1.energy = 0;
+    socket?.emit("syncHealth", {
+      player: { health: player.health, energy: player.energy },
+      enemy: { health: enemy.health, energy: enemy.energy },
+      roomCode,
+    });
     document.querySelector(selector).style.width = player1.energy + "%";
   }
 }
@@ -211,7 +226,10 @@ function startCountdown() {
       decreaseTimer();
       restoreEnergy();
       // if (urlParams.has("online") && player1) syncPosition();
-      if (urlParams.has("online")) syncPosition();
+      if (urlParams.has("online")) {
+        syncPosition();
+        syncHealth();
+      }
     }
   }, 1000);
 }
@@ -251,8 +269,7 @@ const performAction = (data, touch = false) => {
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !currentPlayer.isAttacked &&
-        !currentPlayer.isBlocking
+        !currentPlayer.isAttacked
       )
         currentPlayer.attack1();
       break;
@@ -261,8 +278,7 @@ const performAction = (data, touch = false) => {
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !currentPlayer.isAttacked &&
-        !currentPlayer.isBlocking
+        !currentPlayer.isAttacked
       )
         executeAttack2(
           currentPlayer,
@@ -276,8 +292,7 @@ const performAction = (data, touch = false) => {
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !currentPlayer.isAttacked &&
-        !currentPlayer.isBlocking
+        !currentPlayer.isAttacked
       )
         executeSplAttack(
           currentPlayer,
@@ -327,5 +342,31 @@ const detectMobile = () => {
     return true;
   } else {
     return false;
+  }
+};
+
+function openFullscreen() {
+  const elem = document.querySelector("#mainCanvas");
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.webkitRequestFullscreen) {
+    /* Safari */
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) {
+    /* IE11 */
+    elem.msRequestFullscreen();
+  }
+}
+
+const onClickWorking = () => {
+  const container = document.getElementById("mainCanvas");
+  if (!document.fullscreenElement) {
+    container.requestFullscreen().catch((err) => {
+      alert(
+        `Error attempting to enable full-screen mode: ${err.message} (${err.name})`
+      );
+    });
+  } else {
+    document.exitFullscreen();
   }
 };

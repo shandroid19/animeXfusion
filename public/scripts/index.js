@@ -32,7 +32,6 @@ c.fillRect(0, 0, canvas.width, canvas.height);
 //changed
 const gravity = 0.1 * speed;
 var timer = 100;
-intervalId = null;
 
 const background = new Sprite({
   position: { x: 0, y: 0 },
@@ -219,18 +218,22 @@ $(document).ready(() => {
     socket.on("syncPosition", (newValues) => {
       if (!player1) player.position = newValues.player;
       else enemy.position = newValues.enemy;
-
     });
 
     socket.on("syncHealth", (newValues) => {
-      player.health = newValues.player.health;
+      if (player1) {
+        player.health = newValues.player.health;
+        player.energy = newValues.player.energy;
+        document.querySelector("#playerHealth").style.width =
+          player.health + "%";
+        document.querySelector("#playerEnergy").style.width =
+          player.energy + "%";
+        return;
+      }
       enemy.health = newValues.enemy.health;
-      document.querySelector("#playerHealth").style.width = player.health + "%";
-      document.querySelector("#enemyHealth").style.width = enemy.health + "%";
-      player.energy = newValues.player.energy;
       enemy.energy = newValues.enemy.energy;
-      document.querySelector("#playerEnergy").style.width = player.energy + "%";
       document.querySelector("#enemyEnergy").style.width = enemy.energy + "%";
+      document.querySelector("#enemyHealth").style.width = enemy.health + "%";
     });
 
     socket.on("keyPress", (data) => {
@@ -245,11 +248,6 @@ $(document).ready(() => {
     });
 
     socket.on("startGame", ({ members, characters }) => {
-      if (intervalId) {
-        clearInterval(intervalId);
-        console.log("done");
-      }
-
       player1 = members[0] === socket.id;
       p1 = characters[members[0]];
       p2 = characters[members[1]];
@@ -458,12 +456,11 @@ function animate() {
 
     enemy.switchSprite("fall");
     enemy.health -= 20;
-    socket?.emit("syncHealth", {
-      player: { health: player.health, energy: player.energy },
-      enemy: { health: enemy.health, energy: enemy.energy },
-      roomCode,
-    });
-    document.querySelector("#enemyHealth").style.width = enemy.health + "%";
+    // socket?.emit("syncHealth", {
+    //   player: { health: player.health, energy: player.energy },
+    //   enemy: { health: enemy.health, energy: enemy.energy },
+    //   roomCode,
+    // });
   }
 
   if (
@@ -473,12 +470,11 @@ function animate() {
     enemy.attack2Object.launched = false;
     player.switchSprite("fall");
     player.health -= 20;
-    socket?.emit("syncHealth", {
-      player: { health: player.health, energy: player.energy },
-      enemy: { health: enemy.health, energy: enemy.energy },
-      roomCode,
-    });
-    document.querySelector("#playerHealth").style.width = player.health + "%";
+    // socket?.emit("syncHealth", {
+    //   player: { health: player.health, energy: player.energy },
+    //   enemy: { health: enemy.health, energy: enemy.energy },
+    //   roomCode,
+    // });
   }
 
   if (
@@ -501,6 +497,11 @@ function animate() {
           enemy.health -= 5;
           document.querySelector("#enemyHealth").style.width =
             enemy.health + "%";
+          // socket?.emit("syncHealth", {
+          //   player: { health: player.health, energy: player.energy },
+          //   enemy: { health: enemy.health, energy: enemy.energy },
+          //   roomCode,
+          // });
         }, 250 * i);
 
       setTimeout(() => {
@@ -508,12 +509,7 @@ function animate() {
         player.isSplAttacking = false;
         player.splAttackObject.launched = false;
         enemy.switchSprite("fall");
-        socket?.emit("syncHealth", {
-          player: { health: player.health, energy: player.energy },
-          enemy: { health: enemy.health, energy: enemy.energy },
-          roomCode,
-        });
-        document.querySelector("#enemyHealth").style.width = enemy.health + "%";
+
         enemy.isAttacked = false;
         player.splAttackObject.velocity.x = player.splAttackObject.long
           ? 3 * speed
@@ -539,8 +535,13 @@ function animate() {
       for (let i = 1; i <= 8; i++)
         setTimeout(() => {
           player.health -= 5;
-          document.querySelector("#playerHealth").style.width =
-            player.health + "%";
+          // socket?.emit("syncHealth", {
+          //   player: { health: player.health, energy: player.energy },
+          //   enemy: { health: enemy.health, energy: enemy.energy },
+          //   roomCode,
+          // });
+          // document.querySelector("#playerHealth").style.width =
+          //   player.health + "%";
         }, 250 * i);
 
       setTimeout(() => {
@@ -551,13 +552,6 @@ function animate() {
 
         player.switchSprite("fall");
 
-        socket?.emit("syncHealth", {
-          player: { health: player.health, energy: player.energy },
-          enemy: { health: enemy.health, energy: enemy.energy },
-          roomCode,
-        });
-        document.querySelector("#playerHealth").style.width =
-          player.health + "%";
         player.isAttacked = false;
         enemy.splAttackObject.velocity.x = enemy.splAttackObject.long
           ? 3 * speed
@@ -577,15 +571,6 @@ function animate() {
     player.isAttacking = false;
     enemy.takeHit();
     document.querySelector("#enemyHealth").style.width = enemy.health + "%";
-    setTimeout(
-      () =>
-        socket?.emit("syncHealth", {
-          player: { health: player.health, energy: player.energy },
-          enemy: { health: enemy.health, energy: enemy.energy },
-          roomCode,
-        }),
-      200
-    );
   }
 
   if (
@@ -597,15 +582,6 @@ function animate() {
     player.takeHit();
     document.querySelector("#playerHealth").style.width = player.health + "%";
     enemy.isAttacking = false;
-    setTimeout(
-      () =>
-        socket?.emit("syncHealth", {
-          player: { health: player.health, energy: player.energy },
-          enemy: { health: enemy.health, energy: enemy.energy },
-          roomCode,
-        }),
-      200
-    );
   }
 
   if (enemy.health <= 0 || player.health <= 0) {
@@ -638,42 +614,50 @@ window.addEventListener("keydown", (e) => {
 
   switch (e.key) {
     case "d":
+      if (currentPlayer.isBlocking) return;
+
       socket?.emit("keyPress", "rightDown", urlParams.get("id"));
       currentPlayer.keys.right = true;
       currentPlayer.lastKey = `${currentPlayerKey}Right`;
       break;
 
     case "a":
+      if (currentPlayer.isBlocking) return;
+
       socket?.emit("keyPress", "leftDown", urlParams.get("id"));
       currentPlayer.keys.left = true;
       currentPlayer.lastKey = `${currentPlayerKey}Left`;
       break;
 
     case "w":
+      if (currentPlayer.isBlocking) return;
+
       socket?.emit("keyPress", "up", urlParams.get("id"));
       currentPlayer.keys.up = true;
       if (currentPlayer.velocity.y == 0) currentPlayer.velocity.y = -8;
       break;
 
     case " ":
+      if (currentPlayer.isBlocking) return;
+
       socket?.emit("keyPress", "attack1", urlParams.get("id"));
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !currentPlayer.isAttacked &&
-        !currentPlayer.isBlocking
+        !currentPlayer.isAttacked
       )
         currentPlayer.attack1();
       break;
 
     case "q":
+      if (currentPlayer.isBlocking) return;
+
       socket?.emit("keyPress", "attack2", urlParams.get("id"));
 
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !currentPlayer.isAttacked &&
-        !currentPlayer.isBlocking
+        !currentPlayer.isAttacked
       )
         executeAttack2(
           currentPlayer,
@@ -684,13 +668,14 @@ window.addEventListener("keydown", (e) => {
       break;
 
     case "r":
+      if (currentPlayer.isBlocking) return;
+
       socket?.emit("keyPress", "splAttack", urlParams.get("id"));
 
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !currentPlayer.isAttacked &&
-        !currentPlayer.isBlocking
+        !currentPlayer.isAttacked
       )
         executeSplAttack(
           currentPlayer,
@@ -701,6 +686,8 @@ window.addEventListener("keydown", (e) => {
       break;
 
     case "e":
+      if (currentPlayer.isBlocking) return;
+
       socket?.emit("keyPress", "blockDown", urlParams.get("id"));
       currentPlayer.keys.block = true;
       if (
@@ -713,12 +700,15 @@ window.addEventListener("keydown", (e) => {
 
     case "ArrowRight":
       if (online) return;
+      if (opponent.isBlocking) return;
+
       opponent.keys.right = true;
       opponent.lastKey = `${opponentKey}Right`;
       break;
 
     case "ArrowLeft":
       if (online) return;
+      if (opponent.isBlocking) return;
 
       opponent.keys.left = true;
       opponent.lastKey = `${opponentKey}Left`;
@@ -726,6 +716,7 @@ window.addEventListener("keydown", (e) => {
 
     case "ArrowUp":
       if (online) return;
+      if (opponent.isBlocking) return;
 
       opponent.keys.up = true;
       if (opponent.velocity.y == 0) opponent.velocity.y = -8;
@@ -733,12 +724,12 @@ window.addEventListener("keydown", (e) => {
 
     case "0":
       if (online) return;
+      if (opponent.isBlocking) return;
 
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !opponent.isAttacked &&
-        !opponent.isBlocking
+        !opponent.isAttacked
       )
         executeAttack2(
           opponent,
@@ -750,12 +741,12 @@ window.addEventListener("keydown", (e) => {
 
     case "2":
       if (online) return;
+      if (opponent.isBlocking) return;
 
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !opponent.isAttacked &&
-        !opponent.isBlocking
+        !opponent.isAttacked
       )
         executeSplAttack(
           opponent,
@@ -767,12 +758,12 @@ window.addEventListener("keydown", (e) => {
 
     case "Control":
       if (online) return;
+      if (opponent.isBlocking) return;
 
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !opponent.isAttacked &&
-        !opponent.isBlocking
+        !opponent.isAttacked
       )
         opponent.attack1();
       break;
@@ -870,18 +861,23 @@ const performTouchAction = (e, touch = false) => {
     return;
   switch (e) {
     case "rightDown":
+      if (currentPlayer.isBlocking) return;
       socket?.emit("keyPress", "rightDown", urlParams.get("id"));
       currentPlayer.keys.right = true;
       currentPlayer.lastKey = `${currentPlayerKey}Right`;
       break;
 
     case "leftDown":
+      if (currentPlayer.isBlocking) return;
+
       socket?.emit("keyPress", "leftDown", urlParams.get("id"));
       currentPlayer.keys.left = true;
       currentPlayer.lastKey = `${currentPlayerKey}Left`;
       break;
 
     case "rightUp":
+      if (currentPlayer.isBlocking) return;
+
       socket?.emit("keyPress", e, urlParams.get("id"));
       currentPlayer.keys.right = false;
       currentPlayer.offset = currentPlayer.sprites.idle.offset;
@@ -889,6 +885,8 @@ const performTouchAction = (e, touch = false) => {
       break;
 
     case "leftUp":
+      if (currentPlayer.isBlocking) return;
+
       socket?.emit("keyPress", e, urlParams.get("id"));
       currentPlayer.keys.left = false;
       currentPlayer.offset = currentPlayer.sprites.idle.offset;
@@ -913,30 +911,34 @@ const performTouchAction = (e, touch = false) => {
       break;
 
     case "up":
+      if (currentPlayer.isBlocking) return;
+
       socket?.emit("keyPress", e, urlParams.get("id"));
       currentPlayer.keys.up = true;
       if (currentPlayer.velocity.y == 0) currentPlayer.velocity.y = -8;
       break;
 
     case "attack1":
+      if (currentPlayer.isBlocking) return;
+
       socket?.emit("keyPress", e, urlParams.get("id"));
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !currentPlayer.isAttacked &&
-        !currentPlayer.isBlocking
+        !currentPlayer.isAttacked
       )
         currentPlayer.attack1();
       break;
 
     case "attack2":
+      if (currentPlayer.isBlocking) return;
+
       socket?.emit("keyPress", e, urlParams.get("id"));
 
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !currentPlayer.isAttacked &&
-        !currentPlayer.isBlocking
+        !currentPlayer.isAttacked
       )
         executeAttack2(
           currentPlayer,
@@ -947,13 +949,14 @@ const performTouchAction = (e, touch = false) => {
       break;
 
     case "splAttack":
+      if (currentPlayer.isBlocking) return;
+
       socket?.emit("keyPress", e, urlParams.get("id"));
 
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
-        !currentPlayer.isAttacked &&
-        !currentPlayer.isBlocking
+        !currentPlayer.isAttacked
       )
         executeSplAttack(
           currentPlayer,
