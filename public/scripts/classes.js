@@ -206,14 +206,27 @@ class Fighter extends Sprite {
   takeHit() {
     if (this.isBlocking) {
       this.health -= 1;
+      // socket?.emit("syncHealth", {
+      //   player: { health: player.health, energy: player.energy },
+      //   enemy: { health: enemy.health, energy: enemy.energy },
+      //   roomCode,
+      // });
       return;
     }
     this.isAttacked = true;
-    setTimeout(() => {
-      this.switchSprite("takeHit");
-      this.health -= 5;
-      this.isAttacked = false;
-    }, 100);
+    // setTimeout(() => {
+    this.switchSprite("takeHit");
+    this.health -= 5;
+    console.log(this.health);
+
+    // socket?.emit("syncHealth", {
+    //   player: { health: player.health, energy: player.energy },
+    //   enemy: { health: enemy.health, energy: enemy.energy },
+    //   roomCode,
+    // });
+
+    this.isAttacked = false;
+    // }, 100);
   }
 
   block() {

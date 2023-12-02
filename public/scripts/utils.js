@@ -35,6 +35,18 @@ function syncPosition() {
     });
   }
 }
+
+function syncHealth() {
+  if (timer) {
+    setTimeout(syncHealth, 200);
+    socket?.emit("syncHealth", {
+      player: { health: player.health, energy: player.energy },
+      enemy: { health: enemy.health, energy: enemy.energy },
+      roomCode,
+    });
+  }
+}
+
 function restoreEnergy() {
   if (!started) return;
 
@@ -121,6 +133,11 @@ function executeAttack2(player1, attack, enemy1, selector) {
     player1.attack2(enemy1);
     attack.release(player1.position);
     player1.energy -= 50;
+    socket?.emit("syncHealth", {
+      player: { health: player.health, energy: player.energy },
+      enemy: { health: enemy.health, energy: enemy.energy },
+      roomCode,
+    });
     document.querySelector(selector).style.width = player1.energy + "%";
   }
 }
@@ -145,6 +162,11 @@ function executeSplAttack(player1, attack, enemy1, selector) {
     player1.splAttack(enemy1);
     attack.release(player1.position, attack.flipped, (special = true));
     player1.energy = 0;
+    socket?.emit("syncHealth", {
+      player: { health: player.health, energy: player.energy },
+      enemy: { health: enemy.health, energy: enemy.energy },
+      roomCode,
+    });
     document.querySelector(selector).style.width = player1.energy + "%";
   }
 }
@@ -204,7 +226,10 @@ function startCountdown() {
       decreaseTimer();
       restoreEnergy();
       // if (urlParams.has("online") && player1) syncPosition();
-      if (urlParams.has("online")) syncPosition();
+      if (urlParams.has("online")) {
+        syncPosition();
+        syncHealth();
+      }
     }
   }, 1000);
 }
@@ -317,5 +342,31 @@ const detectMobile = () => {
     return true;
   } else {
     return false;
+  }
+};
+
+function openFullscreen() {
+  const elem = document.querySelector("#mainCanvas");
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.webkitRequestFullscreen) {
+    /* Safari */
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) {
+    /* IE11 */
+    elem.msRequestFullscreen();
+  }
+}
+
+const onClickWorking = () => {
+  const container = document.getElementById("mainCanvas");
+  if (!document.fullscreenElement) {
+    container.requestFullscreen().catch((err) => {
+      alert(
+        `Error attempting to enable full-screen mode: ${err.message} (${err.name})`
+      );
+    });
+  } else {
+    document.exitFullscreen();
   }
 };
