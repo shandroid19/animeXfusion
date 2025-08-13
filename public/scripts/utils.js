@@ -25,16 +25,16 @@ function loadSounds(player, name) {
 
 var roomCode;
 
-function syncPosition() {
-  if (timer) {
-    setTimeout(syncPosition, 10);
-    socket?.emit("syncPosition", {
-      player: player.position,
-      enemy: enemy.position,
-      roomCode,
-    });
-  }
-}
+// function syncPosition() {
+//   if (timer) {
+//     setTimeout(syncPosition, 10);
+//     socket?.emit("syncPosition", {
+//       player: player.position,
+//       enemy: enemy.position,
+//       roomCode,
+//     });
+//   }
+// }
 function restoreEnergy() {
   if (!started) return;
 
@@ -203,7 +203,7 @@ function startCountdown() {
       started = true;
       decreaseTimer();
       restoreEnergy();
-      if (urlParams.has("online") && player1) syncPosition();
+      // if (urlParams.has("online") && player1) syncPosition();
     }
   }, 1000);
 }

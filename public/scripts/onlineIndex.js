@@ -1,6 +1,6 @@
 const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
-const speed = 1;
+const speed = 2;
 
 canvas.width = 1024;
 canvas.height = 576;
@@ -221,10 +221,6 @@ $(document).ready(() => {
     //   enemy.position = newValues.enemy;
     // });
 
-    socket.on("updatePlayers", (backendPlayers) => {
-      console.log(backendPlayers);
-    });
-
     socket.on("syncHealth", (newValues) => {
       player.health = newValues.player.health;
       enemy.health = newValues.enemy.health;
@@ -247,10 +243,24 @@ $(document).ready(() => {
       started = false;
     });
 
-    socket.on("startGame", ({ members, characters }) => {
+    socket.on("updatePlayers", (data) => {
+      player.position.x = data[0].x;
+      enemy.position.x = data[1].x;
+    });
+
+    socket.on("startGame", (data) => {
+      console.log(data.players[Object.keys(data.players)[0]].characterId);
+      const characters = [
+        data.players[Object.keys(data.players)[0]].characterId,
+        data.players[Object.keys(data.players)[1]].characterId,
+      ];
+
+      const members = Object.keys(data.players);
+      console.log(characters, members);
+
       player1 = members[0] === socket.id;
-      p1 = characters[members[0]];
-      p2 = characters[members[1]];
+      p1 = characters[0];
+      p2 = characters[1];
 
       player = new Fighter({
         position: { x: 200, y: 0 },
@@ -421,13 +431,10 @@ function animate() {
   player.velocity.x = 0;
   enemy.velocity.x = 0;
   if (player.keys.left && player.lastKey == "playerLeft") {
-    if (player1) socket?.emit("keyPress", "leftDown");
     //changed
     player.velocity.x = -3 * speed;
     player.switchSprite("run");
   } else if (player.keys.right && player.lastKey == "playerRight") {
-    if (player1) socket?.emit("keyPress", "rightDown");
-
     player.velocity.x = 3 * speed;
     player.switchSprite("run");
   } else {
@@ -439,11 +446,9 @@ function animate() {
   }
 
   if (enemy.keys.left && enemy.lastKey == "enemyLeft") {
-    if (!player1) socket?.emit("keyPress", "leftDown");
     enemy.velocity.x = -3 * speed;
     enemy.switchSprite("run");
   } else if (enemy.keys.right && enemy.lastKey == "enemyRight") {
-    if (player1) socket?.emit("keyPress", "rightDown");
     enemy.velocity.x = 3 * speed;
     enemy.switchSprite("run");
   } else {
@@ -641,76 +646,74 @@ window.addEventListener("keydown", (e) => {
 
   switch (e.key) {
     case "d":
+      socket?.emit("keyPress", "rightDown", urlParams.get("id"));
       currentPlayer.keys.right = true;
       currentPlayer.lastKey = `${currentPlayerKey}Right`;
       break;
 
     case "a":
+      socket?.emit("keyPress", "leftDown", urlParams.get("id"));
       currentPlayer.keys.left = true;
       currentPlayer.lastKey = `${currentPlayerKey}Left`;
       break;
 
     case "w":
+      socket?.emit("keyPress", "up", urlParams.get("id"));
       currentPlayer.keys.up = true;
-      if (currentPlayer.velocity.y == 0) {
-        socket?.emit("keyPress", "up");
-        currentPlayer.velocity.y = -8;
-      }
+      if (currentPlayer.velocity.y == 0) currentPlayer.velocity.y = -8;
       break;
 
     case " ":
+      socket?.emit("keyPress", "attack1", urlParams.get("id"));
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
         !currentPlayer.isAttacked
-      ) {
-        socket?.emit("keyPress", "attack1");
+      )
         currentPlayer.attack1();
-      }
       break;
 
     case "q":
+      socket?.emit("keyPress", "attack2", urlParams.get("id"));
+
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
         !currentPlayer.isAttacked
-      ) {
-        socket?.emit("keyPress", "attack2");
+      )
         executeAttack2(
           currentPlayer,
           currentPlayer.attack2Object,
           opponent,
           `#${currentPlayerKey}Energy`
         );
-      }
       break;
 
     case "r":
+      socket?.emit("keyPress", "splAttack", urlParams.get("id"));
+
       if (
         currentPlayer.health > 0 &&
         opponent.health > 0 &&
         !currentPlayer.isAttacked
-      ) {
-        socket?.emit("keyPress", "splAttack");
+      )
         executeSplAttack(
           currentPlayer,
           currentPlayer.splAttackObject,
           opponent,
           `#${currentPlayerKey}Energy`
         );
-      }
       break;
 
     case "e":
+      socket?.emit("keyPress", "blockDown", urlParams.get("id"));
       currentPlayer.keys.block = true;
       if (
         !currentPlayer.isAttacking &&
         currentPlayer.velocity.y === 0 &&
         currentPlayer.velocity.x === 0
-      ) {
-        socket?.emit("keyPress", "blockDown");
+      )
         currentPlayer.block();
-      }
       break;
 
     case "ArrowRight":
@@ -869,11 +872,13 @@ const performTouchAction = (e, touch = false) => {
     return;
   switch (e) {
     case "rightDown":
+      socket?.emit("keyPress", "rightDown", urlParams.get("id"));
       currentPlayer.keys.right = true;
       currentPlayer.lastKey = `${currentPlayerKey}Right`;
       break;
 
     case "leftDown":
+      socket?.emit("keyPress", "leftDown", urlParams.get("id"));
       currentPlayer.keys.left = true;
       currentPlayer.lastKey = `${currentPlayerKey}Left`;
       break;
