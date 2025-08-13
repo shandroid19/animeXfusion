@@ -9,7 +9,7 @@ function decreaseTimer() {
     determineWinner({ player, enemy });
     socket?.emit("syncHealth", {
       player: { health: player.health, energy: player.energy },
-      enemy: { health: enemy.health, enemy: energy.energy },
+      enemy: { health: enemy.health, energy: enemy.energy },
       roomCode,
     });
   }
@@ -27,10 +27,22 @@ var roomCode;
 
 function syncPosition() {
   if (timer) {
-    setTimeout(syncPosition, 10);
+    setTimeout(syncPosition, 50);
     socket?.emit("syncPosition", {
-      player: player.position,
-      enemy: enemy.position,
+      player: {
+        x: player.position.x,
+        y: player.position.y,
+        vx: player.velocity.x,
+        vy: player.velocity.y,
+        t: Date.now(),
+      },
+      enemy: {
+        x: enemy.position.x,
+        y: enemy.position.y,
+        vx: enemy.velocity.x,
+        vy: enemy.velocity.y,
+        t: Date.now(),
+      },
       roomCode,
     });
   }

@@ -207,6 +207,9 @@ const startGame = () => {
 var socket;
 var player1;
 var online = false;
+// Remote interpolation buffer
+var remoteSnapshots = [];
+const INTERP_DELAY_MS = 100;
 $(document).ready(() => {
   if (urlParams.has("online")) {
     online = true;
@@ -216,8 +219,12 @@ $(document).ready(() => {
     socket?.emit("joinRoom", urlParams.get("id"), p1);
     roomCode = urlParams.get("id");
     socket.on("syncPosition", (newValues) => {
-      if (!player1) player.position = newValues.player;
-      else enemy.position = newValues.enemy;
+      // Buffer only the remote player's snapshots
+      const snap = player1 ? newValues.enemy : newValues.player;
+      if (snap && typeof snap.x === "number" && typeof snap.y === "number") {
+        remoteSnapshots.push(snap);
+        if (remoteSnapshots.length > 30) remoteSnapshots.shift();
+      }
     });
 
     socket.on("syncHealth", (newValues) => {
@@ -408,6 +415,34 @@ function animate() {
   c.fillRect(0, 0, canvas.width, canvas.height);
 
   background.update();
+  // Interpolate remote player for smoother online motion
+  if (online && remoteSnapshots.length >= 2) {
+    const renderTime = Date.now() - INTERP_DELAY_MS;
+    // find two snapshots around renderTime
+    let prev = null;
+    let next = null;
+    for (let i = remoteSnapshots.length - 1; i >= 0; i--) {
+      const s = remoteSnapshots[i];
+      if (s.t <= renderTime) {
+        prev = s;
+        next = remoteSnapshots[i + 1] || s;
+        break;
+      }
+    }
+    if (!prev) {
+      prev = remoteSnapshots[0];
+      next = remoteSnapshots[1] || prev;
+    }
+    const t0 = prev.t || 0;
+    const t1 = Math.max(next.t || 0, t0 + 1);
+    const alpha = Math.max(0, Math.min(1, (renderTime - t0) / (t1 - t0)));
+    const targetX = prev.x + (next.x - prev.x) * alpha;
+    const targetY = prev.y + (next.y - prev.y) * alpha;
+    const remoteFighter = player1 ? enemy : player;
+    // Nudge towards target to avoid snapping over local input replication
+    remoteFighter.position.x += (targetX - remoteFighter.position.x) * 0.2;
+    remoteFighter.position.y += (targetY - remoteFighter.position.y) * 0.2;
+  }
   player.update(enemy);
   enemy.update(player);
 
@@ -969,4 +1004,18 @@ const performTouchAction = (e, touch = false) => {
 
 $(document).ready(() => {
   if (!detectMobile()) $(".controlsContainer").addClass("hidden");
+
+  // Haptics on touch
+  const vibrate = (ms) => {
+    try {
+      if (navigator.vibrate) navigator.vibrate(ms);
+    } catch {}
+  };
+  $(document).on(
+    "touchstart",
+    ".controlBtn,.attack1Btn,.attack2Btn",
+    function () {
+      vibrate(10);
+    }
+  );
 });
