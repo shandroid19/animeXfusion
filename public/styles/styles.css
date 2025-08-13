@@ -1,12 +1,36 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap");
+
+:root {
+  --bg: #0b0f14;
+  --panel: rgba(255, 255, 255, 0.06);
+  --panel-border: rgba(255, 255, 255, 0.12);
+  --text: #e6edf3;
+  --accent: #6ee7ff;
+  --accent-2: #8b5cf6;
+  --health-start: #16a34a;
+  --health-end: #22c55e;
+  --energy-start: #3b82f6;
+  --energy-end: #22d3ee;
+  --glow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
-  font-family: sans-serif;
+  font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Helvetica,
+    Arial, sans-serif;
   touch-action: manipulation;
 }
 
 body {
-  background-color: black;
+  background: radial-gradient(
+      1200px 800px at 80% -20%,
+      #1a2230 0%,
+      transparent 70%
+    ),
+    radial-gradient(1000px 600px at -10% 110%, #0f1723 0%, transparent 70%),
+    var(--bg);
+  color: var(--text);
 }
 
 .gameContainer {
@@ -21,10 +45,14 @@ body {
 
 .statusBar {
   position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   display: flex;
   align-items: center;
   width: 100%;
-  padding: 20px;
+  padding: 16px 24px;
+  backdrop-filter: blur(10px);
 }
 
 .statusBarContainer {
@@ -32,66 +60,79 @@ body {
   flex-direction: column;
   width: 100%;
   align-items: flex-start;
+  gap: 10px;
 }
 
 .healthBar {
-  background: linear-gradient(
-    rgb(241, 41, 41),
-    rgb(235, 129, 129),
-    rgb(241, 41, 41)
-  );
-  height: 30px;
+  background: rgba(255, 255, 255, 0.08);
+  height: 16px;
   width: 100%;
+  border-radius: 999px;
+  border: 1px solid var(--panel-border);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 .healthLevel {
-  border: solid 0.1rem white;
   position: absolute;
-  background: linear-gradient(
-    rgb(41, 241, 41),
-    rgb(203, 237, 203),
-    rgb(41, 241, 41)
-  );
   top: 0;
   bottom: 0;
   width: 100%;
+  border-radius: 999px;
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.5);
+  transition: width 250ms ease;
+}
+.healthLevel.fill-left {
+  left: 0;
+  right: auto;
+  background: linear-gradient(90deg, var(--health-start), var(--health-end));
+}
+.healthLevel.fill-right {
+  right: 0;
+  left: auto;
+  background: linear-gradient(270deg, var(--health-start), var(--health-end));
 }
 
 .energyBarBox {
   position: relative;
-  height: 30px;
+  height: 16px;
   width: 50%;
   display: flex;
   justify-content: flex-start;
 }
 
 .energyBar {
-  background: linear-gradient(
-    rgb(51, 41, 241),
-    rgb(129, 154, 235),
-    rgb(51, 41, 241)
-  );
-  height: 15px;
+  background: rgba(255, 255, 255, 0.08);
+  height: 16px;
   width: 100%;
+  border-radius: 999px;
+  border: 1px solid var(--panel-border);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 .energyLevel {
-  border: solid 0.1rem white;
   position: absolute;
-  background: linear-gradient(
-    rgb(231, 241, 41),
-    rgb(244, 250, 173),
-    rgb(231, 241, 41)
-  );
   top: 0;
   bottom: 0;
   width: 100%;
-  height: 15px;
+  height: 16px;
+  border-radius: 999px;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.45);
+  transition: width 250ms ease;
+}
+.energyLevel.fill-left {
+  left: 0;
+  right: auto;
+  background: linear-gradient(90deg, var(--energy-start), var(--energy-end));
+}
+.energyLevel.fill-right {
+  right: 0;
+  left: auto;
+  background: linear-gradient(270deg, var(--energy-start), var(--energy-end));
 }
 
 .energyBarContainer {
   position: relative;
-  height: 30px;
+  height: 16px;
   width: 100%;
   display: flex;
   justify-content: flex-end;
@@ -102,26 +143,29 @@ body {
 }
 
 .timer {
-  background-color: rgb(0, 47, 255);
-  height: 100px;
+  height: 90px;
+  width: 90px;
+  flex-shrink: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 50px;
-  font-weight: bold;
-  width: 100px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  border-style: solid;
-  border-color: white;
-  border-width: 0.5rem;
-  color: white;
-  font-family: sans-serif;
+  font-size: 40px;
+  font-weight: 800;
+  color: var(--text);
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.02)
+  );
+  border: 1px solid var(--panel-border);
+  box-shadow: inset 0 0 40px rgba(139, 92, 246, 0.35),
+    0 10px 30px rgba(0, 0, 0, 0.35);
 }
 
 .postGameContainer {
   position: absolute;
-  color: black;
+  color: var(--text);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -147,9 +191,10 @@ body {
 
 #result {
   margin: 3rem;
-  color: white;
+  color: var(--text);
   z-index: 100;
   text-transform: capitalize;
+  text-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
 }
 
 .container {
@@ -159,11 +204,22 @@ body {
 }
 
 .btn {
-  padding: 1rem;
-  color: white;
-  border-radius: 1rem;
-  box-shadow: 0rem 0rem 5rem 0.5rem black;
+  padding: 0.875rem 1.25rem;
+  color: var(--text);
+  border-radius: 12px;
+  background: linear-gradient(
+    90deg,
+    rgba(139, 92, 246, 0.3),
+    rgba(110, 231, 255, 0.25)
+  );
+  border: 1px solid var(--panel-border);
+  box-shadow: var(--glow);
   margin: 2rem;
+  transition: transform 120ms ease, box-shadow 200ms ease;
+}
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
 }
 
 .text-center {
@@ -294,13 +350,23 @@ transition {
   height: 5rem;
   width: 5rem;
   border-radius: 100%;
-  background-color: rgba(0, 0, 0, 0.1);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.02)
+  );
   display: flex;
   justify-content: center;
   align-items: center;
-  border-style: solid;
-  border-color: white;
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(8px);
   touch-action: manipulation;
+  transition: transform 120ms ease, box-shadow 200ms ease;
+}
+.controlBtn:active {
+  transform: scale(0.96);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 .attack2Row {
@@ -314,37 +380,54 @@ transition {
   height: 4rem;
   width: 4rem;
   border-radius: 100%;
-  background-color: rgba(0, 0, 0, 0.1);
-  color: white;
-  border-style: solid;
-  /* border-color: white; */
-  border-color: black;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.02)
+  );
+  color: var(--text);
+  border: 1px solid var(--panel-border);
   display: flex;
   justify-content: center;
   align-items: center;
   touch-action: manipulation;
   margin-right: 2rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  transition: transform 120ms ease, box-shadow 200ms ease;
+}
+.attack2Btn:active {
+  transform: scale(0.96);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 .attack1Btn {
   height: 7rem;
   width: 7rem;
   border-radius: 100%;
-  background-color: rgba(0, 0, 0, 0.1);
-  color: white;
-  border-style: solid;
-  border-color: white;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.02)
+  );
+  color: var(--text);
+  border: 1px solid var(--panel-border);
   display: flex;
   justify-content: center;
   align-items: center;
   touch-action: manipulation;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+  transition: transform 120ms ease, box-shadow 200ms ease;
+}
+.attack1Btn:active {
+  transform: scale(0.96);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 .btnLogo {
   object-fit: contain;
   height: 4.5rem;
   text-align: center;
-  opacity: 0.7;
+  opacity: 0.9;
   pointer-events: none;
 }
 
@@ -352,7 +435,7 @@ transition {
   object-fit: contain;
   height: 3rem;
   text-align: center;
-  opacity: 0.7;
+  opacity: 0.9;
   pointer-events: none;
 }
 
@@ -360,7 +443,7 @@ transition {
   object-fit: contain;
   height: 3rem;
   text-align: center;
-  opacity: 0.7;
+  opacity: 0.9;
   pointer-events: none;
 }
 
@@ -368,8 +451,24 @@ transition {
   object-fit: contain;
   height: 4.5rem;
   text-align: center;
-  opacity: 0.7;
+  opacity: 0.9;
   pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .timer {
+    height: 72px;
+    width: 72px;
+    font-size: 32px;
+  }
+  .attack1Btn {
+    height: 6rem;
+    width: 6rem;
+  }
+  .controlBtn {
+    height: 4.25rem;
+    width: 4.25rem;
+  }
 }
 
 .hidden {

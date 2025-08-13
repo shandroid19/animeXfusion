@@ -1,18 +1,22 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap");
 * {
   box-sizing: border-box;
   margin: 0;
-  font-family: sans-serif;
+  font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Helvetica,
+    Arial, sans-serif;
   touch-action: manipulation;
 }
 
 body {
-  background-color: black;
+  background-color: #0b0f14;
+  color: #e6edf3;
 }
 
 .title {
-  color: white;
+  color: #e6edf3;
   text-align: center;
   text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .selectContainer {
@@ -25,6 +29,7 @@ body {
   background-color: black;
   justify-content: center;
   padding: 2rem;
+  backdrop-filter: blur(2px);
 }
 
 .innerBox {
@@ -55,35 +60,40 @@ body {
   justify-content: center;
   margin: 1rem;
   padding: 1rem;
-  border-radius: 0.5rem;
-  background-color: aliceblue;
-  border: solid black 0.2rem;
-  transition: transform 0.2s;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: transform 0.2s, box-shadow 200ms ease;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
 }
 
 .characterBox:hover {
-  transform: scale(1.2);
-  border: solid yellow 0.2rem;
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  border-color: rgba(139, 92, 246, 0.6);
 }
 
 .characterImage {
   object-fit: cover;
   height: 5rem;
   width: 5rem;
-  border: solid black 0.1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .modeBox {
   padding: 1rem;
-  border: solid 0.5rem black;
-  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
   margin: 0.5rem;
-  transition: transform 0.2s;
+  transition: transform 0.2s, box-shadow 200ms ease;
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .modeBox:hover {
-  transform: scale(1.2);
-  border-color: yellow;
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  border-color: rgba(110, 231, 255, 0.6);
 }
 
 .controlsRow {
@@ -99,12 +109,20 @@ body {
   margin-right: 5rem;
 }
 
+.value {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
+}
+
 .controlsBox {
   background-image: url(../assets/scroll.png);
   background-repeat: no-repeat;
   background-size: contain;
   padding: 7rem;
   border-radius: 1rem;
+  filter: saturate(1.15) brightness(1);
 }
 
 h1 {

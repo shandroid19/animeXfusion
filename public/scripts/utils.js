@@ -60,6 +60,7 @@ function restoreEnergy() {
     else $("#splAttackBtn").css("border-color", "#000");
     document.querySelector("#playerEnergy").style.width = player.energy + "%";
     document.querySelector("#enemyEnergy").style.width = enemy.energy + "%";
+    updateHealthBars();
   }
 }
 
@@ -111,6 +112,32 @@ function determineWinner({ player, enemy }) {
   }
 
   timer = 100;
+}
+
+function getHealthGradient(percent, fillRight = false) {
+  const clamped = Math.max(0, Math.min(100, percent));
+  const t = clamped / 100; // 1.0 -> full health
+  const hue = 0 + (120 - 0) * t; // 0 (red) to 120 (green)
+  const s = 75; // saturation
+  const l1 = 45; // base lightness
+  const l2 = 60; // highlight lightness
+  const angle = fillRight ? 270 : 90;
+  return `linear-gradient(${angle}deg, hsl(${hue} ${s}% ${l1}%), hsl(${hue} ${s}% ${l2}%))`;
+}
+
+function applyHealthBar(elementId, percent, fillRight = false) {
+  const el = document.querySelector(`#${elementId}`);
+  if (!el) return;
+  el.style.width = `${Math.max(0, Math.min(100, percent))}%`;
+  el.style.background = getHealthGradient(percent, fillRight);
+  el.style.boxShadow = fillRight
+    ? "0 0 12px rgba(34, 197, 94, 0.5)"
+    : "0 0 12px rgba(34, 197, 94, 0.5)";
+}
+
+function updateHealthBars() {
+  applyHealthBar("playerHealth", player.health, false);
+  applyHealthBar("enemyHealth", enemy.health, true);
 }
 
 function executeAttack2(player1, attack, enemy1, selector) {

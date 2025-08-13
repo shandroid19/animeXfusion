@@ -224,8 +224,7 @@ $(document).ready(() => {
       if (player1) {
         player.health = newValues.player.health;
         player.energy = newValues.player.energy;
-        document.querySelector("#playerHealth").style.width =
-          player.health + "%";
+        applyHealthBar("playerHealth", player.health, false);
         document.querySelector("#playerEnergy").style.width =
           player.energy + "%";
         return;
@@ -233,7 +232,7 @@ $(document).ready(() => {
       enemy.health = newValues.enemy.health;
       enemy.energy = newValues.enemy.energy;
       document.querySelector("#enemyEnergy").style.width = enemy.energy + "%";
-      document.querySelector("#enemyHealth").style.width = enemy.health + "%";
+      applyHealthBar("enemyHealth", enemy.health, true);
     });
 
     socket.on("keyPress", (data) => {
@@ -456,6 +455,7 @@ function animate() {
 
     enemy.switchSprite("fall");
     enemy.health -= 20;
+    applyHealthBar("enemyHealth", enemy.health, true);
     // socket?.emit("syncHealth", {
     //   player: { health: player.health, energy: player.energy },
     //   enemy: { health: enemy.health, energy: enemy.energy },
@@ -470,6 +470,7 @@ function animate() {
     enemy.attack2Object.launched = false;
     player.switchSprite("fall");
     player.health -= 20;
+    applyHealthBar("playerHealth", player.health, false);
     // socket?.emit("syncHealth", {
     //   player: { health: player.health, energy: player.energy },
     //   enemy: { health: enemy.health, energy: enemy.energy },
@@ -495,8 +496,7 @@ function animate() {
       for (let i = 1; i <= 8; i++)
         setTimeout(() => {
           enemy.health -= 5;
-          document.querySelector("#enemyHealth").style.width =
-            enemy.health + "%";
+          applyHealthBar("enemyHealth", enemy.health, true);
           // socket?.emit("syncHealth", {
           //   player: { health: player.health, energy: player.energy },
           //   enemy: { health: enemy.health, energy: enemy.energy },
@@ -540,8 +540,7 @@ function animate() {
           //   enemy: { health: enemy.health, energy: enemy.energy },
           //   roomCode,
           // });
-          // document.querySelector("#playerHealth").style.width =
-          //   player.health + "%";
+          applyHealthBar("playerHealth", player.health, false);
         }, 250 * i);
 
       setTimeout(() => {
@@ -570,7 +569,7 @@ function animate() {
 
     player.isAttacking = false;
     enemy.takeHit();
-    document.querySelector("#enemyHealth").style.width = enemy.health + "%";
+    applyHealthBar("enemyHealth", enemy.health, true);
   }
 
   if (
@@ -580,13 +579,13 @@ function animate() {
     if (player.isAttacked) return;
 
     player.takeHit();
-    document.querySelector("#playerHealth").style.width = player.health + "%";
+    applyHealthBar("playerHealth", player.health, false);
     enemy.isAttacking = false;
   }
 
   if (enemy.health <= 0 || player.health <= 0) {
-    document.querySelector("#playerHealth").style.width = player.health + "%";
-    document.querySelector("#enemyHealth").style.width = enemy.health + "%";
+    applyHealthBar("playerHealth", player.health, false);
+    applyHealthBar("enemyHealth", enemy.health, true);
     determineWinner({ player, enemy });
     started = false;
   }
