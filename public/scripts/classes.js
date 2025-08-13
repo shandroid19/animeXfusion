@@ -29,7 +29,7 @@ class Sprite {
         this.image.width / this.framesMax,
         this.image.height,
         sHeight,
-        this.position.y,
+        this.position.y + ((this.offset?.y || 0) - (this.groundOffsetY || 0)),
         (this.image.width / this.framesMax) * this.scale,
         this.image.height * this.scale
       );
@@ -148,6 +148,7 @@ class Fighter extends Sprite {
     this.width = 50;
     this.lastKey = "None";
     this.offset = offset;
+    this.groundOffsetY = (offset && offset.y) || 0;
     this.attackBox = {
       position: {
         x: this.position.x,
@@ -272,7 +273,6 @@ class Fighter extends Sprite {
           this.offset = this.sprites.idle.offset;
           this.framesMax = this.sprites.idle.framesMax;
           this.framesCurrent = 0;
-          this.position.y += this.sprites.idle.offset.y;
         }
         break;
       case "run":
@@ -281,8 +281,6 @@ class Fighter extends Sprite {
           this.offset = this.sprites.run.offset;
           this.framesMax = this.sprites.run.framesMax;
           this.framesCurrent = 0;
-          this.position.y += this.sprites.run.offset.y;
-          this.sounds.jump.play();
         }
         break;
       case "jump":
@@ -293,7 +291,6 @@ class Fighter extends Sprite {
           this.offset = this.sprites.jump.offset;
           this.framesMax = this.sprites.jump.framesMax;
           this.framesCurrent = 0;
-          this.position.y += this.sprites.jump.offset.y;
         }
         break;
       case "attack1":
@@ -302,7 +299,6 @@ class Fighter extends Sprite {
           this.offset = this.sprites.attack1.offset;
           this.framesMax = this.sprites.attack1.framesMax;
           this.framesCurrent = 0;
-          this.position.y += this.sprites.attack1.offset.y;
         }
         break;
 
@@ -313,7 +309,6 @@ class Fighter extends Sprite {
 
           this.framesMax = this.sprites.attack2.framesMax;
           this.framesCurrent = 0;
-          this.position.y += this.sprites.attack2.offset.y;
         }
         break;
 
@@ -324,7 +319,6 @@ class Fighter extends Sprite {
 
           this.framesMax = this.sprites.splAttack.framesMax;
           this.framesCurrent = 0;
-          this.position.y += this.sprites.splAttack.offset.y;
         }
         break;
 
@@ -335,7 +329,6 @@ class Fighter extends Sprite {
 
           this.framesMax = this.sprites.fall.framesMax;
           this.framesCurrent = 0;
-          this.position.y += this.sprites.fall.offset.y;
         }
         break;
 
@@ -345,7 +338,6 @@ class Fighter extends Sprite {
           this.offset = this.sprites.takeHit.offset;
           this.framesMax = this.sprites.takeHit.framesMax;
           this.framesCurrent = 0;
-          this.position.y += this.sprites.takeHit.offset.y;
           this.sounds.takeHit.play();
         }
         break;
@@ -356,7 +348,6 @@ class Fighter extends Sprite {
           this.offset = this.sprites.block.offset;
           this.framesMax = this.sprites.block.framesMax;
           this.framesCurrent = 0;
-          this.position.y += this.sprites.block.offset.y;
         }
         break;
     }
@@ -397,7 +388,7 @@ class Fighter extends Sprite {
 
     if (
       this.position.y + this.height + this.velocity.y >=
-      canvas.height + this.offset.y
+      canvas.height + this.groundOffsetY
     )
       this.velocity.y = 0;
     else this.velocity.y += gravity;
