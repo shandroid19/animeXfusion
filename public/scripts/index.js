@@ -33,9 +33,16 @@ c.fillRect(0, 0, canvas.width, canvas.height);
 const gravity = 0.1 * speed;
 var timer = 100;
 
+const selectedBg = (function () {
+  try {
+    return sessionStorage.getItem("axf_bg") || "../assets/bg.jpg";
+  } catch {
+    return "../assets/bg.jpg";
+  }
+})();
 const background = new Sprite({
   position: { x: 0, y: 0 },
-  imageSrc: "../assets/bg.jpg",
+  imageSrc: selectedBg,
 });
 
 const queryString = window.location.search;

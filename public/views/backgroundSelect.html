@@ -1,0 +1,35 @@
+<head>
+  <link rel="shortcut icon" type="image/x-icon" href="../logo.png" />
+  <title>AnimeXfusion - Background Select</title>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+    integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
+  <link rel="stylesheet" href="../styles/selectStyles.css" />
+  <link rel="stylesheet" href="../styles/styles.css" />
+</head>
+<body>
+  <a class="backBtn" href="./modeSelect.html">← Back</a>
+  <script defer>
+    document.addEventListener("DOMContentLoaded", () => {
+      try {
+        const ok = sessionStorage.getItem("axf_entry_ok") === "1";
+        if (!ok) window.location.href = "../index.html";
+      } catch {}
+    });
+  </script>
+  <div class="gameContainer">
+    <div class="selectContainer" style="display: flex; justify-content: center">
+      <div class="innerBox" style="max-width: 1024px; width: 100%">
+        <div class="rowContainer">
+          <h1 class="title">Select Background</h1>
+          <div id="bgGrid" class="colContainer" style="margin-top: 1rem"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="../scripts/utils.js"></script>
+  <script src="../scripts/backgroundSelect.js"></script>
+</body>

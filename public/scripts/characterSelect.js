@@ -17,11 +17,14 @@ function selectCharacter(id) {
     );
   } else {
     if (urlParams.has("p1")) {
-      window.open(
-        `game.html${window.location.search}&p2=${id}`,
-        (target = "_self")
-      );
+      // After both players chosen, go to background select for offline flow
+      try {
+        sessionStorage.setItem("axf_last_p2", String(id));
+      } catch {}
+      const qs = window.location.search.replace(/&?p2=\d+/, "") + `&p2=${id}`;
+      window.open(`backgroundSelect.html${qs}`, (target = "_self"));
     } else {
+      // First player select; remain on page to select Player 2
       window.open(`${window.location.href}?p1=${id}`, (target = "_self"));
     }
   }
