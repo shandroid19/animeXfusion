@@ -12,26 +12,18 @@ function handleResize() {
   const isLandscape = window.innerWidth > window.innerHeight;
   const isMobile = detectMobile();
 
-  if (isMobile && isLandscape) {
-    // Mobile landscape mode - maintain aspect ratio and center
-    const maxHeight = window.innerHeight;
-    const maxWidth = window.innerWidth;
-
-    if (maxWidth / maxHeight > aspectRatio) {
-      // Window is wider than canvas aspect ratio
-      canvas.style.height = maxHeight + "px";
-      canvas.style.width = maxHeight * aspectRatio + "px";
-    } else {
-      // Window is taller than canvas aspect ratio
-      canvas.style.width = maxWidth + "px";
-      canvas.style.height = maxWidth / aspectRatio + "px";
-    }
+  if (isMobile) {
+    // Mobile mode - use full viewport
+    canvas.style.width = "100vw";
+    canvas.style.height = "100vh";
+    canvas.style.objectFit = "cover";
+    canvas.style.objectPosition = "center";
 
     // Center the canvas
-    canvas.style.margin = "0 auto";
+    canvas.style.margin = "0";
     canvas.style.display = "block";
 
-    // Adjust game container for landscape
+    // Adjust game container for mobile
     const gameContainer = document.querySelector(".gameContainer");
     if (gameContainer) {
       gameContainer.style.width = "100vw";
@@ -39,49 +31,18 @@ function handleResize() {
       gameContainer.style.display = "flex";
       gameContainer.style.alignItems = "center";
       gameContainer.style.justifyContent = "center";
-    }
-  } else if (isMobile) {
-    // Mobile portrait mode - fit to screen width
-    const maxWidth = window.innerWidth;
-    const maxHeight = window.innerHeight;
-
-    if (maxWidth / maxHeight > aspectRatio) {
-      // Window is wider than canvas aspect ratio
-      canvas.style.height = maxHeight + "px";
-      canvas.style.width = maxHeight * aspectRatio + "px";
-    } else {
-      // Window is taller than canvas aspect ratio
-      canvas.style.width = maxWidth + "px";
-      canvas.style.height = maxWidth / aspectRatio + "px";
-    }
-
-    // Center the canvas
-    canvas.style.margin = "0 auto";
-    canvas.style.display = "block";
-
-    // Adjust game container
-    const gameContainer = document.querySelector(".gameContainer");
-    if (gameContainer) {
-      gameContainer.style.width = "100vw";
-      gameContainer.style.height = "100vh";
-      gameContainer.style.display = "flex";
-      gameContainer.style.alignItems = "center";
-      gameContainer.style.justifyContent = "center";
+      gameContainer.style.overflow = "hidden";
     }
   } else if (windowAspectRatio > aspectRatio) {
     // Desktop - fit canvas height to window height
     canvas.style.width = "auto";
     canvas.style.height = "100%";
+    canvas.style.objectFit = "contain";
   } else {
     // Desktop - fit canvas width to window width
     canvas.style.width = "100%";
     canvas.style.height = "auto";
-  }
-
-  // Force canvas to maintain aspect ratio in landscape
-  if (isLandscape && isMobile) {
     canvas.style.objectFit = "contain";
-    canvas.style.objectPosition = "center";
   }
 }
 
@@ -100,30 +61,6 @@ window.addEventListener("orientationchange", () => {
     handleResize();
     optimizeForOrientation();
   }, 100);
-
-  // Re-enter fullscreen if needed for mobile
-  if (detectMobile()) {
-    setTimeout(() => {
-      try {
-        if (
-          !document.fullscreenElement &&
-          !document.webkitFullscreenElement &&
-          !document.mozFullScreenElement &&
-          !document.msFullscreenElement
-        ) {
-          if (document.documentElement.requestFullscreen) {
-            document.documentElement.requestFullscreen();
-          } else if (document.documentElement.webkitRequestFullscreen) {
-            document.documentElement.webkitRequestFullscreen();
-          } else if (document.documentElement.msRequestFullscreen) {
-            document.documentElement.msRequestFullscreen();
-          }
-        }
-      } catch (e) {
-        console.log("Fullscreen re-entry failed:", e);
-      }
-    }, 200);
-  }
 });
 
 // Rest of your existing code...

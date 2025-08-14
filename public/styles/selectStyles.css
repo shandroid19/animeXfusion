@@ -16,12 +16,16 @@ body {
   background-attachment: fixed;
   background-repeat: no-repeat;
   min-height: 100vh;
+  height: 100vh;
   position: relative;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
 }
 
 body::before {
   content: "";
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -55,6 +59,7 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 
 .innerBox {
@@ -177,14 +182,18 @@ h1 {
 }
 
 .gameContainer {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
   height: 100vh;
   margin: 0;
+  padding: 0;
+  display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 2;
+  overflow: hidden;
 }
 
 /* Mobile styles - hide controls and scroll background on small screens */
