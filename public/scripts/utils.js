@@ -232,6 +232,19 @@ function waitForPlayer() {
   message.appendTo($("#countdownBox"));
 }
 
+// Entry guard: prevent direct linking to intermediate pages
+document.addEventListener("DOMContentLoaded", () => {
+  try {
+    const path = window.location.pathname;
+    const isIntermediate = path.includes("/views/");
+    const ok = sessionStorage.getItem("axf_entry_ok") === "1";
+    if (isIntermediate && !ok) {
+      // Redirect to home if opened directly
+      window.location.href = "../index.html";
+    }
+  } catch {}
+});
+
 function startCountdown() {
   loadSounds(player, players[p1].name);
   loadSounds(enemy, players[p2].name);

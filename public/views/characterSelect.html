@@ -15,6 +15,14 @@
   <!-- <link rel="stylesheet" href="../styles/styles.css" /> -->
 </head>
 <body>
+  <script defer>
+    document.addEventListener('DOMContentLoaded',()=>{
+      try{
+        const ok = sessionStorage.getItem('axf_entry_ok')==='1';
+        if(!ok) window.location.href = '../index.html';
+      }catch{}
+    });
+  </script>
   <div class="gameContainer">
     <div class="selectContainer">
       <div class="innerBox" >

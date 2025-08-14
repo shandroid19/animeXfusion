@@ -34,6 +34,10 @@
           : "views/modeSelect.html";
         document.querySelector("#playButton").href = nextLink;
 
+        try {
+          sessionStorage.setItem("axf_entry_ok", "1");
+        } catch {}
+
         if ("serviceWorker" in navigator) {
           navigator.serviceWorker.register("/sw.js").catch(() => {});
         }
