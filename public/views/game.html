@@ -1,190 +1,244 @@
-<head>
-  <link rel="manifest" href="../manifest.json" />
-  <link rel="shortcut icon" type="image/x-icon" href="../logo.png" />
-  <title>AnimeXfusion</title>
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
-  />
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="manifest" href="../manifest.json" />
+    <link rel="shortcut icon" type="image/x-icon" href="../logo.png" />
+    <title>AnimeXfusion</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
 
-  <link rel="preload" as="image" href="../assets/bg.jpg" />
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-    integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-    defer
-  ></script>
-  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js" defer></script>
-  <link rel="stylesheet" href="../styles/styles.css" />
-</head>
-<body>
-  <div class="gameContainer">
-    <!-- healthbar -->
-    <div id="gameBox">
-      <div id="countdownBox"></div>
-      <div class="statusBar">
-        <div class="statusBarContainer" style="align-items: flex-start">
-          <!-- Player Health -->
+    <link rel="preload" as="image" href="../assets/bg.jpg" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+      integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+      defer
+    ></script>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js" defer></script>
+    <link rel="stylesheet" href="../styles/styles.css" />
+    <style>
+      /* Game page specific background styling */
+      body {
+        background-color: black;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        height: 100vh;
+        width: 100vw;
+      }
 
-          <div class="energyBarContainer">
-            <div class="healthBar"></div>
-            <div id="playerHealth" class="healthLevel fill-left"></div>
+      .gameContainer {
+        position: relative;
+        z-index: 2;
+      }
+
+      #pauseOverlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      }
+
+      #pauseOverlay h2 {
+        margin: 0 0 1rem 0;
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+      }
+
+      #pauseOverlay p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="gameContainer">
+      <!-- healthbar -->
+      <div id="gameBox">
+        <div id="countdownBox"></div>
+        <div class="statusBar">
+          <div class="statusBarContainer" style="align-items: flex-start">
+            <!-- Player Health -->
+
+            <div class="energyBarContainer">
+              <div class="healthBar"></div>
+              <div id="playerHealth" class="healthLevel fill-left"></div>
+            </div>
+
+            <!-- Player Energy -->
+
+            <div class="energyBarBox">
+              <div class="energyBar"></div>
+              <div id="playerEnergy" class="energyLevel fill-left"></div>
+            </div>
           </div>
 
-          <!-- Player Energy -->
+          <!-- Timer -->
+          <div id="timer" class="timer">00</div>
 
-          <div class="energyBarBox">
-            <div class="energyBar"></div>
-            <div id="playerEnergy" class="energyLevel fill-left"></div>
+          <div class="statusBarContainer" style="align-items: flex-end">
+            <!-- Enemy Health -->
+
+            <div class="energyBarContainer">
+              <div class="healthBar"></div>
+              <div
+                id="enemyHealth"
+                style="left: 0"
+                class="healthLevel fill-right"
+              ></div>
+            </div>
+
+            <div class="energyBarBox">
+              <div class="energyBar"></div>
+
+              <!-- Enemy Energy -->
+              <div
+                id="enemyEnergy"
+                class="energyLevel fill-right"
+                style="right: 0"
+              ></div>
+            </div>
           </div>
         </div>
 
-        <!-- Timer -->
-        <div id="timer" class="timer">00</div>
+        <div class="postGameContainer">
+          <div style="z-index: 100" id="result"></div>
+          <div style="z-index: 100" id="menu" class="container"></div>
 
-        <div class="statusBarContainer" style="align-items: flex-end">
-          <!-- Enemy Health -->
+          <div class="controlsContainer" id="mobileControls">
+            <!-- movement -->
 
-          <div class="energyBarContainer">
-            <div class="healthBar"></div>
-            <div
-              id="enemyHealth"
-              style="left: 0"
-              class="healthLevel fill-right"
-            ></div>
-          </div>
-
-          <div class="energyBarBox">
-            <div class="energyBar"></div>
-
-            <!-- Enemy Energy -->
-            <div
-              id="enemyEnergy"
-              class="energyLevel fill-right"
-              style="right: 0"
-            ></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="postGameContainer">
-        <div style="z-index: 100" id="result"></div>
-        <div style="z-index: 100" id="menu" class="container"></div>
-
-        <div class="controlsContainer" id="mobileControls">
-          <!-- movement -->
-
-          <div class="controlsRow">
-            <div class="controlsColumn">
-              <div class="innerControlsRow">
-                <button
-                  ontouchstart="performTouchAction('up',true)"
-                  class="controlBtn"
-                >
-                  <img class="btnLogo" src="../assets/up.svg" loading="lazy" />
-                </button>
-              </div>
-              <div class="innerControlsRow">
-                <div class="controlsColumn">
+            <div class="controlsRow">
+              <div class="controlsColumn">
+                <div class="innerControlsRow">
                   <button
-                    ontouchstart="performTouchAction('leftDown',true)"
-                    ontouchend="performTouchAction('leftUp',true)"
+                    ontouchstart="performTouchAction('up',true)"
                     class="controlBtn"
                   >
                     <img
                       class="btnLogo"
-                      src="../assets/left.svg"
+                      src="../assets/up.svg"
                       loading="lazy"
                     />
                   </button>
                 </div>
-                <div class="controlsColumn">
-                  <button
-                    ontouchstart="performTouchAction('rightDown',true)"
-                    ontouchend="performTouchAction('rightUp',true)"
-                    class="controlBtn"
-                  >
-                    <img
-                      class="btnLogo"
-                      src="../assets/right.svg"
-                      loading="lazy"
-                    />
-                  </button>
+                <div class="innerControlsRow">
+                  <div class="controlsColumn">
+                    <button
+                      ontouchstart="performTouchAction('leftDown',true)"
+                      ontouchend="performTouchAction('leftUp',true)"
+                      class="controlBtn"
+                    >
+                      <img
+                        class="btnLogo"
+                        src="../assets/left.svg"
+                        loading="lazy"
+                      />
+                    </button>
+                  </div>
+                  <div class="controlsColumn">
+                    <button
+                      ontouchstart="performTouchAction('rightDown',true)"
+                      ontouchend="performTouchAction('rightUp',true)"
+                      class="controlBtn"
+                    >
+                      <img
+                        class="btnLogo"
+                        src="../assets/right.svg"
+                        loading="lazy"
+                      />
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <!-- fighting -->
+              <!-- fighting -->
 
-            <div class="controlsColumn">
-              <div class="attack2Row">
-                <button
-                  id="splAttackBtn"
-                  ontouchstart="performTouchAction('splAttack',true)"
-                  class="attack2Btn"
-                >
-                  <img
-                    class="attack2Logo"
-                    src="../assets/spl.svg"
-                    loading="lazy"
-                  />
-                </button>
-                <button
-                  id="attack2Btn"
-                  ontouchstart="performTouchAction('attack2',true)"
-                  class="attack2Btn"
-                >
-                  <img
-                    class="attack2Logo"
-                    src="../assets/attack2.svg"
-                    loading="lazy"
-                  />
-                </button>
-              </div>
-              <div class="innerControlsRow">
-                <div class="controlsColumn">
+              <div class="controlsColumn">
+                <div class="attack2Row">
                   <button
-                    ontouchstart="performTouchAction('attack1',true)"
-                    class="attack1Btn"
+                    id="splAttackBtn"
+                    ontouchstart="performTouchAction('splAttack',true)"
+                    class="attack2Btn"
                   >
                     <img
-                      class="attack1Logo"
-                      src="../assets/attack1.svg"
+                      class="attack2Logo"
+                      src="../assets/spl.svg"
+                      loading="lazy"
+                    />
+                  </button>
+                  <button
+                    id="attack2Btn"
+                    ontouchstart="performTouchAction('attack2',true)"
+                    class="attack2Btn"
+                  >
+                    <img
+                      class="attack2Logo"
+                      src="../assets/attack2.svg"
                       loading="lazy"
                     />
                   </button>
                 </div>
-                <div class="controlsColumn">
-                  <button
-                    ontouchstart="performTouchAction('blockDown',true)"
-                    ontouchend="performTouchAction('blockUp')"
-                    class="controlBtn"
-                  >
-                    <img
-                      class="blockLogo"
-                      src="../assets/block.svg"
-                      loading="lazy"
-                    />
-                  </button>
+                <div class="innerControlsRow">
+                  <div class="controlsColumn">
+                    <button
+                      ontouchstart="performTouchAction('attack1',true)"
+                      class="attack1Btn"
+                    >
+                      <img
+                        class="attack1Logo"
+                        src="../assets/attack1.svg"
+                        loading="lazy"
+                      />
+                    </button>
+                  </div>
+                  <div class="controlsColumn">
+                    <button
+                      ontouchstart="performTouchAction('blockDown',true)"
+                      ontouchend="performTouchAction('blockUp')"
+                      class="controlBtn"
+                    >
+                      <img
+                        class="blockLogo"
+                        src="../assets/block.svg"
+                        loading="lazy"
+                      />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+        <div id="overlay"></div>
+        <div id="pauseOverlay" style="display: none">
+          <div style="text-align: center; color: white; font-size: 2rem">
+            <h2>Game Paused</h2>
+            <p>Press 'P' to resume</p>
+          </div>
+        </div>
+        <canvas id="mainCanvas"></canvas>
       </div>
-      <div id="overlay"></div>
-      <canvas id="mainCanvas"></canvas>
     </div>
-  </div>
-  <script src="../scripts/classes.js" defer></script>
+    <script src="../scripts/classes.js" defer></script>
 
-  <script src="../scripts/characters.js" defer></script>
-  <script src="../scripts/utils.js" defer></script>
-  <script src="../scripts/index.js" defer></script>
-  <script defer>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js").catch(() => {});
-    }
-  </script>
-</body>
+    <script src="../scripts/characters.js" defer></script>
+    <script src="../scripts/utils.js" defer></script>
+    <script src="../scripts/index.js" defer></script>
+    <script defer>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/sw.js").catch(() => {});
+      }
+    </script>
+  </body>
+</html>

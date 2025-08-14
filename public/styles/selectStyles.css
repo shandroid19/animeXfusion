@@ -51,7 +51,7 @@ body::before {
   background-image: url(../assets/welcome.jpg);
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
+  background-repeat: repeat;
   background-color: black;
   justify-content: center;
   padding: 2rem;
