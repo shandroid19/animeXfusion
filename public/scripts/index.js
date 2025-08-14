@@ -9,8 +9,21 @@ var started = false;
 function handleResize() {
   const aspectRatio = canvas.width / canvas.height;
   const windowAspectRatio = window.innerWidth / window.innerHeight;
+  const isLandscape = window.innerWidth > window.innerHeight;
+  const isMobile = detectMobile();
 
-  if (windowAspectRatio > aspectRatio) {
+  if (isMobile && isLandscape) {
+    // Mobile landscape mode - use full viewport
+    canvas.style.width = "100vw";
+    canvas.style.height = "100vh";
+
+    // Adjust game container for landscape
+    const gameContainer = document.querySelector(".gameContainer");
+    if (gameContainer) {
+      gameContainer.style.width = "100vw";
+      gameContainer.style.height = "100vh";
+    }
+  } else if (windowAspectRatio > aspectRatio) {
     // Fit canvas height to window height
     canvas.style.width = "auto";
     canvas.style.height = "100%";
@@ -19,11 +32,54 @@ function handleResize() {
     canvas.style.width = "100%";
     canvas.style.height = "auto";
   }
+
+  // Force canvas to maintain aspect ratio in landscape
+  if (isLandscape && isMobile) {
+    canvas.style.objectFit = "cover";
+    canvas.style.objectPosition = "center";
+  }
 }
 
 // Call the resize function on page load and window resize
-window.addEventListener("load", handleResize);
-window.addEventListener("resize", handleResize);
+window.addEventListener("load", () => {
+  handleResize();
+  optimizeForOrientation();
+});
+window.addEventListener("resize", () => {
+  handleResize();
+  optimizeForOrientation();
+});
+window.addEventListener("orientationchange", () => {
+  // Delay resize to allow orientation change to complete
+  setTimeout(() => {
+    handleResize();
+    optimizeForOrientation();
+  }, 100);
+
+  // Re-enter fullscreen if needed for mobile
+  if (detectMobile()) {
+    setTimeout(() => {
+      try {
+        if (
+          !document.fullscreenElement &&
+          !document.webkitFullscreenElement &&
+          !document.mozFullScreenElement &&
+          !document.msFullscreenElement
+        ) {
+          if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen();
+          } else if (document.documentElement.webkitRequestFullscreen) {
+            document.documentElement.webkitRequestFullscreen();
+          } else if (document.documentElement.msRequestFullscreen) {
+            document.documentElement.msRequestFullscreen();
+          }
+        }
+      } catch (e) {
+        console.log("Fullscreen re-entry failed:", e);
+      }
+    }, 200);
+  }
+});
 
 // Rest of your existing code...
 
@@ -1069,10 +1125,6 @@ $(document).ready(() => {
 
   // Auto-enter fullscreen on mobile devices
   if (detectMobile()) {
-    // Show fullscreen button for mobile
-    const fullscreenBtn = document.getElementById("fullscreenToggle");
-    if (fullscreenBtn) fullscreenBtn.style.display = "flex";
-
     // Hide browser UI elements when possible
     try {
       if (document.documentElement.requestFullscreen) {
@@ -1138,10 +1190,6 @@ function handleFullscreenChange() {
       }
     `;
     document.head.appendChild(style);
-
-    // Hide fullscreen button when in fullscreen
-    const fullscreenBtn = document.getElementById("fullscreenToggle");
-    if (fullscreenBtn) fullscreenBtn.style.display = "none";
   } else {
     // Restore normal behavior when exiting fullscreen
     document.body.style.overflow = "";
@@ -1149,41 +1197,67 @@ function handleFullscreenChange() {
     if (fullscreenStyle) {
       fullscreenStyle.remove();
     }
-
-    // Show fullscreen button when not in fullscreen
-    const fullscreenBtn = document.getElementById("fullscreenToggle");
-    if (fullscreenBtn && detectMobile()) fullscreenBtn.style.display = "flex";
   }
 }
 
-// Toggle fullscreen function
-function toggleFullscreen() {
-  try {
-    if (
-      !document.fullscreenElement &&
-      !document.webkitFullscreenElement &&
-      !document.mozFullScreenElement &&
-      !document.msFullscreenElement
-    ) {
-      // Enter fullscreen
-      if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen();
-      } else if (document.documentElement.webkitRequestFullscreen) {
-        document.documentElement.webkitRequestFullscreen();
-      } else if (document.documentElement.msRequestFullscreen) {
-        document.documentElement.msRequestFullscreen();
-      }
-    } else {
-      // Exit fullscreen
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
-      }
+// Function to optimize layout for current orientation
+function optimizeForOrientation() {
+  const isLandscape = window.innerWidth > window.innerHeight;
+  const isMobile = detectMobile();
+
+  if (isMobile && isLandscape) {
+    // Add landscape-specific classes
+    document.body.classList.add("landscape-mode");
+
+    // Optimize canvas for landscape
+    const canvas = document.querySelector("canvas");
+    if (canvas) {
+      canvas.style.width = "100vw";
+      canvas.style.height = "100vh";
+      canvas.style.objectFit = "cover";
     }
-  } catch (e) {
-    console.log("Fullscreen toggle failed:", e);
+
+    // Adjust control positioning
+    const controlsContainer = document.querySelector(".controlsContainer");
+    if (controlsContainer) {
+      controlsContainer.style.bottom = "0";
+      controlsContainer.style.left = "0";
+      controlsContainer.style.right = "0";
+    }
+
+    // Optimize status bar
+    const statusBar = document.querySelector(".statusBar");
+    if (statusBar) {
+      statusBar.style.position = "fixed";
+      statusBar.style.top = "0";
+      statusBar.style.left = "0";
+      statusBar.style.right = "0";
+    }
+  } else {
+    // Remove landscape classes
+    document.body.classList.remove("landscape-mode");
+
+    // Reset to default positioning
+    const canvas = document.querySelector("canvas");
+    if (canvas) {
+      canvas.style.width = "";
+      canvas.style.height = "";
+      canvas.style.objectFit = "";
+    }
+
+    const controlsContainer = document.querySelector(".controlsContainer");
+    if (controlsContainer) {
+      controlsContainer.style.bottom = "";
+      controlsContainer.style.left = "";
+      controlsContainer.style.right = "";
+    }
+
+    const statusBar = document.querySelector(".statusBar");
+    if (statusBar) {
+      statusBar.style.position = "";
+      statusBar.style.top = "";
+      statusBar.style.left = "";
+      statusBar.style.right = "";
+    }
   }
 }
