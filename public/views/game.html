@@ -2,6 +2,10 @@
   <link rel="manifest" href="../manifest.json" />
   <link rel="shortcut icon" type="image/x-icon" href="../logo.png" />
   <title>AnimeXfusion</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+  />
 
   <link rel="preload" as="image" href="../assets/bg.jpg" />
   <script
@@ -67,6 +71,17 @@
       <div class="postGameContainer">
         <div style="z-index: 100" id="result"></div>
         <div style="z-index: 100" id="menu" class="container"></div>
+
+        <!-- Fullscreen toggle button for mobile -->
+        <button
+          id="fullscreenToggle"
+          class="fullscreenBtn"
+          onclick="toggleFullscreen()"
+          style="display: none"
+        >
+          <span class="fullscreenIcon">⛶</span>
+        </button>
+
         <div class="controlsContainer" id="mobileControls">
           <!-- movement -->
 

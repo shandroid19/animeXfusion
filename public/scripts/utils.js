@@ -26,7 +26,7 @@ function loadSounds(player, name) {
 var roomCode;
 
 function syncPosition() {
-  if (timer) {
+  if (timer && !paused) {
     setTimeout(syncPosition, 50);
     socket?.emit("syncPosition", {
       player: {
@@ -35,6 +35,9 @@ function syncPosition() {
         vx: player.velocity.x,
         vy: player.velocity.y,
         t: Date.now(),
+        lastKey: player.lastKey,
+        isAttacking: player.isAttacking,
+        isBlocking: player.isBlocking,
       },
       enemy: {
         x: enemy.position.x,
@@ -42,6 +45,9 @@ function syncPosition() {
         vx: enemy.velocity.x,
         vy: enemy.velocity.y,
         t: Date.now(),
+        lastKey: enemy.lastKey,
+        isAttacking: enemy.isAttacking,
+        isBlocking: enemy.isBlocking,
       },
       roomCode,
     });
@@ -289,11 +295,14 @@ function startCountdown() {
 const performAction = (data, touch = false) => {
   if (!started) return;
   if (touch) socket?.emit("keyPress", data, urlParams.get("id"));
+
+  // Determine which player to control based on online status
   const currentPlayer = !player1 ? player : enemy;
   const opponent = !player1 ? enemy : player;
   const currentPlayerKey = player1 ? "enemy" : "player";
   const opponentKey = player1 ? "player" : "enemy";
 
+  // Don't process actions if player is in certain states
   if (
     (currentPlayer.isAttacked &&
       currentPlayer.sprites.takeHit.image === currentPlayer.image) ||
@@ -301,6 +310,7 @@ const performAction = (data, touch = false) => {
       currentPlayer.sprites.splAttack.image === currentPlayer.image)
   )
     return;
+
   switch (data) {
     case "rightDown":
       currentPlayer.keys.right = true;
@@ -372,7 +382,6 @@ const performAction = (data, touch = false) => {
     case "leftUp":
       currentPlayer.keys.left = false;
       currentPlayer.offset = currentPlayer.sprites.idle.offset;
-
       break;
 
     case "blockUp":

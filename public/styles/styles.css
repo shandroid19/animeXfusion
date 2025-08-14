@@ -465,19 +465,113 @@ transition {
   pointer-events: none;
 }
 
+/* Mobile styles - hide controls and scroll background on small screens */
 @media (max-width: 768px) {
-  .timer {
-    height: 72px;
-    width: 72px;
-    font-size: 32px;
+  .controlsBox {
+    background-image: none !important;
+    padding: 2rem !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
   }
-  .attack1Btn {
-    height: 6rem;
-    width: 6rem;
+
+  #controls {
+    display: none !important;
   }
-  .controlBtn {
-    height: 4.25rem;
-    width: 4.25rem;
+
+  /* Fullscreen button styling */
+  .fullscreenBtn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+
+  .fullscreenBtn:hover {
+    background: rgba(0, 0, 0, 0.9);
+    border-color: rgba(255, 255, 255, 0.6);
+    transform: scale(1.1);
+  }
+
+  .fullscreenIcon {
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  /* Hide browser UI elements in fullscreen */
+  @media screen and (display-mode: fullscreen) {
+    body {
+      overflow: hidden !important;
+      position: fixed !important;
+      width: 100vw !important;
+      height: 100vh !important;
+    }
+
+    .gameContainer {
+      width: 100vw !important;
+      height: 100vh !important;
+    }
+
+    canvas {
+      width: 100vw !important;
+      height: 100vh !important;
+    }
+  }
+
+  /* Optimize for mobile fullscreen */
+  @media screen and (max-height: 600px) {
+    .statusBar {
+      padding: 8px 16px;
+    }
+
+    .timer {
+      height: 60px;
+      width: 60px;
+      font-size: 28px;
+    }
+
+    .controlsContainer {
+      bottom: 10px;
+    }
+  }
+}
+
+/* Additional mobile optimizations */
+@media (max-width: 768px) {
+  .gameContainer {
+    width: 100vw !important;
+    height: 100vh !important;
+    overflow: hidden;
+  }
+
+  canvas {
+    width: 100vw !important;
+    height: 100vh !important;
+    object-fit: cover;
+  }
+
+  /* Ensure status bar doesn't overlap with system UI */
+  .statusBar {
+    padding-top: max(16px, env(safe-area-inset-top));
+    padding-left: max(24px, env(safe-area-inset-left));
+    padding-right: max(24px, env(safe-area-inset-right));
+  }
+
+  /* Adjust controls for safe areas */
+  .controlsContainer {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
   }
 }
 

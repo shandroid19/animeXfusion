@@ -216,7 +216,7 @@ var player1;
 var online = false;
 // Remote interpolation buffer
 var remoteSnapshots = [];
-const INTERP_DELAY_MS = 100;
+const INTERP_DELAY_MS = 50; // Reduced from 100ms for more responsive movement
 $(document).ready(() => {
   if (urlParams.has("online")) {
     online = true;
@@ -226,11 +226,31 @@ $(document).ready(() => {
     socket?.emit("joinRoom", urlParams.get("id"), p1);
     roomCode = urlParams.get("id");
     socket.on("syncPosition", (newValues) => {
-      // Buffer only the remote player's snapshots
+      // Buffer only the remote player's snapshots with better validation
       const snap = player1 ? newValues.enemy : newValues.player;
-      if (snap && typeof snap.x === "number" && typeof snap.y === "number") {
-        remoteSnapshots.push(snap);
-        if (remoteSnapshots.length > 30) remoteSnapshots.shift();
+      if (
+        snap &&
+        typeof snap.x === "number" &&
+        typeof snap.y === "number" &&
+        typeof snap.vx === "number" &&
+        typeof snap.vy === "number" &&
+        snap.t
+      ) {
+        // Add timestamp if missing
+        if (!snap.t) snap.t = Date.now();
+
+        // Only add if it's a significant change to reduce noise
+        const lastSnap = remoteSnapshots[remoteSnapshots.length - 1];
+        if (
+          !lastSnap ||
+          Math.abs(snap.x - lastSnap.x) > 1 ||
+          Math.abs(snap.y - lastSnap.y) > 1 ||
+          Math.abs(snap.vx - lastSnap.vx) > 0.5 ||
+          Math.abs(snap.vy - lastSnap.vy) > 0.5
+        ) {
+          remoteSnapshots.push(snap);
+          if (remoteSnapshots.length > 20) remoteSnapshots.shift(); // Reduced buffer size for faster response
+        }
       }
     });
 
@@ -440,15 +460,50 @@ function animate() {
       prev = remoteSnapshots[0];
       next = remoteSnapshots[1] || prev;
     }
+
     const t0 = prev.t || 0;
     const t1 = Math.max(next.t || 0, t0 + 1);
     const alpha = Math.max(0, Math.min(1, (renderTime - t0) / (t1 - t0)));
+
     const targetX = prev.x + (next.x - prev.x) * alpha;
     const targetY = prev.y + (next.y - prev.y) * alpha;
+    const targetVX = prev.vx + (next.vx - prev.vx) * alpha;
+    const targetVY = prev.vy + (next.vy - prev.vy) * alpha;
+
     const remoteFighter = player1 ? enemy : player;
-    // Nudge towards target to avoid snapping over local input replication
-    remoteFighter.position.x += (targetX - remoteFighter.position.x) * 0.2;
-    remoteFighter.position.y += (targetY - remoteFighter.position.y) * 0.2;
+
+    // Only interpolate if the remote fighter isn't being controlled locally
+    const isLocalInput =
+      (player1 && remoteFighter === player) ||
+      (!player1 && remoteFighter === enemy);
+    if (!isLocalInput) {
+      // Update position with better smoothing
+      const smoothingFactor = 0.4; // Increased from 0.2 for more responsive movement
+      remoteFighter.position.x +=
+        (targetX - remoteFighter.position.x) * smoothingFactor;
+      remoteFighter.position.y +=
+        (targetY - remoteFighter.position.y) * smoothingFactor;
+
+      // Update velocity for smoother movement
+      remoteFighter.velocity.x = targetVX;
+      remoteFighter.velocity.y = targetVY;
+
+      // Update sprite state based on movement
+      if (Math.abs(targetVX) > 0.1) {
+        remoteFighter.switchSprite("run");
+      } else if (targetVY < 0) {
+        remoteFighter.switchSprite("jump");
+      } else {
+        remoteFighter.switchSprite("idle");
+      }
+
+      // Update lastKey for proper sprite direction
+      if (targetVX > 0.1) {
+        remoteFighter.lastKey = player1 ? "enemyRight" : "playerRight";
+      } else if (targetVX < -0.1) {
+        remoteFighter.lastKey = player1 ? "enemyLeft" : "playerLeft";
+      }
+    }
   }
   player.update(enemy);
   enemy.update(player);
@@ -1012,6 +1067,32 @@ const performTouchAction = (e, touch = false) => {
 $(document).ready(() => {
   if (!detectMobile()) $(".controlsContainer").addClass("hidden");
 
+  // Auto-enter fullscreen on mobile devices
+  if (detectMobile()) {
+    // Show fullscreen button for mobile
+    const fullscreenBtn = document.getElementById("fullscreenToggle");
+    if (fullscreenBtn) fullscreenBtn.style.display = "flex";
+
+    // Hide browser UI elements when possible
+    try {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+      } else if (document.documentElement.webkitRequestFullscreen) {
+        document.documentElement.webkitRequestFullscreen();
+      } else if (document.documentElement.msRequestFullscreen) {
+        document.documentElement.msRequestFullscreen();
+      }
+    } catch (e) {
+      console.log("Fullscreen not supported or blocked");
+    }
+
+    // Add fullscreen change event listeners
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
+    document.addEventListener("mozfullscreenchange", handleFullscreenChange);
+    document.addEventListener("MSFullscreenChange", handleFullscreenChange);
+  }
+
   // Haptics on touch
   const vibrate = (ms) => {
     try {
@@ -1026,3 +1107,83 @@ $(document).ready(() => {
     }
   );
 });
+
+// Handle fullscreen changes
+function handleFullscreenChange() {
+  const isFullscreen =
+    document.fullscreenElement ||
+    document.webkitFullscreenElement ||
+    document.mozFullScreenElement ||
+    document.msFullscreenElement;
+
+  if (isFullscreen) {
+    // Hide browser UI elements
+    document.body.style.overflow = "hidden";
+    // Add CSS to hide address bar on mobile
+    const style = document.createElement("style");
+    style.id = "fullscreen-style";
+    style.textContent = `
+      @media screen and (display-mode: fullscreen) {
+        body { 
+          overflow: hidden !important; 
+          position: fixed !important;
+          width: 100vw !important;
+          height: 100vh !important;
+        }
+      }
+      @media screen and (display-mode: standalone) {
+        body { 
+          overflow: hidden !important; 
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Hide fullscreen button when in fullscreen
+    const fullscreenBtn = document.getElementById("fullscreenToggle");
+    if (fullscreenBtn) fullscreenBtn.style.display = "none";
+  } else {
+    // Restore normal behavior when exiting fullscreen
+    document.body.style.overflow = "";
+    const fullscreenStyle = document.getElementById("fullscreen-style");
+    if (fullscreenStyle) {
+      fullscreenStyle.remove();
+    }
+
+    // Show fullscreen button when not in fullscreen
+    const fullscreenBtn = document.getElementById("fullscreenToggle");
+    if (fullscreenBtn && detectMobile()) fullscreenBtn.style.display = "flex";
+  }
+}
+
+// Toggle fullscreen function
+function toggleFullscreen() {
+  try {
+    if (
+      !document.fullscreenElement &&
+      !document.webkitFullscreenElement &&
+      !document.mozFullScreenElement &&
+      !document.msFullscreenElement
+    ) {
+      // Enter fullscreen
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+      } else if (document.documentElement.webkitRequestFullscreen) {
+        document.documentElement.webkitRequestFullscreen();
+      } else if (document.documentElement.msRequestFullscreen) {
+        document.documentElement.msRequestFullscreen();
+      }
+    } else {
+      // Exit fullscreen
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+    }
+  } catch (e) {
+    console.log("Fullscreen toggle failed:", e);
+  }
+}
