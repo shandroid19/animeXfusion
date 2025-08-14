@@ -43,8 +43,11 @@
               <input
                 name="codeInput"
                 class="codeInput"
-                placeholder="Enter code here"
+                placeholder="6-digit code"
                 type="text"
+                maxlength="6"
+                pattern="[0-9]{6}"
+                autocomplete="off"
               />
               <button class="join" onclick="join()">Join</button>
             </form>

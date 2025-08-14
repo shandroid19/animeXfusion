@@ -10,6 +10,28 @@
 body {
   background-color: #0b0f14;
   color: #e6edf3;
+  background-image: url("../assets/bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.5) 100%
+  );
+  z-index: 1;
 }
 
 .title {
@@ -30,6 +52,9 @@ body {
   justify-content: center;
   padding: 2rem;
   backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .innerBox {
@@ -152,11 +177,12 @@ h1 {
 }
 
 .gameContainer {
+  position: relative;
+  z-index: 2;
   display: flex;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   margin: 0;
-  background-color: black;
   align-items: center;
   justify-content: center;
 }
@@ -174,4 +200,160 @@ h1 {
   #controls {
     display: none !important;
   }
+
+  /* Mobile-specific improvements */
+  .codeInput {
+    width: 100px;
+    font-size: 0.9rem;
+    padding: 10px 15px;
+  }
+
+  .join {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .modeBox {
+    margin: 0.5rem;
+    padding: 1.5rem;
+  }
+
+  .modeBox h2 {
+    font-size: 1.2rem;
+  }
+}
+
+/* Enhanced mode box styling */
+.modeBox {
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  margin: 0.5rem;
+  transition: transform 0.2s, box-shadow 200ms ease;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+}
+
+.modeBox:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  border-color: rgba(110, 231, 255, 0.6);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.modeBox a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.modeBox h2 {
+  margin: 0;
+  color: #e6edf3;
+  text-align: center;
+}
+
+/* Enhanced character box styling */
+.characterBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 1rem;
+  padding: 1rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: transform 0.2s, box-shadow 200ms ease;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(10px);
+}
+
+.characterBox:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  border-color: rgba(139, 92, 246, 0.6);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Enhanced join button styling */
+.join {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(238, 90, 36, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+}
+
+.join::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.join:hover::before {
+  left: 100%;
+}
+
+.join:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(238, 90, 36, 0.6);
+  background: linear-gradient(135deg, #ff5252, #d84315);
+}
+
+.join:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 15px rgba(238, 90, 36, 0.4);
+}
+
+/* Code input styling - reduced length */
+.codeInput {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  padding: 12px 20px;
+  font-size: 1rem;
+  color: white;
+  text-align: center;
+  width: 120px;
+  margin: 15px auto;
+  display: block;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  maxlength: 6;
+}
+
+.codeInput::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+}
+
+.codeInput:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
 }
